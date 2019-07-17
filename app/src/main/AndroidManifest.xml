@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity android:name=".SignUpActivity"></activity>
         <activity android:name=".LoginActivity">
@@ -21,9 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".SearchPageActivity"></activity>
+        <activity android:name=".HelperBiosActivity" />
+        <activity android:name=".HelperDetails" />
+        <activity android:name=".OpenChatActivity" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name">
+        </activity>
     </application>
 
 </manifest>
