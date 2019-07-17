@@ -51,7 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    private void signUp(String username, String password, String email, Boolean helper){
+    private void signUp(String username, String password, String email, final Boolean helper){
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
@@ -63,9 +63,16 @@ public class SignUpActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 if(e == null){
                     Log.d("SignUpActivity", "Sign up successful");
-                    final Intent intent = new Intent (SignUpActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if(helper){
+                        final Intent intent = new Intent(SignUpActivity.this, HelperSignUpTags.class);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        final Intent intent = new Intent (SignUpActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
                 }else{
                     Log.e("SignUpActivity", "Sign up failure", e);
                     e.printStackTrace();
