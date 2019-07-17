@@ -43,12 +43,10 @@ public class ChatApp extends Application {
         startChatApp(getApplicationContext());
     }
 
-    public  void startChatApp(Context context){
+    public void startChatApp(Context context){
         APP_ID = context.getString(R.string.APP_ID);
         SendBird.init(APP_ID, context);
         //This api is called using only our secret App ID.
-
-
     }
 
     public static void connectToServer(String userId, final MasterHandle handle){
@@ -180,7 +178,7 @@ public class ChatApp extends Application {
         return APP_ID;
     }
 
-    public void getListOfUsersById(List<String> userIds, final MasterHandle handle){
+    public static void getListOfUsersById(List<String> userIds, final MasterHandle handle){
         //Check notes on head of class.
 
         ApplicationUserListQuery applicationUserListQueryByIds = SendBird.createApplicationUserListQuery();
@@ -200,7 +198,7 @@ public class ChatApp extends Application {
 
 
 
-    public void blockUser(User user, MasterHandle handle){
+    public static void blockUser(User user, MasterHandle handle){
         //TODO MAKE GETUSER, BLOCK AND UNBLOCK get by id (string)
         SendBird.blockUser(user, new SendBird.UserBlockHandler() {
             @Override
@@ -213,7 +211,7 @@ public class ChatApp extends Application {
 
 
     }
-    public void unblockUser(User user, MasterHandle handle){
+    public static void unblockUser(User user, MasterHandle handle){
         // In case of unblocking a user
         //TODO MAKE GETUSER, BLOCK AND UNBLOCK
         SendBird.unblockUser(user, new SendBird.UserUnblockHandler() {

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import chatApp.ChatApp;
+import chatApp.MasterHandle;
+
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //TODO is this correct?
+
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -104,5 +109,29 @@ public class MainActivity extends AppCompatActivity {
         });
         //set default
         bottomNavigationView.setSelectedItemId(R.id.navigation_chat);
+
+
+        /*Dummy chat starts here*/
+        ChatApp chat = new ChatApp();
+        chat.startChatApp(this);
+        ChatApp.connectToServer( "newUser", new  MasterHandle(){
+            @Override
+            public void onSuccess(String TAG, User user){
+                Log.d(TAG, "Connection successful with user: " + user);
+            }
+            @Override
+            public void onFailure(String TAG, Exception e){
+                e.printStackTrace();
+            }
+            @Override
+            public void onSuccess(String TAG){}
+            @Override
+            public void onSuccess(String TAG, GroupChannel groupChannel){}
+            @Override
+            public void onSuccess(String TAG, String channelUrl){}
+            @Override
+            public void onSuccess(String TAG, List<User> list){}
+        });
+        /*Dummy chat ends here*/
     }
 }
