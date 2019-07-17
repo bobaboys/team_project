@@ -22,7 +22,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SearchPageActivity"></activity>
         <activity android:name=".HelperBiosActivity" />
         <activity android:name=".HelperDetails" />
         <activity android:name=".OpenChatActivity" />

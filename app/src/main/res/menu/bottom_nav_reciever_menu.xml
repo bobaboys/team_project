@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_reflect"
+        android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home_black_24dp"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/navigation_reflect"
+        android:icon="@android:drawable/btn_star_big_off"
         android:title="Reflect" />
 
     <item
@@ -13,7 +18,7 @@
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@android:drawable/ic_menu_myplaces"
         android:title="Profile" />
 
 </menu>

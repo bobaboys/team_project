@@ -51,7 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    private void signUp(String username, String password, String email, Boolean helper){
+    private void signUp(String username, String password, String email, final Boolean helper){
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
@@ -64,6 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if(e == null){
                     Log.d("SignUpActivity", "Sign up successful");
                     final Intent intent = new Intent (SignUpActivity.this, MainActivity.class);
+                    intent.putExtra("HELPER",helper);
                     startActivity(intent);
                     finish();
                 }else{

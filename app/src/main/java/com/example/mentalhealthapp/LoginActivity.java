@@ -12,6 +12,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameInput;
@@ -23,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ParseUser currentUser = ParseUser.getCurrentUser();
+        final ParseUser currentUser = ParseUser.getCurrentUser();
 
         if(currentUser != null){
             Intent intent = new Intent (LoginActivity.this, MainActivity.class);
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     final String username = usernameInput.getText().toString();
                     final String password = passwordInput.getText().toString();
-                    login(username, password);
+                    login(username, password, currentUser);
                 }
             });
 
@@ -54,13 +55,17 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void login(String username, String password){
+    public void login(String username, String password, ParseUser user){
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if(e==null){
                     Log.d("LoginActivity", "Login successful!");
                     final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                    User currUser = new User();
+//                    currUser.setUser(user);
+//                    boolean helper = currUser.getHelper();
+//                    intent.putExtra("HELPER",helper);
                     startActivity(intent);
                     finish();
                 }else{
