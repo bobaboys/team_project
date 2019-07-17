@@ -12,7 +12,7 @@
         <activity android:name=".SearchPageActivity"></activity>
         <activity android:name=".HelperBiosActivity" />
         <activity android:name=".HelperDetails" />
-        <activity android:name=".ChatDetails" />
+        <activity android:name=".OpenChatActivity" />
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".MainActivity"
