@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 import chatApp.ChatApp;
-import chatApp.MasterHandle;
+import chatApp.ConnectionHandle;
+import chatApp.CreateChatHandle;
+import chatApp.GetStringHandle;
 
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -112,61 +114,44 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*Dummy chat starts here*/
-        final ChatApp chatApp = new ChatApp();
-        chatApp.onCreate();
-        chatApp.startChatApp(chatApp.getApplicationContext());
-        ChatApp.connectToServer( "newUser2", new  MasterHandle(){
+        final ChatApp chatApp = ChatApp.getInstance();
+        chatApp.startChatApp(this);
+        chatApp.connectToServer( "newUser3", new  ConnectionHandle(){
+            @Override
             public void onSuccess(String TAG, User user){
                 Log.d(TAG, "Connection successful with user: " + user);
+                createChatAndFirstMessage(chatApp);
             }
+            @Override
             public void onFailure(String TAG, Exception e){
                 e.printStackTrace();
             }
-            public void onSuccess(String TAG){}
-            public void onSuccess(String TAG, GroupChannel groupChannel){}
-            public void onSuccess(String TAG, String channelUrl){}
-            public void onSuccess(String TAG, List<User> list){}
         });
-        final GroupChannel[] chat = new GroupChannel[1];// We need an space to store the chat. Async TODO explain this good.
-        ChatApp.createChat( "newUser2",  "newUser",false, new MasterHandle(){
-            public void onSuccess(String TAG, User user){ }
+        /*Dummy chat ends here*/
+
+    }
+
+    public void createChatAndFirstMessage(final ChatApp chatApp){
+        chatApp.createChat( "newUser3",  "newUser2",false, new CreateChatHandle(){
+            @Override
             public void onFailure(String TAG, Exception e){
                 e.printStackTrace();
             }
-            public void onSuccess(String TAG){}
+            @Override
             public void onSuccess(String TAG, GroupChannel groupChannel){
-                chat[0] = groupChannel;
                 Log.d(TAG, "New conversation : ");
+                message( chatApp, groupChannel);
                 //chatApp.sendMessageText( groupChannel,   "Hola", final MasterHandle handle);
             }
-            public void onSuccess(String TAG, String channelUrl){}
-            public void onSuccess(String TAG, List<User> list){}
         });
-        if(chat[0]!=null){
-            chatApp.sendMessageText(chat[0], "Hola", new MasterHandle() {
-                @Override
-                public void onSuccess(String TAG) {
 
-                }
-
-                @Override
-                public void onSuccess(String TAG, User user) {
-
-                }
-
-                @Override
-                public void onSuccess(String TAG, GroupChannel groupChannel) {
-
-                }
-
+    }
+    public void message(ChatApp chatApp, GroupChannel chat){
+        if(chat!=null){
+            chatApp.sendMessageText(chat, "Hola", new GetStringHandle() {
                 @Override
                 public void onSuccess(String TAG, String message) {
                     Log.d(TAG,"Message sent:"+ message);
-                }
-
-                @Override
-                public void onSuccess(String TAG, List<User> list) {
-
                 }
 
                 @Override
@@ -175,7 +160,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-        /*Dummy chat ends here*/
     }
 }

@@ -31,24 +31,32 @@ public class ChatApp extends Application {
      CONSIDERED IN PARSE SERVER QUERIES. NOT HERE.
      PARSE SERVER SHOULD RETRIEVE LIST OF ID USERS TO USE HERE.
 
+    **THIS IS A SINGLETON CLASS.
      */
 
     public static final String TAG = ChatApp.class.getSimpleName();
+    private static ChatApp single_instance = null;
 
     private String APP_ID;
-
+    private ChatApp(){}
     @Override
     public void onCreate() {
         super.onCreate();
     }
+    public static ChatApp getInstance(){
+        if(single_instance == null){
+            single_instance = new ChatApp();
+        }
+        return  single_instance;
+    }
 
-    public void startChatApp(Context context){
+    public  void startChatApp(Context context){
         APP_ID = context.getString(R.string.APP_ID);
         SendBird.init(APP_ID, context);
         //This api is called using only our secret App ID.
     }
 
-    public static void connectToServer(String userId, final MasterHandle handle){
+    public void connectToServer(String userId, final ConnectionHandle handle){
         SendBird.connect(userId, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {
@@ -56,12 +64,18 @@ public class ChatApp extends Application {
                     Log.e(TAG, "Could not connect to server");
                     e.printStackTrace();
                     //This callback handle is implemented when is called this method
-                    handle.onFailure(ChatAppTag.CONNECT_TO_SERVER.getTag(),e);
+                    if (handle != null) {
+                        handle.onFailure(ChatAppTag.CONNECT_TO_SERVER.getTag(),e);
+                    }
+
                     return;
                 }
                 //If everything goes well, this method is gonna be called as callback
                 //on the anonymous class inside the method when is executed.
-                handle.onSuccess(ChatAppTag.CONNECT_TO_SERVER.getTag(), user);
+                if (handle != null) {
+                    handle.onSuccess(ChatAppTag.CONNECT_TO_SERVER.getTag(), user);
+                }
+
 
             }
         });
@@ -69,7 +83,7 @@ public class ChatApp extends Application {
 
 
 
-    public static void createChat(String userCreator, String userHelper ,boolean isEmergency, final MasterHandle handle){
+    public void createChat(String userCreator, String userHelper ,boolean isEmergency, final CreateChatHandle handle){
         //Method called when want to create a new chat.
         List<String> userIds = new ArrayList<>();
         userIds.add(userCreator);
@@ -102,30 +116,22 @@ public class ChatApp extends Application {
         });
     }
 
-    public static void getChat(final String channelUrl, final MasterHandle handle){
+    public void getChat(final String channelUrl, final CreateChatHandle handle){
         //Method called when want to select an specific channel
-        OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
+        GroupChannel.getChannel(channelUrl, new GroupChannel.GroupChannelGetHandler() {
             @Override
-            public void onResult(OpenChannel openChannel, SendBirdException e) {
+            public void onResult(GroupChannel groupChannel, SendBirdException e) {
 
                 if (e != null) {    // Error.
                     handle.onFailure(ChatAppTag.GET_CHAT.getTag(), e);
                     return;
                 }
                 // inside of the chat . . .
-                openChannel.enter(new OpenChannel.OpenChannelEnterHandler() {
-                    @Override
-                    public void onResult(SendBirdException e) {
-                        if (e != null) {    // Error.
-                            handle.onSuccess(ChatAppTag.GET_CHAT.getTag(), channelUrl);
-                            return;
-                        }
-                    }
-                });
+                handle.onSuccess(ChatAppTag.GET_CHAT.getTag(), groupChannel);
             }
         });
     }
-    public void sendMessageText(GroupChannel groupChannel, final String message, final MasterHandle handle){
+    public void  sendMessageText(GroupChannel groupChannel, final String message, final GetStringHandle handle){
         groupChannel.sendUserMessage(message, new BaseChannel.SendUserMessageHandler() {
             @Override
             public void onSent(UserMessage userMessage, SendBirdException e) {
@@ -138,7 +144,7 @@ public class ChatApp extends Application {
         });
     }
 
-    public void disconnectFromServer(final MasterHandle handle){
+    public void disconnectFromServer(final GeneralHandle handle){
         SendBird.disconnect(new SendBird.DisconnectHandler() {
             @Override
             public void onDisconnected() {
@@ -147,7 +153,7 @@ public class ChatApp extends Application {
         });
     }
 
-    public static void changeProfileInformation(String nickname, String profileUrl, final MasterHandle handle){
+    public void changeProfileInformation(String nickname, String profileUrl, final GeneralHandle handle){
         SendBird.updateCurrentUserInfo(nickname, profileUrl, new SendBird.UserInfoUpdateHandler() {
             @Override
             public void onUpdated(SendBirdException e) {
@@ -160,7 +166,7 @@ public class ChatApp extends Application {
         });
     }
 
-    public static void changeProfileInformation(String nickname, File photoFile, final MasterHandle handle){
+    public void changeProfileInformation(String nickname, File photoFile, final GeneralHandle handle){
         SendBird.updateCurrentUserInfoWithProfileImage(nickname, photoFile, new SendBird.UserInfoUpdateHandler() {
             @Override
             public void onUpdated(SendBirdException e) {
@@ -174,7 +180,7 @@ public class ChatApp extends Application {
     }
 
 
-    public static void getListOfUsersById(List<String> userIds, final MasterHandle handle){
+    public void getListOfUsersById(List<String> userIds, final GetlListHandle handle){
         //Check notes on head of class.
 
         ApplicationUserListQuery applicationUserListQueryByIds = SendBird.createApplicationUserListQuery();
@@ -194,7 +200,7 @@ public class ChatApp extends Application {
 
 
 
-    public static void blockUser(User user, MasterHandle handle){
+    public void blockUser(User user, GeneralHandle handle){
         //TODO MAKE GETUSER, BLOCK AND UNBLOCK get by id (string)
         SendBird.blockUser(user, new SendBird.UserBlockHandler() {
             @Override
@@ -207,7 +213,7 @@ public class ChatApp extends Application {
 
 
     }
-    public static void unblockUser(User user, MasterHandle handle){
+    public void unblockUser(User user, GeneralHandle handle){
         // In case of unblocking a user
         //TODO MAKE GETUSER, BLOCK AND UNBLOCK
         SendBird.unblockUser(user, new SendBird.UserUnblockHandler() {
