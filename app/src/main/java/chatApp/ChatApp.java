@@ -40,7 +40,6 @@ public class ChatApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        startChatApp(getApplicationContext());
     }
 
     public void startChatApp(Context context){
@@ -77,12 +76,12 @@ public class ChatApp extends Application {
         userIds.add(userHelper);
 
         List<String> operatorIds = new ArrayList<>();
-        userIds.add(userHelper);
+        operatorIds.add(userHelper);
 
         GroupChannelParams params = new GroupChannelParams() // we create a new channel / chat with certain characteristics
                 .setPublic(false) // private conversation between helper and receiver.
-                .setEphemeral(false) // keeps messages on server
-                .setDistinct(!isEmergency) // unique channel between 2 users.
+                .setEphemeral(!isEmergency) // keeps messages on server
+                .setDistinct(true) // unique channel between 2 users. TODO
                                            // If is a emergency chat, we dont want keep
                                            // this conversation on the server. (For later)
                 .addUserIds(userIds)

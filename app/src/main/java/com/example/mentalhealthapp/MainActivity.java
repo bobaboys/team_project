@@ -113,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
         /*Dummy chat starts here*/
         final ChatApp chatApp = new ChatApp();
-        chatApp.startChatApp(this);
+        chatApp.onCreate();
+        chatApp.startChatApp(chatApp.getApplicationContext());
         ChatApp.connectToServer( "newUser2", new  MasterHandle(){
             public void onSuccess(String TAG, User user){
                 Log.d(TAG, "Connection successful with user: " + user);
