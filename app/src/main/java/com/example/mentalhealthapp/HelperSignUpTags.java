@@ -1,5 +1,6 @@
 package com.example.mentalhealthapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -50,14 +50,12 @@ public class HelperSignUpTags extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ParseUser user = ParseUser.getCurrentUser();
-                //ArrayList<String> checked = new ArrayList<String>();
                 for(int i = 0; i < checkboxes.size(); i++){
                     CheckBox box = checkboxes.get(i);
                     if(checkboxes.get(i).isChecked()){
                         CharSequence text = box.getText();
-                            ParseObject tags = ParseObject.create("HelperTags");
-                            tags.put("user", user);
-                            tags.put("Color", text);
+                        HelperTags tags = new HelperTags();
+                        tags.setHelperTags(user, text.toString());
                             tags.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
@@ -70,6 +68,9 @@ public class HelperSignUpTags extends AppCompatActivity {
                             }); //this saves it onto the server
                     }
                 }
+
+                Intent intent = new Intent(HelperSignUpTags.this, HelperDetails.class);
+                startActivity(intent);
             }
         });
 
