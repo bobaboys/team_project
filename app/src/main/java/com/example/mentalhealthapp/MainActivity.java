@@ -21,6 +21,8 @@ import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final String HELPER_FIELD = "helper";
+
     public BottomNavigationView bottomNavigationView;
     public TextView currPage;
 
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
-        final boolean helper = currentUser.getBoolean("helper");
+        final boolean helper = currentUser.getBoolean(HELPER_FIELD);
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.nav_view);
