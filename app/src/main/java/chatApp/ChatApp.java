@@ -8,6 +8,7 @@ import com.example.mentalhealthapp.R;
 import com.sendbird.android.ApplicationUserListQuery;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.GroupChannelParams;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
@@ -81,56 +82,6 @@ public class ChatApp extends Application {
         });
     }
 
-
-
-    public void createChat(String userCreator, String userHelper ,boolean isEmergency, final CreateChatHandle handle){
-        //Method called when want to create a new chat.
-        List<String> userIds = new ArrayList<>();
-        userIds.add(userCreator);
-        userIds.add(userHelper);
-
-        List<String> operatorIds = new ArrayList<>();
-        operatorIds.add(userHelper);
-
-        GroupChannelParams params = new GroupChannelParams() // we create a new channel / chat with certain characteristics
-                .setPublic(false) // private conversation between helper and receiver.
-                .setEphemeral(!isEmergency) // keeps messages on server
-                .setDistinct(true) // unique channel between 2 users. TODO
-                                           // If is a emergency chat, we dont want keep
-                                           // this conversation on the server. (For later)
-                .addUserIds(userIds)
-                .setOperatorUserIds(operatorIds);    // or .setOperators(List<User> operators)
-
-        GroupChannel.createChannel(params, new GroupChannel.GroupChannelCreateHandler() {
-            @Override
-            public void onResult(GroupChannel groupChannel, SendBirdException e) {
-                if (e != null) {
-                    Log.e(TAG, "Could not create the new chat");
-                    e.printStackTrace();
-                    handle.onFailure(ChatAppTag.CREATE_CHAT.getTag(), e);
-                    return;
-                }
-                //once the chat was created, it can be handled as a response on the activity/fragment.
-                handle.onSuccess(ChatAppTag.CREATE_CHAT.getTag(), groupChannel);
-            }
-        });
-    }
-
-    public void getChat(final String channelUrl, final CreateChatHandle handle){
-        //Method called when want to select an specific channel
-        GroupChannel.getChannel(channelUrl, new GroupChannel.GroupChannelGetHandler() {
-            @Override
-            public void onResult(GroupChannel groupChannel, SendBirdException e) {
-
-                if (e != null) {    // Error.
-                    handle.onFailure(ChatAppTag.GET_CHAT.getTag(), e);
-                    return;
-                }
-                // inside of the chat . . .
-                handle.onSuccess(ChatAppTag.GET_CHAT.getTag(), groupChannel);
-            }
-        });
-    }
     public void  sendMessageText(GroupChannel groupChannel, final String message, final GetStringHandle handle){
         groupChannel.sendUserMessage(message, new BaseChannel.SendUserMessageHandler() {
             @Override
@@ -199,7 +150,87 @@ public class ChatApp extends Application {
 
 
 
+    //Chats
+    public void createChat(String userCreator, String userHelper ,boolean isEmergency, final CreateChatHandle handle){
+        //Method called when want to create a new chat.
+        List<String> userIds = new ArrayList<>();
+        userIds.add(userCreator);
+        userIds.add(userHelper);
 
+        List<String> operatorIds = new ArrayList<>();
+        operatorIds.add(userHelper);
+
+        GroupChannelParams params = new GroupChannelParams() // we create a new channel / chat with certain characteristics
+                .setPublic(false) // private conversation between helper and receiver.
+                .setEphemeral(isEmergency) // If ephimeral NO keeps messages on server
+                .setDistinct(true) // unique channel between 2 users. TODO
+                // If is a emergency chat, we dont want keep
+                // this conversation on the server. (For later)
+                .addUserIds(userIds)
+                .setOperatorUserIds(operatorIds);    // or .setOperators(List<User> operators)
+
+        GroupChannel.createChannel(params, new GroupChannel.GroupChannelCreateHandler() {
+            @Override
+            public void onResult(GroupChannel groupChannel, SendBirdException e) {
+                if (e != null) {
+                    Log.e(TAG, "Could not create the new chat");
+                    e.printStackTrace();
+                    handle.onFailure(ChatAppTag.CREATE_CHAT.getTag(), e);
+                    return;
+                }
+                //once the chat was created, it can be handled as a response on the activity/fragment.
+                handle.onSuccess(ChatAppTag.CREATE_CHAT.getTag(), groupChannel);
+            }
+        });
+    }
+
+    public void getChat(final String channelUrl, final CreateChatHandle handle){
+        //Method called when want to select an specific channel
+        GroupChannel.getChannel(channelUrl, new GroupChannel.GroupChannelGetHandler() {
+            @Override
+            public void onResult(GroupChannel groupChannel, SendBirdException e) {
+
+                if (e != null) {    // Error.
+                    handle.onFailure(ChatAppTag.GET_CHAT.getTag(), e);
+                    return;
+                }
+                // inside of the chat . . .
+                handle.onSuccess(ChatAppTag.GET_CHAT.getTag(), groupChannel);
+            }
+        });
+    }
+
+
+    public void getListOfChats(final GetlListHandle handle){
+        GroupChannelListQuery channelListQuery = GroupChannel.createMyGroupChannelListQuery();
+        channelListQuery.setIncludeEmpty(true);
+        channelListQuery.next(new GroupChannelListQuery.GroupChannelListQueryResultHandler() {
+            @Override
+            public void onResult(List<GroupChannel> list, SendBirdException e) {
+                if (e != null) {    // Error.
+                    handle.onFailure(ChatAppTag.GET_LIST_CHATS.getTag(),e);
+                    return;
+                }
+                handle.onSuccess(ChatAppTag.GET_LIST_CHATS.getTag(),list);
+            }
+        });
+    }
+
+    public void leaveChat(GroupChannel chat, final GeneralHandle handle){
+        chat.leave(new GroupChannel.GroupChannelLeaveHandler() {
+            @Override
+            public void onResult(SendBirdException e) {
+                if (e != null) {    // Error.
+                    handle.onFailure(ChatAppTag.LEAVE_CHAT.getTag(), e);
+                    return;
+                }
+                handle.onSuccess(ChatAppTag.LEAVE_CHAT.getTag());
+            }
+        });
+    }
+
+
+    // block and unblock users
     public void blockUser(User user, GeneralHandle handle){
         //TODO MAKE GETUSER, BLOCK AND UNBLOCK get by id (string)
         SendBird.blockUser(user, new SendBird.UserBlockHandler() {

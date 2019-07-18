@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
+import com.sendbird.android.BaseChannel;
+import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
@@ -146,12 +148,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    public void message(ChatApp chatApp, GroupChannel chat){
+    public void message(ChatApp chatApp,final GroupChannel chat){
         if(chat!=null){
-            chatApp.sendMessageText(chat, "Hola", new GetStringHandle() {
+            chatApp.sendMessageText(chat, "Hola amigos mios", new GetStringHandle() {
                 @Override
                 public void onSuccess(String TAG, String message) {
                     Log.d(TAG,"Message sent:"+ message);
+                    SendBird.addChannelHandler(chat.getUrl(), new SendBird.ChannelHandler(){
+                        @Override
+                        public void onMessageReceived(BaseChannel var1, BaseMessage var2){
+                            
+                        }
+                    });
                 }
 
                 @Override
