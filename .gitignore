@@ -3,7 +3,8 @@
 *.ap_
 *.aab
 
-#secrets
+
+#Secrets File
 secrets.xml
 
 # Files for the ART/Dalvik VM
