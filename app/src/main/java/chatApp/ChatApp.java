@@ -70,7 +70,7 @@ public class ChatApp extends Application {
 
 
 
-    public static void createChat(String userCreator, String userHelper, String name ,boolean isEmergency, final MasterHandle handle){
+    public static void createChat(String userCreator, String userHelper ,boolean isEmergency, final MasterHandle handle){
         //Method called when want to create a new chat.
         List<String> userIds = new ArrayList<>();
         userIds.add(userCreator);
@@ -126,7 +126,7 @@ public class ChatApp extends Application {
             }
         });
     }
-    public static void sendMessageText(GroupChannel groupChannel, final String message, final MasterHandle handle){
+    public void sendMessageText(GroupChannel groupChannel, final String message, final MasterHandle handle){
         groupChannel.sendUserMessage(message, new BaseChannel.SendUserMessageHandler() {
             @Override
             public void onSent(UserMessage userMessage, SendBirdException e) {
@@ -139,7 +139,7 @@ public class ChatApp extends Application {
         });
     }
 
-    public static void disconnectFromServer(final MasterHandle handle){
+    public void disconnectFromServer(final MasterHandle handle){
         SendBird.disconnect(new SendBird.DisconnectHandler() {
             @Override
             public void onDisconnected() {
@@ -173,10 +173,7 @@ public class ChatApp extends Application {
             }
         });
     }
-    //getters and setters
-    public String getAPP_ID() {
-        return APP_ID;
-    }
+
 
     public static void getListOfUsersById(List<String> userIds, final MasterHandle handle){
         //Check notes on head of class.
@@ -222,5 +219,10 @@ public class ChatApp extends Application {
                 }
             }
         });
+    }
+
+    //getters and setters
+    public String getAPP_ID() {
+        return APP_ID;
     }
 }
