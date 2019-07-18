@@ -1,6 +1,5 @@
 package com.example.mentalhealthapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,23 +7,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.Fragments.HelperChatsFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
+import com.example.mentalhealthapp.Fragments.HelperSearchPageFragment;
 import com.example.mentalhealthapp.Fragments.RecieverChatsFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
-
-
+import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
 import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     public BottomNavigationView bottomNavigationView;
-    public boolean helper;
     public TextView currPage;
 
     @Override
@@ -32,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final ParseUser currentUser = ParseUser.getCurrentUser();
+        final boolean helper = currentUser.getBoolean("helper");
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.nav_view);
@@ -43,41 +42,49 @@ public class MainActivity extends AppCompatActivity {
 
                 if(helper){
                     switch (item.getItemId()) {
+                        case R.id.navigation_home:
+                            fragment = new HelperSearchPageFragment();
+                            currPage.setText(R.string.home);
+                            break;
                         case R.id.navigation_reflect:
                             fragment = new HelperReflectFragment();
-                            currPage.setText("Reflect");
+                            currPage.setText(R.string.reflect);
                             break;
                         case R.id.navigation_chat:
                             fragment = new HelperChatsFragment();
-                            currPage.setText("Chat");
+                            currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_profile:
                             fragment = new HelperProfileFragment();
-                            currPage.setText("Profile");
+                            currPage.setText(R.string.profile);
                             break;
                         default:
                             fragment = new HelperChatsFragment();
-                            currPage.setText("Chat");
+                            currPage.setText(R.string.home);
                             break;
                     }
                 }
                 else{
                     switch (item.getItemId()) {
+                        case R.id.navigation_home:
+                            fragment = new RecieverSearchPageFragment();
+                            currPage.setText(R.string.home);
+                            break;
                         case R.id.navigation_reflect:
                             fragment = new RecieverReflectFragment();
-                            currPage.setText("Reflect");
+                            currPage.setText(R.string.reflect);
                             break;
                         case R.id.navigation_chat:
                             fragment = new RecieverChatsFragment();
-                            currPage.setText("Chat");
+                            currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_profile:
                             fragment = new RecieverProfileFragment();
-                            currPage.setText("Profile");
+                            currPage.setText(R.string.profile);
                             break;
                         default:
-                            fragment = new RecieverChatsFragment();
-                            currPage.setText("Chat");
+                            fragment = new RecieverSearchPageFragment();
+                            currPage.setText(R.string.home);
                             break;
                     }
                 }
@@ -89,9 +96,4 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.navigation_chat);
     }
 
-    public void Logout(View view){
-        ParseUser.logOut();
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(intent);
-    }
 }

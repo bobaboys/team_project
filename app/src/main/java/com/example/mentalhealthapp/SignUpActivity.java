@@ -20,58 +20,41 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText emailInput;
     private RadioGroup radioGroup;
     private Button signup;
+    private final String HELPER_FIELD = "helper";
+
+    private final View.OnClickListener signUpBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            String username = usernameInput.getText().toString();
+            String password = passwordInput.getText().toString();
+            String email = emailInput.getText().toString();
+            Boolean helper = radioGroup.getCheckedRadioButtonId() == R.id.radioBtnHelper_signup;
+            signUp(username, password, email, helper);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
-        usernameInput = findViewById(R.id.etUsername_signup);
-        passwordInput = findViewById(R.id.etPassword_signup);
-        emailInput = findViewById(R.id.etEmail_signup);
-        radioGroup = findViewById(R.id.radioGroup);
-        signup = findViewById(R.id.btnSignup_signup);
-
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String username = usernameInput.getText().toString();
-                final String password = passwordInput.getText().toString();
-                final String email = emailInput.getText().toString();
-                final Boolean helper;
-
-                if (radioGroup.getCheckedRadioButtonId() == R.id.radioBtnHelper_signup){
-                    helper = true;
-                }else{
-                    helper = false;
-                }
-
-                signUp(username, password, email, helper);
-            }
-        });
+        AssignViewsAndListeners();
     }
 
-    private void signUp(String username, String password, String email, final Boolean helper){
+    public void signUp(String username, String password, String email, final Boolean helper){
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
-        user.put("helper", helper);
+        user.put(HELPER_FIELD, helper);
 
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
                 if(e == null){
                     Log.d("SignUpActivity", "Sign up successful");
-                    if(helper){
-                        final Intent intent = new Intent(SignUpActivity.this, HelperSignUpTags.class);
-                        startActivity(intent);
-                        finish();
-                    }else{
-                        final Intent intent = new Intent (SignUpActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                    Intent intent = new Intent(SignUpActivity.this, helper? HelperSignUpTags.class : MainActivity.class);
+                    startActivity(intent);
+                    finish();
 
                 }else{
                     Log.e("SignUpActivity", "Sign up failure", e);
@@ -79,5 +62,14 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void AssignViewsAndListeners() {
+        usernameInput = findViewById(R.id.etUsername_signup);
+        passwordInput = findViewById(R.id.etPassword_signup);
+        emailInput = findViewById(R.id.etEmail_signup);
+        radioGroup = findViewById(R.id.radioGroup);
+        signup = findViewById(R.id.btnSignup_signup);
+        signup.setOnClickListener(signUpBtnListener);
     }
 }

@@ -23,7 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchPageActivity" />
         <activity android:name=".HelperBiosActivity" />
         <activity android:name=".HelperDetails" />
         <activity android:name=".OpenChatActivity" />

@@ -3,4 +3,41 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string
+        name="new_user"
+        >New User?</string>
+    <string
+        name="reflect"
+        >Reflect</string>
+    <string
+        name="home"
+        >Home</string>
+    <string
+        name="chats"
+        >Chats</string>
+    <string
+        name="profile"
+        >Profile</string>
+    <string
+        name="login"
+        >Log in</string>
+    <string
+        name="logout"
+        >Log out</string>
+    <string
+        name="sign_up"
+        >Sign Up</string>
+    <string
+        name="username"
+        >Username</string>
+    <string
+        name="password"
+        >Password</string>
+    <string
+        name="email"
+        >Email</string>
+    <string name="i_want_to_get_help">I want to GET help</string>
+    <string name="i_want_to_give_help">I want to GIVE help</string>
+
+
 </resources>
