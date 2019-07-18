@@ -24,6 +24,16 @@ public class HelperProfileFragment extends Fragment {
     protected ImageView helperProfileAvatar;
     protected TextView helperProfileTags;
     protected TextView helperProfileChats;
+    ParseUser currentUser;
+
+    protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ParseUser.logOut();
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+        }
+    };
 
     @Nullable
     @Override
@@ -41,20 +51,9 @@ public class HelperProfileFragment extends Fragment {
         helperProfileChats = view.findViewById(R.id.tvMyChats_helper_profile);
 
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
-        logOutbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                ParseUser currentUser = ParseUser.getCurrentUser();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+        currentUser = ParseUser.getCurrentUser();
+
+        logOutbtn.setOnClickListener(logoutBtnListener);
     }
 
-    public void Logout(View view){
-        ParseUser.logOut();
-        Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivity(intent);
-    }
 }

@@ -16,6 +16,11 @@ import java.util.ArrayList;
 
 public class HelperSignUpTags extends AppCompatActivity {
 
+    protected static final String HELPER_TAGS_PARSE_OBJECT = "HelperTags";
+    protected static final String USER_PARSE_CLASS = "user";
+    protected static final String COLOR_PARSE_ATTRIBUTE = "Color";
+    protected static final String TAG = "tag";
+
     CheckBox red;
     CheckBox orange;
     CheckBox yellow;
@@ -55,14 +60,14 @@ public class HelperSignUpTags extends AppCompatActivity {
                     CheckBox box = checkboxes.get(i);
                     if(checkboxes.get(i).isChecked()){
                         CharSequence text = box.getText();
-                            ParseObject tags = ParseObject.create("HelperTags");
-                            tags.put("user", user);
-                            tags.put("Color", text);
+                            ParseObject tags = ParseObject.create(HELPER_TAGS_PARSE_OBJECT);
+                            tags.put(USER_PARSE_CLASS, user);
+                            tags.put(COLOR_PARSE_ATTRIBUTE, text);
                             tags.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
                                     if(e!=null){
-                                        Log.d("tag", "Error while saving");
+                                        Log.d(TAG, "Error while saving");
                                         e.printStackTrace();
                                         return;
                                     }
@@ -72,7 +77,7 @@ public class HelperSignUpTags extends AppCompatActivity {
                 }
             }
         });
-
-        
     }
+
+
 }

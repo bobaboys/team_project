@@ -9,6 +9,13 @@ import android.widget.Button;
 public class HelperDetails extends AppCompatActivity {
 
     public Button openChat;
+    public View.OnClickListener openChatbtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(HelperDetails.this,OpenChatActivity.class);
+            startActivity(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,13 +23,7 @@ public class HelperDetails extends AppCompatActivity {
         setContentView(R.layout.activity_helper_details);
 
         openChat = findViewById(R.id.btnChat_helperdetails);
-        openChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HelperDetails.this,OpenChatActivity.class);
-                startActivity(intent);
-            }
-        });
+        openChat.setOnClickListener(openChatbtnListener);
 
     }
 }

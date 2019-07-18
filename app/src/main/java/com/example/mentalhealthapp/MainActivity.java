@@ -44,23 +44,23 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
                             fragment = new HelperSearchPageFragment();
-                            currPage.setText("Home");
+                            currPage.setText(R.string.home);
                             break;
                         case R.id.navigation_reflect:
                             fragment = new HelperReflectFragment();
-                            currPage.setText("Reflect");
+                            currPage.setText(R.string.reflect);
                             break;
                         case R.id.navigation_chat:
                             fragment = new HelperChatsFragment();
-                            currPage.setText("Chats");
+                            currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_profile:
                             fragment = new HelperProfileFragment();
-                            currPage.setText("Profile");
+                            currPage.setText(R.string.profile);
                             break;
                         default:
                             fragment = new HelperChatsFragment();
-                            currPage.setText("Home");
+                            currPage.setText(R.string.home);
                             break;
                     }
                 }
@@ -68,23 +68,23 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
                             fragment = new RecieverSearchPageFragment();
-                            currPage.setText("Home");
+                            currPage.setText(R.string.home);
                             break;
                         case R.id.navigation_reflect:
                             fragment = new RecieverReflectFragment();
-                            currPage.setText("Reflect");
+                            currPage.setText(R.string.reflect);
                             break;
                         case R.id.navigation_chat:
                             fragment = new RecieverChatsFragment();
-                            currPage.setText("Chat");
+                            currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_profile:
                             fragment = new RecieverProfileFragment();
-                            currPage.setText("Profile");
+                            currPage.setText(R.string.profile);
                             break;
                         default:
                             fragment = new RecieverSearchPageFragment();
-                            currPage.setText("Home");
+                            currPage.setText(R.string.home);
                             break;
                     }
                 }

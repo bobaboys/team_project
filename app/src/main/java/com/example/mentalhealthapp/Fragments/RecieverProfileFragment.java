@@ -23,6 +23,15 @@ public class RecieverProfileFragment extends Fragment {
     protected ImageView recProfileAvatar;
     protected TextView recProfileTags;
     protected TextView recProfileChats;
+    protected ParseUser currentUser;
+    protected View.OnClickListener logOutBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ParseUser.logOut();
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+        }
+    };
 
     @Nullable
     @Override
@@ -37,16 +46,8 @@ public class RecieverProfileFragment extends Fragment {
         recProfileAvatar = view.findViewById(R.id.ivAvatar_reciever_profile);
         recProfileTags = view.findViewById(R.id.tvMyTags_reciever_profile);
         recProfileChats = view.findViewById(R.id.tvMyChats_reciever_profile);
-
+        currentUser = ParseUser.getCurrentUser();
         btnLogOut = view.findViewById(R.id.btnLogout_ProfileRec);
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                ParseUser currentUser = ParseUser.getCurrentUser();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+        btnLogOut.setOnClickListener(logOutBtnListener);
     }
 }
