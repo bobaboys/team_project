@@ -63,10 +63,23 @@ public class SignUpActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 if(e == null){
                     Log.d("SignUpActivity", "Sign up successful");
+<<<<<<< HEAD
                     final Intent intent = new Intent (SignUpActivity.this, MainActivity.class);
                     intent.putExtra("HELPER",helper);
                     startActivity(intent);
                     finish();
+=======
+                    if(helper){
+                        final Intent intent = new Intent(SignUpActivity.this, HelperSignUpTags.class);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        final Intent intent = new Intent (SignUpActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+>>>>>>> 11aed4801aeac5d081db99b0cc1ac535cc8ffa11
                 }else{
                     Log.e("SignUpActivity", "Sign up failure", e);
                     e.printStackTrace();
