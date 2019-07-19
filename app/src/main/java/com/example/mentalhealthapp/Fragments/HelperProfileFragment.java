@@ -110,7 +110,7 @@ public class HelperProfileFragment extends Fragment {
                 String colors = "";
                 if(e==null){
                     for(HelperTags tag : objects){
-                        colors = colors + tag.getColor() + " ";
+                        colors = colors + tag.getTag() + " ";
                     }
                     helperProfileTags.setText(colors);
 

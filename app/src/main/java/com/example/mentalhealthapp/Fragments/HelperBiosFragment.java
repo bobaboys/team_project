@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mentalhealthapp.HelperBiosAdapter;
+import com.example.mentalhealthapp.HelperTags;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.model.TagsParcel;
+import com.example.mentalhealthapp.model.UserWithTags;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -30,7 +32,7 @@ public class HelperBiosFragment extends Fragment {
 
     protected HelperBiosAdapter biosAdapter;
     protected RecyclerView rvBios;
-    protected List<ParseUser> mBios;
+    protected List<UserWithTags> mBios;
     protected TagsParcel tags;
 
     @Nullable
@@ -61,26 +63,52 @@ public class HelperBiosFragment extends Fragment {
     }
 
     private void loadBios() {
-        ParseQuery<ParseUser> postsQuery = new ParseQuery<ParseUser>(ParseUser.class);
-        postsQuery.setLimit(20); //TODO: change 20
-        //TODO QUERY WITH TAGS
-        postsQuery.findInBackground(new FindCallback<ParseUser>() {
+        final ParseQuery<HelperTags> helpersTagsQ = new ParseQuery<>(HelperTags.class);
+        helpersTagsQ.setLimit(20); //TODO: change 20
+        helpersTagsQ.include("user");//TODO PROBLEMS WITH QUERIES
+        //helpersTagsQ.whereContainedIn("Tag", tags.selectedTags); // looks for helpers with these tags.
+        helpersTagsQ.findInBackground(new FindCallback<HelperTags>() {
             @Override
-            public void done(List<ParseUser> objects, ParseException e) {
+            public void done(List<HelperTags> objects, ParseException e) {
                 if(e!=null){
                     Log.e("Helper Bio Activity", "error with bio");
                     e.printStackTrace();
                     return;
                 }
-                else{
-                    mBios.addAll(objects);
-                    biosAdapter.notifyDataSetChanged();
-                    for(int i = 0; i < objects.size(); i++){
-                        ParseUser user = objects.get(i);
-                        Log.d("HelperBios Activity", "BIO =" + objects.get(i).getBoolean("helper"));
+                ArrayList<UserWithTags> helpersWithAllTags= new ArrayList<>();
+                for(int i = 0; i < objects.size(); i++){
+                    HelperTags helper = objects.get(i);
+                    //TODO para cada usuario con tag, hacer un nuevo a un userWith tags o en su defecto a;adir solo tag a UWT existente
+                    int j=searchUser(helpersWithAllTags,helper.getUser());
+                    if(j==-1){//User not found on list.
+                        // Make new UserWT and add first tag
+                        UserWithTags uwt = new UserWithTags();
+                        uwt.user = helper.getUser();
+                        uwt.tags.add(helper.getTag());
+                        //Add new user with tags to arraylist
+                        helpersWithAllTags.add(uwt);
+
+                    }else{
+                        // user was found, add tag to it.
+                        helpersWithAllTags.get(j).tags.add(helper.getTag());
                     }
                 }
+                biosAdapter.addAll(helpersWithAllTags);
+                biosAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    public int searchUser(ArrayList<UserWithTags> helpersWithAllTags, ParseUser user){
+        if (user.getObjectId() == null) {
+            for (int i = 0; i < helpersWithAllTags.size(); i++)
+                if (helpersWithAllTags.get(i).user.getObjectId()==null)
+                    return i;
+        } else {
+            for (int i = 0; i < helpersWithAllTags.size(); i++)
+                if (user.getObjectId().equals(helpersWithAllTags.get(i).user.getObjectId()))
+                    return i;
+        }
+        return -1;
     }
 }

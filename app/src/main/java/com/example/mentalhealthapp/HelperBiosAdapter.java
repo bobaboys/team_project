@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mentalhealthapp.model.UserWithTags;
 import com.parse.ParseUser;
 
 import org.parceler.Parcels;
@@ -20,11 +21,12 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
 
     public final String HELPER_BIO_FIELD = "helperBio";
     private Context context;
-    private List<ParseUser> bios;
+    private List<UserWithTags> bios;
     RecyclerView rvPosts;
 
-    public HelperBiosAdapter(Context context, List<ParseUser> bios) {
+    public HelperBiosAdapter(Context context, List<UserWithTags> bios) {
         this.context = context;
+        //TODO FEED WITH TAGS.
         this.bios = bios;
     }
 
@@ -34,7 +36,7 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
     }
 
     // Add a list of items -- change to type used
-    public void addAll(List<ParseUser> list) {
+    public void addAll(List<UserWithTags> list) {
         bios.addAll(list);
         notifyDataSetChanged();
     }
@@ -48,7 +50,7 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        ParseUser bio = bios.get(i);
+        UserWithTags bio = bios.get(i);
         viewHolder.bind(bio);
     }
 
@@ -74,16 +76,16 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         public void onClick(View v) {
             int position = getAdapterPosition();
             if(position!=RecyclerView.NO_POSITION){
-                ParseUser bio = bios.get(position);
+                ParseUser bio = bios.get(position).user;
                 Intent intent = new Intent(context, HelperDetails.class);
                 intent.putExtra("clicked_bio", Parcels.wrap(bio));
                 context.startActivity(intent);
             }
         }
 
-        public void bind(final ParseUser bio){
-            if(bio.getString(HELPER_BIO_FIELD)!=null&&bio.getBoolean("helper")){
-                tvBio.setText(bio.getString(HELPER_BIO_FIELD));
+        public void bind(final UserWithTags bio){
+            if(bio.user.getString(HELPER_BIO_FIELD)!=null&&bio.user.getBoolean("helper")){
+                tvBio.setText(bio.user.getString(HELPER_BIO_FIELD));
             }
 
 // USE FOR IMAGE LATER

@@ -66,7 +66,7 @@ public class HelperDetails extends AppCompatActivity {
                 String colors = "";
                 if(e==null){
                     for(HelperTags tag : objects){
-                        colors = colors + tag.getColor() + " ";
+                        colors = colors + tag.getTag() + " ";
                     }
                     helperTags.setText(colors);
                     helperBio.setText(clickedHelper.getString(HELPER_BIO_FIELD));

@@ -7,18 +7,18 @@ import com.parse.ParseUser;
 @ParseClassName("HelperTags")
 public class HelperTags extends ParseObject {
     public final String USER_KEY = "user";
-    public final String COLOR_KEY = "Color";
+    public final String TAG_KEY = "Tag";
 
     public ParseUser getUser(){
         return getParseUser(USER_KEY);
     }
 
-    public String getColor(){
-        return getString(COLOR_KEY);
+    public String getTag(){
+        return getString(TAG_KEY);
     }
 
     public void setHelperTags(ParseUser user, String color){
         put(USER_KEY, user);
-        put(COLOR_KEY, color);
+        put(TAG_KEY, color);
     }
 }

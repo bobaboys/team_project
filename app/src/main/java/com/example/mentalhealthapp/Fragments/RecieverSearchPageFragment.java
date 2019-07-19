@@ -53,7 +53,6 @@ public class RecieverSearchPageFragment extends Fragment {
         searchForHelpers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Click of Floating Action Button. search for helpers and show list of helpers fragment/activity
                 TagsParcel selectedTagsParcel= new TagsParcel();
                 selectedTagsParcel.selectedTags =tagsAdapter.selectedTags;
 
