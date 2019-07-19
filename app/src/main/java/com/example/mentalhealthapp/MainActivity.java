@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
     private TextView mTextMessage;
 
+    public final String HELPER_FIELD = "helper";
     public BottomNavigationView bottomNavigationView;
     public TextView currPage;
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage = findViewById(R.id.message);
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
-        final boolean helper = currentUser.getBoolean("helper");
+        final boolean helper = currentUser.getBoolean(HELPER_FIELD);
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.nav_view);
