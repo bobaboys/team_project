@@ -7,10 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mentalhealthapp.Fragments.HelperChatsFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
@@ -21,16 +19,6 @@ import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
 import com.parse.ParseUser;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
-
-import chatApp.ChatApp;
-import chatApp.ConnectionHandle;
-import chatApp.CreateChatHandle;
-import chatApp.GetStringHandle;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -112,68 +100,8 @@ public class MainActivity extends AppCompatActivity {
         });
         //set default
         bottomNavigationView.setSelectedItemId(R.id.navigation_chat);
-
-        connectUserToChat();
     }
 
-    private void connectUserToChat() {
-        //connects logged in or new user to chat server
-        String currUserObjID = currentUser.getObjectId();
-        final ChatApp chatApp = ChatApp.getInstance();
-        chatApp.startChatApp(this);
-        chatApp.connectToServer(currUserObjID, new  ConnectionHandle(){
-            @Override
-            public void onSuccess(String TAG, User user){
-                //call new intent to start chat
-                Log.d(TAG, "Connection successful with user: " + user);
-                Toast.makeText(MainActivity.this, "Chat connection successful!", Toast.LENGTH_LONG).show();
-                createChatAndFirstMessage(chatApp);
-            }
-            @Override
-            public void onFailure(String TAG, Exception e){
-                Log.e(TAG,"Chat connection failed");
-                e.printStackTrace();
-                Toast.makeText(MainActivity.this, "Chat failed!", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    public void createChatAndFirstMessage(final ChatApp chatApp){
-        chatApp.createChat( "newUser3",  "newUser2",false, new CreateChatHandle(){
-            @Override
-            public void onFailure(String TAG, Exception e){
-                e.printStackTrace();
-            }
-            @Override
-            public void onSuccess(String TAG, GroupChannel groupChannel){
-                Log.d(TAG, "New conversation : ");
-                message(chatApp, groupChannel);
-                //chatApp.sendMessageText( groupChannel,   "Hola", final MasterHandle handle);
-            }
-        });
-
-    }
-    public void message(ChatApp chatApp,final GroupChannel chat){
-        if(chat!=null){
-            chatApp.sendMessageText(chat, "Hola amigos mios", new GetStringHandle() {
-                @Override
-                public void onSuccess(String TAG, String message) {
-                    Log.d(TAG,"Message sent:"+ message);
-                    SendBird.addChannelHandler(chat.getUrl(), new SendBird.ChannelHandler(){
-                        @Override
-                        public void onMessageReceived(BaseChannel var1, BaseMessage var2){
-                            
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(String TAG, Exception e) {
-                    Log.e(TAG,"Message sent failure:");
-                }
-            });
-        }
-    }
     public void replaceFragment(Fragment f){
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

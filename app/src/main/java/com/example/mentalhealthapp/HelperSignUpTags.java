@@ -74,7 +74,7 @@ public class HelperSignUpTags extends AppCompatActivity {
                     }
                 }
 
-                Intent intent = new Intent(HelperSignUpTags.this, HelperDetails.class);
+                Intent intent = new Intent(HelperSignUpTags.this, MainActivity.class);
                 startActivity(intent);
             }
         });
