@@ -16,7 +16,7 @@ import com.sendbird.android.SendBird;
 public class RecieverChatsFragment extends Fragment {
 
     protected TextView testChat;
-    private String APP_ID;
+    private String APP_CHAT_ID;
 
 
     @Nullable
@@ -33,8 +33,8 @@ public class RecieverChatsFragment extends Fragment {
     }
 
     public  void startChatApp(Context context){
-        APP_ID = context.getString(R.string.APP_ID);
-        SendBird.init(APP_ID, context);
+        APP_CHAT_ID = context.getString(R.string.APP_CHAT_ID);
+        SendBird.init(APP_CHAT_ID, context);
         //This api is called using only our secret App ID.
     }
 }
