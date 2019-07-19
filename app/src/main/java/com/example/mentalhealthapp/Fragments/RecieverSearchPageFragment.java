@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.Fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,12 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.mentalhealthapp.MainActivity;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.TagsAdapter;
 import com.example.mentalhealthapp.model.Tag;
+import com.example.mentalhealthapp.model.TagsParcel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,16 +50,32 @@ public class RecieverSearchPageFragment extends Fragment {
         rvTags = view.findViewById(R.id.rvTagsSearch);
         searchForHelpers = view.findViewById(R.id.fb_search_for_helpers);
         tags = new ArrayList<>();
+        searchForHelpers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO Click of Floating Action Button. search for helpers and show list of helpers fragment/activity
+                TagsParcel selectedTagsParcel= new TagsParcel();
+                selectedTagsParcel.selectedTags =tagsAdapter.selectedTags;
 
+                Fragment resultFragment = new HelperBiosFragment();
+                ((MainActivity)getActivity()).replaceFragment(resultFragment);
+
+                //passing to result of list of helpers
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("selectedTags", Parcels.wrap(selectedTagsParcel));
+                resultFragment.setArguments(bundle);
+
+                //for(Tag t : selectedTags){
+                //    Log.d(TAG, t.getString("Tag"));
+                //}
+            }
+        });
         setRecyclerView();
         getAllTags();
 
 
     }
 
-    public void onClick(){
-        //TODO Click of Floating Action Button. search for helpers and show list of helpers fragment/activity
-    }
     private void setRecyclerView() {
         tagsAdapter = new TagsAdapter(this.getContext(), tags);
         rvTags.setAdapter(tagsAdapter);

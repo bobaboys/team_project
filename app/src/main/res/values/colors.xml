@@ -3,4 +3,30 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="pastel_001">#FF4848</color>
+    <color name="pastel_002">#800080</color>
+    <color name="pastel_003">#2966B8</color>
+    <color name="pastel_004">#3923D6</color>
+    <color name="pastel_005">#E1CAF9</color>
+    <color name="pastel_006">#F0C4F0</color>
+    <color name="pastel_007">#9B4EE9</color>
+    <color name="pastel_008">#A095EE</color>
+    <color name="pastel_009">#57BCD9</color>
+    <color name="pastel_010">#7BA7E1</color>
+    <color name="pastel_011">#A5FEFA</color>
+    <color name="pastel_012">#D7D1F8</color>
+    <color name="pastel_013">#A8CFFF</color>
+    <color name="pastel_014">#AAAAFF</color>
+    <color name="pastel_015">#8CEFFD</color>
+    <color name="pastel_016">#B8E2EF</color>
+
+    <color name="pastel_017">#A4F0B7</color>
+    <color name="pastel_018">#B4D1B6</color>
+    <color name="pastel_019">#8FFF6F</color>
+    <color name="pastel_020">#C0FF97</color>
+    <color name="pastel_021">#BAFEA3</color>
+    <color name="pastel_022">#FFFF99</color>
+    <color name="pastel_023">#F2F4B3</color>
+
 </resources>
