@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
 
     public final String HELPER_FIELD = "helper";
-
     public BottomNavigationView bottomNavigationView;
     public TextView currPage;
 
