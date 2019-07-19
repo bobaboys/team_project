@@ -6,33 +6,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
-
-
-import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
-import com.sendbird.android.BaseChannel;
-import com.sendbird.android.BaseMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
-import com.sendbird.android.User;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
-import chatApp.ChatApp;
-import chatApp.ConnectionHandle;
-import chatApp.CreateChatHandle;
-import chatApp.GetStringHandle;
-
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mentalhealthapp.Fragments.HelperChatsFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
@@ -43,6 +20,16 @@ import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
 import com.parse.ParseUser;
+import com.sendbird.android.BaseChannel;
+import com.sendbird.android.BaseMessage;
+import com.sendbird.android.GroupChannel;
+import com.sendbird.android.SendBird;
+import com.sendbird.android.User;
+
+import chatApp.ChatApp;
+import chatApp.ConnectionHandle;
+import chatApp.CreateChatHandle;
+import chatApp.GetStringHandle;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -51,20 +38,15 @@ public class MainActivity extends AppCompatActivity {
     public final String HELPER_FIELD = "helper";
     public BottomNavigationView bottomNavigationView;
     public TextView currPage;
+    final ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO is this correct?
-
-
         setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
         mTextMessage = findViewById(R.id.message);
 
-        final ParseUser currentUser = ParseUser.getCurrentUser();
         final boolean helper = currentUser.getBoolean(HELPER_FIELD);
-
         final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.nav_view);
         currPage = findViewById(R.id.currPageName_main);
@@ -128,23 +110,29 @@ public class MainActivity extends AppCompatActivity {
         //set default
         bottomNavigationView.setSelectedItemId(R.id.navigation_chat);
 
+        connectUserToChat();
+    }
 
-        /*Dummy chat starts here*/
+    private void connectUserToChat() {
+        //connects logged in or new user to chat server
+        String currUserObjID = currentUser.getObjectId();
         final ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
-        chatApp.connectToServer( "newUser3", new  ConnectionHandle(){
+        chatApp.connectToServer(currUserObjID, new  ConnectionHandle(){
             @Override
             public void onSuccess(String TAG, User user){
+                //call new intent to start chat
                 Log.d(TAG, "Connection successful with user: " + user);
+                Toast.makeText(MainActivity.this, "Chat connection successful!", Toast.LENGTH_LONG).show();
                 createChatAndFirstMessage(chatApp);
             }
             @Override
             public void onFailure(String TAG, Exception e){
+                Log.e(TAG,"Chat connection failed");
                 e.printStackTrace();
+                Toast.makeText(MainActivity.this, "Chat failed!", Toast.LENGTH_LONG).show();
             }
         });
-        /*Dummy chat ends here*/
-
     }
 
     public void createChatAndFirstMessage(final ChatApp chatApp){
@@ -156,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String TAG, GroupChannel groupChannel){
                 Log.d(TAG, "New conversation : ");
-                message( chatApp, groupChannel);
+                message(chatApp, groupChannel);
                 //chatApp.sendMessageText( groupChannel,   "Hola", final MasterHandle handle);
             }
         });
@@ -178,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String TAG, Exception e) {
-
+                    Log.e(TAG,"Message sent failure:");
                 }
             });
         }

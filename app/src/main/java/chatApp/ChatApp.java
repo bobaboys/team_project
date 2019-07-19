@@ -10,7 +10,6 @@ import com.sendbird.android.BaseChannel;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.GroupChannelParams;
-import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -57,6 +56,7 @@ public class ChatApp extends Application {
         //This api is called using only our secret App ID.
     }
 
+    //will create user if you don't have one
     public void connectToServer(String userId, final ConnectionHandle handle){
         SendBird.connect(userId, new SendBird.ConnectHandler() {
             @Override
@@ -76,8 +76,6 @@ public class ChatApp extends Application {
                 if (handle != null) {
                     handle.onSuccess(ChatAppTag.CONNECT_TO_SERVER.getTag(), user);
                 }
-
-
             }
         });
     }
