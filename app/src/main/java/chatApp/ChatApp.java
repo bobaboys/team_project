@@ -51,7 +51,7 @@ public class ChatApp extends Application {
     }
 
     public  void startChatApp(Context context){
-        APP_ID = context.getString(R.string.APP_CHAT_ID);
+        APP_ID = context.getString(R.string.APP_ID);
         SendBird.init(APP_ID, context);
         //This api is called using only our secret App ID.
     }
@@ -80,7 +80,7 @@ public class ChatApp extends Application {
         });
     }
 
-    public void  sendMessageText(GroupChannel groupChannel, final String message, final GetStringHandle handle){
+    public static void sendMessageText(GroupChannel groupChannel, final String message, final GetStringHandle handle){
         groupChannel.sendUserMessage(message, new BaseChannel.SendUserMessageHandler() {
             @Override
             public void onSent(UserMessage userMessage, SendBirdException e) {
@@ -149,7 +149,7 @@ public class ChatApp extends Application {
 
 
     //Chats
-    public void createChat(String userCreator, String userHelper ,boolean isEmergency, final CreateChatHandle handle){
+    public static void createChat(String userCreator, String userHelper, boolean isEmergency, final CreateChatHandle handle){
         //Method called when want to create a new chat.
         List<String> userIds = new ArrayList<>();
         userIds.add(userCreator);
@@ -182,7 +182,7 @@ public class ChatApp extends Application {
         });
     }
 
-    public void getChat(final String channelUrl, final CreateChatHandle handle){
+    public static void getChat(final String channelUrl, final CreateChatHandle handle){
         //Method called when want to select an specific channel
         GroupChannel.getChannel(channelUrl, new GroupChannel.GroupChannelGetHandler() {
             @Override
