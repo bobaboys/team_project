@@ -1,5 +1,6 @@
 package com.example.mentalhealthapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -55,26 +55,27 @@ public class HelperSignUpTags extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ParseUser user = ParseUser.getCurrentUser();
-                //ArrayList<String> checked = new ArrayList<String>();
                 for(int i = 0; i < checkboxes.size(); i++){
                     CheckBox box = checkboxes.get(i);
                     if(checkboxes.get(i).isChecked()){
                         CharSequence text = box.getText();
-                            ParseObject tags = ParseObject.create(HELPER_TAGS_PARSE_OBJECT);
-                            tags.put(USER_PARSE_CLASS, user);
-                            tags.put(COLOR_PARSE_ATTRIBUTE, text);
-                            tags.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if(e!=null){
-                                        Log.d(TAG, "Error while saving");
-                                        e.printStackTrace();
-                                        return;
-                                    }
+                        HelperTags tags = new HelperTags();
+                        tags.setHelperTags(user, text.toString());
+                        tags.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e!=null){
+                                    Log.d(TAG, "Error while saving");
+                                    e.printStackTrace();
+                                    return;
                                 }
-                            }); //this saves it onto the server
+                            }
+                        }); //this saves it onto the server
                     }
                 }
+
+                Intent intent = new Intent(HelperSignUpTags.this, HelperDetails.class);
+                startActivity(intent);
             }
         });
     }

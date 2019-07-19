@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mentalhealthapp.HelperTags;
 import com.example.mentalhealthapp.LoginActivity;
 import com.example.mentalhealthapp.R;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 public class HelperProfileFragment extends Fragment {
 
@@ -54,6 +61,29 @@ public class HelperProfileFragment extends Fragment {
         currentUser = ParseUser.getCurrentUser();
 
         logOutbtn.setOnClickListener(logoutBtnListener);
+        populateTags();
+    }
+
+    public void populateTags(){
+
+        ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
+        query.include("user");
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        query.findInBackground(new FindCallback<HelperTags>() {
+            @Override
+            public void done(List<HelperTags> objects, ParseException e) {
+                String colors = "";
+                if(e==null){
+                    for(HelperTags tag : objects){
+                        colors = colors + tag.getColor() + " ";
+                    }
+                    helperProfileTags.setText(colors);
+
+                }else{
+                    Log.e("HelperDetails", "failure");
+                }
+            }
+        });
     }
 
 }

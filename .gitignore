@@ -3,6 +3,10 @@
 *.ap_
 *.aab
 
+
+#Secrets File
+secrets.xml
+
 # Files for the ART/Dalvik VM
 *.dex
 
