@@ -2,6 +2,7 @@ package com.example.mentalhealthapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -26,13 +27,22 @@ public class HelperBiosActivity extends AppCompatActivity {
 
         rvBios = findViewById(R.id.rvHelperBios);
         mBios = new ArrayList<>();
+        setRecyclerView();
+
 
         loadBios();
     }
 
+    private void setRecyclerView() {
+        biosAdapter = new HelperBiosAdapter(this, mBios);
+        rvBios.setAdapter(biosAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvBios.setLayoutManager(layoutManager);
+    }
+
     private void loadBios() {
         ParseQuery<ParseUser> postsQuery = new ParseQuery<ParseUser>(ParseUser.class);
-        postsQuery.setLimit(20);
+        postsQuery.setLimit(20); //TODO: change 20
         postsQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
