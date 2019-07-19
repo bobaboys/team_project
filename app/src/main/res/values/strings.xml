@@ -3,41 +3,20 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string
-        name="new_user"
-        >New User?</string>
-    <string
-        name="reflect"
-        >Reflect</string>
-    <string
-        name="home"
-        >Home</string>
-    <string
-        name="chats"
-        >Chats</string>
-    <string
-        name="profile"
-        >Profile</string>
-    <string
-        name="login"
-        >Log in</string>
-    <string
-        name="logout"
-        >Log out</string>
-    <string
-        name="sign_up"
-        >Sign Up</string>
-    <string
-        name="username"
-        >Username</string>
-    <string
-        name="password"
-        >Password</string>
-    <string
-        name="email"
-        >Email</string>
+    <string name="new_user">New User?</string>
+    <string name="reflect">Reflect</string>
+    <string name="home">Home</string>
+    <string name="chats">Chats</string>
+    <string name="profile">Profile</string>
+    <string name="login">Log in</string>
+    <string name="logout">Log out</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
     <string name="i_want_to_get_help">I want to GET help</string>
     <string name="i_want_to_give_help">I want to GIVE help</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</string>
 
 
 </resources>
