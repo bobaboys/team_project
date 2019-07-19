@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".HelperSignUpBio"></activity>
+        <activity android:name=".HelperSignUpBio"/>
         <activity android:name=".HelperSignUpTags" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
