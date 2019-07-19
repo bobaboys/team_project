@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -21,15 +22,17 @@ import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
-    private TextView mTextMessage;
 
     public final String HELPER_FIELD = "helper";
     public BottomNavigationView bottomNavigationView;
     public TextView currPage;
+
+    Fragment currentCentralFragment;
     final ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TextView mTextMessage;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextMessage = findViewById(R.id.message);
@@ -91,11 +94,26 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer_main, fragment).commit();
+                replaceFragment(fragment);
                 return true;
             }
         });
         //set default
         bottomNavigationView.setSelectedItemId(R.id.navigation_chat);
+    }
+
+    public void replaceFragment(Fragment f){
+        // Begin the transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        // Replace the contents of the container with the new fragment
+        if(currentCentralFragment == null || !currentCentralFragment.getClass().equals(f.getClass())){
+            // fragments are from different classes,
+            // different fragments, must change fragment
+            currentCentralFragment = f;
+            ft.replace(R.id.flContainer_main, f);
+            // or ft.add(R.id.your_placeholder, new FooFragment());
+            // Complete the changes added above
+            ft.commit();
+        }
     }
 }

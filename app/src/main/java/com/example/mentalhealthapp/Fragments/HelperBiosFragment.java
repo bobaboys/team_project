@@ -1,48 +1,69 @@
-package com.example.mentalhealthapp;
+package com.example.mentalhealthapp.Fragments;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.example.mentalhealthapp.HelperBiosAdapter;
+import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.model.TagsParcel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelperBiosActivity extends AppCompatActivity {
+public class HelperBiosFragment extends Fragment {
 
     protected HelperBiosAdapter biosAdapter;
     protected RecyclerView rvBios;
     protected List<ParseUser> mBios;
+    protected TagsParcel tags;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_helper_bios, container, false);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_helper_bios);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        rvBios = findViewById(R.id.rvHelperBios);
+        //Getting list of tags selected by reciever.
+        Bundle bundle = getArguments();
+        tags = (TagsParcel) Parcels.unwrap( bundle.getParcelable("selectedTags"));
+
+        rvBios = view.findViewById(R.id.rvHelperBios);
         mBios = new ArrayList<>();
         setRecyclerView();
-
-
         loadBios();
     }
 
     private void setRecyclerView() {
-        biosAdapter = new HelperBiosAdapter(this, mBios);
+        biosAdapter = new HelperBiosAdapter(this.getContext(), mBios);
         rvBios.setAdapter(biosAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         rvBios.setLayoutManager(layoutManager);
     }
 
     private void loadBios() {
         ParseQuery<ParseUser> postsQuery = new ParseQuery<ParseUser>(ParseUser.class);
         postsQuery.setLimit(20); //TODO: change 20
+        //TODO QUERY WITH TAGS
         postsQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {

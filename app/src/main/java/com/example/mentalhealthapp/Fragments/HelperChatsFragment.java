@@ -25,7 +25,7 @@ public class HelperChatsFragment extends Fragment {
     protected TextView testChat;
     private String APP_ID;
     ParseUser currentUser = ParseUser.getCurrentUser();
-
+    private String APP_CHAT_ID;
 
     @Nullable
     @Override
@@ -41,9 +41,8 @@ public class HelperChatsFragment extends Fragment {
         connectUserToChat();
     }
     public  void startChatApp(Context context){
-        APP_ID = context.getString(R.string.APP_ID);
-        SendBird.init(APP_ID, context);
-        //This api is called using only our secret App ID.
+        APP_CHAT_ID = context.getString(R.string.APP_ID);
+        SendBird.init(APP_CHAT_ID, context);
     }
     private void connectUserToChat() {
         //connects logged in or new user to chat server
