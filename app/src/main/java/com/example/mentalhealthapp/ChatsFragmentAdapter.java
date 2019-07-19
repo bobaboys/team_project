@@ -12,18 +12,16 @@ import android.widget.TextView;
 
 import com.parse.ParseUser;
 
-import org.parceler.Parcels;
-
 import java.util.List;
 
-public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.ViewHolder> {
+public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdapter.ViewHolder> {
 
     public final String HELPER_BIO_FIELD = "helperBio";
     private Context context;
     private List<ParseUser> bios;
     RecyclerView rvPosts;
 
-    public HelperBiosAdapter(Context context, List<ParseUser> bios) {
+    public ChatsFragmentAdapter(Context context, List<ParseUser> bios) {
         this.context = context;
         this.bios = bios;
     }
@@ -76,7 +74,7 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
             if(position!=RecyclerView.NO_POSITION){
                 ParseUser bio = bios.get(position);
                 Intent intent = new Intent(context, HelperDetails.class);
-                intent.putExtra("clicked_bio", Parcels.wrap(bio));
+//                intent.putExtra("clicked_bio", Parcels.wrap(bio));
                 context.startActivity(intent);
             }
         }
@@ -95,4 +93,3 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         }
     }
 }
-

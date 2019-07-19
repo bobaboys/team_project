@@ -13,6 +13,8 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 
@@ -20,6 +22,17 @@ public class HelperDetails extends AppCompatActivity {
     public TextView helperBio;
     public TextView helperTags;
     public Button openChat;
+    public ParseUser clickedHelper;
+    public final String HELPER_BIO_FIELD = "helperBio";
+    public View.OnClickListener openChatBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(HelperDetails.this, OpenChatActivity.class);
+            intent.putExtra("clicked_helper",Parcels.wrap(clickedHelper));
+            startActivity(intent);
+        }
+    };
+
 
 
     @Override
@@ -27,28 +40,26 @@ public class HelperDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helper_details);
 
+        assignViewsAndListeners();
+        //now we want to query for all of the tags for the current user and display it under helperTags
+        populateBioAndTags();
+    }
+
+    private void assignViewsAndListeners() {
         helperBio = findViewById(R.id.tvBio_helperdetails);
         helperTags = findViewById(R.id.tvTags_helperdetails);
         openChat = findViewById(R.id.btnChat_helperdetails);
-        openChat.setOnClickListener(openChatbtnListener);
-
-        //now we want to query for all of the tags for the current user and display it under helperTags
-        populateTags();
+        openChat.setOnClickListener(openChatBtnListener);
     }
 
-    public View.OnClickListener openChatbtnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(HelperDetails.this,OpenChatActivity.class);
-            startActivity(intent);
-        }
-    };
 
-    public void populateTags(){
 
+    public void populateBioAndTags(){
+
+        clickedHelper = (ParseUser) Parcels.unwrap(getIntent().getParcelableExtra("clicked_bio"));
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
         query.include("user");
-        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        query.whereEqualTo("user", clickedHelper);
         query.findInBackground(new FindCallback<HelperTags>() {
             @Override
             public void done(List<HelperTags> objects, ParseException e) {
@@ -58,6 +69,7 @@ public class HelperDetails extends AppCompatActivity {
                         colors = colors + tag.getColor() + " ";
                     }
                     helperTags.setText(colors);
+                    helperBio.setText(clickedHelper.getString(HELPER_BIO_FIELD));
 
                 }else{
                     Log.e("HelperDetails", "failure");

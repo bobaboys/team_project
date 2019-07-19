@@ -1,5 +1,6 @@
 package com.example.mentalhealthapp.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +11,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
+import com.sendbird.android.SendBird;
 
 public class RecieverChatsFragment extends Fragment {
 
     protected TextView testChat;
+    private String APP_ID;
+
 
     @Nullable
     @Override
@@ -25,6 +29,12 @@ public class RecieverChatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         testChat = view.findViewById(R.id.recchatTest);
+        startChatApp(getContext());
+    }
 
+    public  void startChatApp(Context context){
+        APP_ID = context.getString(R.string.APP_ID);
+        SendBird.init(APP_ID, context);
+        //This api is called using only our secret App ID.
     }
 }
