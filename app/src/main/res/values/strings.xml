@@ -23,4 +23,7 @@
     <string name="bio_input_hint">Hi! My name is ___ and I\'ve experienced...</string>
     <string name="submit">submit</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

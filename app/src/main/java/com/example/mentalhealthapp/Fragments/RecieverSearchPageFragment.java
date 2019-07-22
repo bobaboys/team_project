@@ -63,10 +63,6 @@ public class RecieverSearchPageFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("selectedTags", Parcels.wrap(selectedTagsParcel));
                 resultFragment.setArguments(bundle);
-
-                //for(Tag t : selectedTags){
-                //    Log.d(TAG, t.getString("Tag"));
-                //}
             }
         });
         setRecyclerView();
