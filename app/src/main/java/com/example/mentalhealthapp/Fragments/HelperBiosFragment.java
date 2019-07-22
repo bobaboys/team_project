@@ -66,7 +66,7 @@ public class HelperBiosFragment extends Fragment {
         final ParseQuery<HelperTags> helpersTagsQ = new ParseQuery<>(HelperTags.class);
         helpersTagsQ.setLimit(20); //TODO: change 20
         helpersTagsQ.include("user");//TODO PROBLEMS WITH QUERIES
-        //helpersTagsQ.whereContainedIn("Tag", tags.selectedTags); // looks for helpers with these tags.
+        helpersTagsQ.whereContainedIn("Tag", tags.selectedTags); // looks for helpers with these tags.
         helpersTagsQ.findInBackground(new FindCallback<HelperTags>() {
             @Override
             public void done(List<HelperTags> objects, ParseException e) {
