@@ -19,7 +19,8 @@ import java.util.List;
 
 public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.ViewHolder> {
 
-    public final String HELPER_BIO_FIELD = "helperBio";
+    public final String HELPER_BIO_KEY = "helperBio";
+    public final String USERNAME_KEY = "username";
     private Context context;
     private List<UserWithTags> bios;
     RecyclerView rvPosts;
@@ -61,11 +62,12 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView tvBio;
+        TextView tvBio, tvUsername;
         ImageView helperPic;
 
         public ViewHolder(View view) {
             super(view);
+            tvUsername =itemView.findViewById(R.id.tvBio_username);
             tvBio = itemView.findViewById(R.id.tvBio_HelperBios);
             helperPic = itemView.findViewById(R.id.ivHelperPic_HelperBios);
             rvPosts = itemView.findViewById(R.id.rvHelperBios);
@@ -84,8 +86,9 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         }
 
         public void bind(final UserWithTags bio){
-            if(bio.user.getString(HELPER_BIO_FIELD)!=null&&bio.user.getBoolean("helper")){
-                tvBio.setText(bio.user.getString(HELPER_BIO_FIELD));
+            if(bio.user.getString(HELPER_BIO_KEY)!=null&&bio.user.getBoolean("helper")){
+                tvUsername.setText(bio.user.getString(USERNAME_KEY));
+                tvBio.setText(bio.user.getString(HELPER_BIO_KEY));
             }
 
 // USE FOR IMAGE LATER
