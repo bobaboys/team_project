@@ -108,7 +108,7 @@ public class HelperDetails extends AppCompatActivity {
     }
 
     public  void startChatApp(Context context){
-        APP_ID = context.getString(R.string.APP_ID);
+        APP_ID = context.getString(R.string.APP_CHAT_ID);
         SendBird.init(APP_ID, context);
         //This api is called using only our secret App ID.
     }
