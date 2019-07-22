@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //set default
-        bottomNavigationView.setSelectedItemId(R.id.navigation_chat);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
 
     public void replaceFragment(Fragment f){
