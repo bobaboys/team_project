@@ -38,7 +38,6 @@ public class HelperChatsFragment extends Fragment {
         connectUserToChat();
     }
     public  void startChatApp(Context context){
-
         APP_CHAT_ID = context.getString(R.string.APP_CHAT_ID);
         SendBird.init(APP_CHAT_ID, context);
     }
