@@ -3,8 +3,10 @@ package chatApp;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
+import com.parse.ParseUser;
 import com.sendbird.android.ApplicationUserListQuery;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.GroupChannel;
@@ -149,14 +151,14 @@ public class ChatApp extends Application {
 
 
     //Chats
-    public static void createChat(String userCreator, String userHelper, boolean isEmergency, final CreateChatHandle handle){
+    public static void createChat(ParseUser userCreator, ParseUser userHelper, boolean isEmergency, final CreateChatHandle handle){
         //Method called when want to create a new chat.
         List<String> userIds = new ArrayList<>();
-        userIds.add(userCreator);
-        userIds.add(userHelper);
+        userIds.add(userCreator.getObjectId());
+        userIds.add(userHelper.getObjectId());
 
         List<String> operatorIds = new ArrayList<>();
-        operatorIds.add(userHelper);
+        operatorIds.add(userHelper.getObjectId());
 
         GroupChannelParams params = new GroupChannelParams() // we create a new channel / chat with certain characteristics
                 .setPublic(false) // private conversation between helper and receiver.

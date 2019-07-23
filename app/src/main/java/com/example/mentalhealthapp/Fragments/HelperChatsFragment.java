@@ -22,8 +22,6 @@ import chatApp.ConnectionHandle;
 
 public class HelperChatsFragment extends Fragment {
 
-    protected TextView testChat;
-    private String APP_ID;
     ParseUser currentUser = ParseUser.getCurrentUser();
     private String APP_CHAT_ID;
 
@@ -36,7 +34,6 @@ public class HelperChatsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        testChat = view.findViewById(R.id.chatTest);
         startChatApp(getContext());
         connectUserToChat();
     }

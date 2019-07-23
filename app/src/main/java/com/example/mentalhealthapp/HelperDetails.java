@@ -10,11 +10,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mentalhealthapp.model.Chat;
 import com.example.mentalhealthapp.model.Tag;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
@@ -42,16 +46,23 @@ public class HelperDetails extends AppCompatActivity {
     public View.OnClickListener openChatBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ChatApp.createChat(ParseUser.getCurrentUser().getObjectId(), clickedHelper.getObjectId(), false, new CreateChatHandle() {
+            ChatApp.createChat(currentUser, clickedHelper, false, new CreateChatHandle() {
                 @Override
-                public void onSuccess(String TAG, GroupChannel groupChannel) {
-                    Intent intent = new Intent(HelperDetails.this, OpenChatActivity.class);
-                    intent.putExtra("clicked_helper",Parcels.wrap(clickedHelper));
-                    //pass current group channel url to next activity
-                    String groupChannelUrl = groupChannel.getUrl();
-                    intent.putExtra("group_channel", groupChannelUrl);
-                    startActivity(intent);
-                    Log.d("OPEN CHAT:", "chat open successful");
+                public void onSuccess(String TAG, final GroupChannel groupChannel) {
+                    // Check if row already exist
+                    ParseQuery<Chat> query  = new ParseQuery<Chat>(Chat.class);
+                    query.whereEqualTo("chatUrl",groupChannel.getUrl());
+                    query.findInBackground(new FindCallback<Chat>() {
+                        @Override
+                        public void done(List<Chat> objects, ParseException e) {
+                            if(objects.size() == 0){// no rows, create new one.
+                                createChatParse(groupChannel);
+                            }else {// there is a row with the same info. skip create a new one.
+                                openChatFragment(groupChannel);
+                            }
+                        }
+                    });
+
                 }
 
                 @Override
@@ -64,7 +75,26 @@ public class HelperDetails extends AppCompatActivity {
         }
     };
 
+    public void createChatParse(final GroupChannel groupChannel){
+        Chat chat =  new Chat();
+        chat.put("helper", ParseObject.createWithoutData("_User", clickedHelper.getObjectId()) );
+        chat.put("reciever", ParseObject.createWithoutData("_User", ParseUser.getCurrentUser().getObjectId()));
+        chat.put("chatUrl", groupChannel.getUrl());
 
+        chat.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e==null){
+                    Log.d("USERS", clickedHelper.getUsername());
+                    openChatFragment(groupChannel);
+                }else{
+                    e.printStackTrace();
+                    return;
+                }
+
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +104,7 @@ public class HelperDetails extends AppCompatActivity {
         assignViewsAndListeners();
         //now we want to query for all of the tags for the current user and display it under helperTags
         populateBioAndTags();
-        startChatApp(this);
+        ChatApp.getInstance().startChatApp(this);
         connectUserToChat();
     }
 
@@ -110,11 +140,6 @@ public class HelperDetails extends AppCompatActivity {
         });
     }
 
-    public  void startChatApp(Context context){
-        APP_ID = context.getString(R.string.APP_CHAT_ID);
-        SendBird.init(APP_ID, context);
-        //This api is called using only our secret App ID.
-    }
     private void connectUserToChat() {
         //connects logged in or new user to chat server
         String currUserObjID = currentUser.getObjectId();
@@ -134,6 +159,16 @@ public class HelperDetails extends AppCompatActivity {
                 Toast.makeText(HelperDetails.this, "Chat failed!", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void openChatFragment(GroupChannel groupChannel){
+        Intent intent = new Intent(HelperDetails.this, OpenChatActivity.class);
+        intent.putExtra("clicked_helper",Parcels.wrap(clickedHelper));
+        //pass current group channel url to next activity
+        String groupChannelUrl = groupChannel.getUrl();
+        intent.putExtra("group_channel", groupChannelUrl);
+        startActivity(intent);
+        Log.d("OPEN CHAT:", "chat open successful");
     }
 
 }
