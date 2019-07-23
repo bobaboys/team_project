@@ -2,7 +2,9 @@ package com.example.mentalhealthapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -15,8 +17,12 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.example.mentalhealthapp.Fragments.HelperBiosFragment;
 import com.example.mentalhealthapp.model.Tag;
+import com.example.mentalhealthapp.model.TagsParcel;
 import com.parse.ParseUser;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,21 +74,41 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
 
         CheckBox tagName;
         CardView cardTag;
+        ImageView description;
 
         public ViewHolder(View view) {
             super(view);
             tagName = itemView.findViewById(R.id.cb_tag_select);
             cardTag = itemView.findViewById(R.id.card_tag);
+            description = itemView.findViewById(R.id.ic_tag_description);
+
             tagName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    int i = getAdapterPosition();
-                    Tag selectedTag = tags.get(i);
+                    Tag selectedTag = getSelectedTag();
                     if(isChecked){
                             selectedTags.add(selectedTag);
                     }else{
                             selectedTags.remove(selectedTag);
                     }
+                }
+            });
+            // Listener of Tag details icon. opens a new fragment,
+            // with the tag name, description and link with more info
+            description.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Tag selectedTag = getSelectedTag();
+
+
+                    Fragment resultFragment = new TagDetailsFragment();
+                    ((MainActivity)context).replaceFragment(resultFragment);
+
+                    //passing to result of list of helpers
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("tag",selectedTag);
+                    resultFragment.setArguments(bundle);
+
                 }
             });
         }
@@ -98,6 +124,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
 
             }
         }
+
+        public Tag getSelectedTag(){
+            int i = getAdapterPosition();
+            return tags.get(i);
+        }
+
     }
 }
 

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mentalhealthapp.model.Tag;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -88,16 +89,18 @@ public class HelperDetails extends AppCompatActivity {
         clickedHelper = (ParseUser) Parcels.unwrap(getIntent().getParcelableExtra("clicked_bio"));
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
         query.include("user");
+        query.include("Tag");
         query.whereEqualTo("user", clickedHelper);
         query.findInBackground(new FindCallback<HelperTags>() {
             @Override
             public void done(List<HelperTags> objects, ParseException e) {
-                String colors = "";
+                String strListOfTags = "";
                 if(e==null){
-                    for(HelperTags tag : objects){
-                        colors = colors + tag.getTag() + " ";
+                    for(HelperTags helperTag : objects){
+                        strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ " ";
+                        //TODO POPULATE WITH CARDS INSTEAD OF STR ONLY
                     }
-                    helperTags.setText(colors);
+                    helperTags.setText(strListOfTags);
                     helperBio.setText(clickedHelper.getString(HELPER_BIO_FIELD));
 
                 }else{
