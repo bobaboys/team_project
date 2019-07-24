@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;

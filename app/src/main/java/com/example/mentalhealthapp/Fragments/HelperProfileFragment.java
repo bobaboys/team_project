@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +16,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mentalhealthapp.HelperTags;
-import com.example.mentalhealthapp.LoginActivity;
+import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.models.HelperTags;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -36,6 +36,7 @@ public class HelperProfileFragment extends Fragment {
     protected TextView helperProfileChats;
     protected FloatingActionButton editHelperProfile;
     ParseUser currentUser;
+
 
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
         @Override
@@ -62,7 +63,6 @@ public class HelperProfileFragment extends Fragment {
         helperProfileChats = view.findViewById(R.id.tvMyChats_helper_profile);
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
-
         currentUser = ParseUser.getCurrentUser();
         helperProfileBio.setText(currentUser.getString("helperBio"));
         logOutbtn.setOnClickListener(logoutBtnListener);

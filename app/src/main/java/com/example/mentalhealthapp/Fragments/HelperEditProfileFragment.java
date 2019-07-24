@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,9 +23,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.mentalhealthapp.AvatarImagesActivity;
-import com.example.mentalhealthapp.HelperTags;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.AvatarImagesActivity;
+import com.example.mentalhealthapp.models.HelperTags;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -55,13 +55,18 @@ public class HelperEditProfileFragment extends Fragment {
     public String photoFileName = "photo.jpg";
     String AVATAR_FIELD = "avatar";
     File photoFile;
+    String CLICKED_AVATAR_KEY = "clicked_avatar";
+    static final int CHOOSE_AVATAR_REQUEST = 333;
+    ParseUser currUser;
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             ParseUser user = ParseUser.getCurrentUser();
             //update parse server user with avatar photo
-            editPhoto(user);
+            if(photoFile!=null) {
+                editPhoto(user);
+            }
             editBio(user);
             editTags(user, checkboxes);
             switchFragments();
@@ -79,7 +84,7 @@ public class HelperEditProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(getContext(), AvatarImagesActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, CHOOSE_AVATAR_REQUEST);
         }
     };
 
@@ -93,7 +98,7 @@ public class HelperEditProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         assignViewsAndListeners(view);
-
+        currUser = ParseUser.getCurrentUser();
     }
 
     private void assignViewsAndListeners(View view) {
@@ -219,5 +224,30 @@ public class HelperEditProfileFragment extends Fragment {
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
+        if(requestCode == CHOOSE_AVATAR_REQUEST && resultCode == RESULT_OK){
+            //get pic from parse user and set image view
+            ParseFile avatarFile = currUser.getParseFile(AVATAR_FIELD);
+            Bitmap bm = convertFileToBitmap(avatarFile);
+            avatarPic.setImageBitmap(bm);
+
+        }
     }
+
+    public Bitmap convertFileToBitmap(ParseFile picFile){
+        if(picFile == null){
+            return null;
+        }
+        try {
+            byte[] image = picFile.getData();
+            if(image!=null){
+                Bitmap pic = BitmapFactory.decodeByteArray(image, 0, image.length);
+                return pic;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
 }

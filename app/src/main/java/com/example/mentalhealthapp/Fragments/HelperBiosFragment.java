@@ -1,8 +1,6 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,11 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mentalhealthapp.HelperBiosAdapter;
-import com.example.mentalhealthapp.HelperTags;
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.model.TagsParcel;
-import com.example.mentalhealthapp.model.UserWithTags;
+import com.example.mentalhealthapp.adapters.HelperBiosAdapter;
+import com.example.mentalhealthapp.models.HelperTags;
+import com.example.mentalhealthapp.models.TagsParcel;
+import com.example.mentalhealthapp.models.UserWithTags;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

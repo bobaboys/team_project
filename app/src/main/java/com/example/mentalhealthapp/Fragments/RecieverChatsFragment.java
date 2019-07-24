@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,8 +19,6 @@ import com.sendbird.android.User;
 
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
-
-import chatApp.ChatApp;
 
 public class RecieverChatsFragment extends Fragment {
 

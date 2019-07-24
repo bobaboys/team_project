@@ -1,7 +1,6 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,13 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.example.mentalhealthapp.MainActivity;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.TagsAdapter;
-import com.example.mentalhealthapp.model.Tag;
-import com.example.mentalhealthapp.model.TagsParcel;
+import com.example.mentalhealthapp.adapters.TagsAdapter;
+import com.example.mentalhealthapp.models.Tag;
+import com.example.mentalhealthapp.models.TagsParcel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +13,7 @@ import com.example.mentalhealthapp.R;
 
 public class HelperSearchPageFragment extends Fragment {
 
-    protected TextView testChat;
+    protected TextView test;
 
     @Nullable
     @Override
@@ -24,7 +24,7 @@ public class HelperSearchPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        testChat = view.findViewById(R.id.helperSearchTest);
+        test = view.findViewById(R.id.helperSearchTest);
 
     }
 }

@@ -8,27 +8,27 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".ParseApp"
+        android:name=".models.ParseApp"
         android:allowBackup="true"
         android:label=".ChatApp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AvatarImagesActivity"></activity>
-        <activity android:name=".HelperSignUpBio" />
-        <activity android:name=".HelperSignUpTags" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activities.AvatarImagesActivity"></activity>
+        <activity android:name=".activities.HelperSignUpBioActivity" />
+        <activity android:name=".activities.HelperSignUpTagsActivity" />
+        <activity android:name=".activities.SignUpActivity" />
+        <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HelperDetails" />
-        <activity android:name=".OpenChatActivity" />
+        <activity android:name=".activities.HelperDetailsActivity" />
+        <activity android:name=".activities.OpenChatActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name" />
 
         <provider

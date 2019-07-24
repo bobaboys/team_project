@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HelperSignUpTags">
+    tools:context=".activities.HelperSignUpTagsActivity">
 
     <CheckBox
         android:id="@+id/checkBoxRed_Helper"
