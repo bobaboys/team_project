@@ -74,7 +74,7 @@ public class OpenChatActivity extends AppCompatActivity {
 
     private void assignViewsAndListener() {
         chatRecipient = findViewById(R.id.etRecipient_OpenChat);
-        chatRecipientUser = Parcels.unwrap(getIntent().getParcelableExtra("clicked_helper"));
+        chatRecipientUser = (ParseUser) getIntent().getParcelableExtra("clicked_helper");
         chatRecipient.setText(chatRecipientUser.getUsername());
         chatMessage = findViewById(R.id.etChatBox_openChat);
         sendBtn = findViewById(R.id.btnChatboxSend_openChat);

@@ -2,7 +2,9 @@ package com.example.mentalhealthapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.mentalhealthapp.Fragments.RecieverChatsFragment;
 import com.example.mentalhealthapp.model.Chat;
 import com.example.mentalhealthapp.model.User;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
@@ -54,11 +58,13 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         return new ChatsListAdapter.ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull final ChatsListAdapter.ViewHolder viewHolder, final int i) {
         Chat chat = chats.get(i);
         viewHolder.bind(chat);
     }
+
 
     @Override
     public int getItemCount() {
@@ -68,24 +74,48 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         return chats.size();
     }
 
+
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, lastMessage, timeStamp;
         ImageView chatUserPic;
+        ConstraintLayout itemChat;
+        String chatUrl;
+        Chat chatParse;
+        ParseUser addresseeParse;
 
         public ViewHolder(View view) {
             super(view);
+
             title = view.findViewById(R.id.tv_chat_title);
             lastMessage = view.findViewById(R.id.tv_chat_lastMessage);
             timeStamp = view.findViewById(R.id.tv_chat_timestamp);
             chatUserPic = view.findViewById(R.id.iv_chat_image);
+            itemChat = view.findViewById(R.id.item_chat);
+            itemChat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openChat();
+                }
+            });
+        }
+
+
+        public void openChat(){
+            if(chatParse == null) return; // there is not chatParse on the item, click does nothing. TODO toast?
+            if(chatUrl == null) chatUrl= chatParse.getString("chatUrl");
+            if(addresseeParse==null)addresseeParse = obtainFromParseAddressee();
+            Intent i = new Intent(context, OpenChatActivity.class);
+            i.putExtra("group_channel", chatUrl );
+            i.putExtra("clicked_helper", addresseeParse);
+            context.startActivity(i);
+
         }
 
 
         public void bind(final Chat chat) {
-
-            String chatUrl = chat.getString("chatUrl");
-            //TODO with urlChat, call SBird, get GChannel, users and populate item
-            //TODO dont get chats yet, dont know whys
+            chatParse = chat;  //This Chat object is gonna be called in other methods.
+            chatUrl= chatParse.getString("chatUrl");
+            //TODO get profile pic from parseserver.
             //Method called when want to select an specific channel
             GroupChannel.getChannel(chatUrl, new GroupChannel.GroupChannelGetHandler() {
                 @Override
@@ -97,8 +127,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                         return;
                     }
                     // getting the adressee information (in parseServer) to populate the chat overview.
-                    boolean currentIsHelperParse = ParseUser.getCurrentUser().getBoolean("helper");
-                    ParseUser addresseeParse = currentIsHelperParse? chat.getParseUser("reciever") : chat.getParseUser("helper") ;
+                    addresseeParse = obtainFromParseAddressee();
                     title.setText(addresseeParse.getUsername()); // Username comes from Parse.
 
                     getAndBindProfilePhoto(groupChannel, addresseeParse);
@@ -108,6 +137,20 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             });
         }
 
+        public ParseUser obtainFromParseAddressee() {
+            boolean currentIsHelperParse = ParseUser.getCurrentUser().getBoolean("helper");
+             return currentIsHelperParse? chatParse.getParseUser("reciever") : chatParse.getParseUser("helper") ;
+        }
+
+        public void getAndBindParseProfilePhoto(ParseUser addresseeParse){
+
+            //get pic from parse user and set image view
+            //ParseFile avatarFile = addresseeParse.getParseFile(AVATAR_FIELD);
+            //Bitmap bm = convertFileToBitmap(avatarFile);
+            //avatarPic.setImageBitmap(bm);
+        }
+
+
         public Member getAdressee(List<Member> members, String id){
             for(Member m: members){
                 if(m.getUserId().equals(id)){
@@ -116,10 +159,12 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }
             return null;
         }
+
+
         public void getAndBindProfilePhoto(GroupChannel groupChannel, ParseUser addresseeParse){
             List<Member> members =groupChannel.getMembers();
             Member addresseeSendB = getAdressee(members,addresseeParse.getObjectId());
-            if(addresseeSendB!= null){//TODO member is added when accepts invitation. accept invitation automatically.
+            if(addresseeSendB!= null){
                 String imageUrl = addresseeSendB.getProfileUrl();
 
                 int radius = 30; // corner radius, higher value = more rounded
@@ -131,6 +176,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }
 
         }
+
+
         public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse){
             if(lastM!=null){
                 if( lastM.getMentionType().name().equals("USERS")){ // Message is a Text Message.
