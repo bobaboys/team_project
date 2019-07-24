@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.mentalhealthapp.Fragments.RecieverChatsFragment;
 import com.example.mentalhealthapp.model.Chat;
 import com.example.mentalhealthapp.model.User;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sendbird.android.BaseMessage;
@@ -44,6 +44,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     List<Chat> chats;
     RecyclerView rvChats;
     Context context;
+
     public ChatsListAdapter(Context context, List<Chat> chats) {
 
         this.context = context;
@@ -91,6 +92,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             timeStamp = view.findViewById(R.id.tv_chat_timestamp);
             chatUserPic = view.findViewById(R.id.iv_chat_image);
             itemChat = view.findViewById(R.id.item_chat);
+
             itemChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -113,11 +115,13 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
 
         public void bind(final Chat chat) {
+
             chatParse = chat;  //This Chat object is gonna be called in other methods.
             chatUrl= chatParse.getString("chatUrl");
-            //TODO get profile pic from parseserver.
+
             //Method called when want to select an specific channel
             GroupChannel.getChannel(chatUrl, new GroupChannel.GroupChannelGetHandler() {
+
                 @Override
                 public void onResult(GroupChannel groupChannel, SendBirdException e) {
 
@@ -126,11 +130,12 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                         Log.d("CHAT_OVERVIEW","Imposible populate chat overview");
                         return;
                     }
+
                     // getting the adressee information (in parseServer) to populate the chat overview.
                     addresseeParse = obtainFromParseAddressee();
                     title.setText(addresseeParse.getUsername()); // Username comes from Parse.
 
-                    getAndBindProfilePhoto(groupChannel, addresseeParse);
+                    getAndBindParseProfilePhoto( addresseeParse);
                     BaseMessage  lastM = groupChannel.getLastMessage();
                     bindAccordingTypeOfMessage( lastM,  addresseeParse);
                 }
@@ -142,12 +147,24 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
              return currentIsHelperParse? chatParse.getParseUser("reciever") : chatParse.getParseUser("helper") ;
         }
 
-        public void getAndBindParseProfilePhoto(ParseUser addresseeParse){
+        public void getAndBindParseProfilePhoto( ParseUser addresseeParse){
 
-            //get pic from parse user and set image view
-            //ParseFile avatarFile = addresseeParse.getParseFile(AVATAR_FIELD);
-            //Bitmap bm = convertFileToBitmap(avatarFile);
-            //avatarPic.setImageBitmap(bm);
+            if(addresseeParse==null)return;
+
+            try {
+                int radius = 30; // corner radius, higher value = more rounded
+                int margin = 10; // crop margin, set to 0 for corners with no crop
+                //get pic from parse user and set image view
+                ParseFile avatarPic = addresseeParse.getParseFile("avatar");
+                Glide.with(context)
+                        .load(avatarPic.getFile())
+                        .bitmapTransform(new RoundedCornersTransformation(context, radius, margin))
+                        .into(chatUserPic);
+            }catch (ParseException e){
+                e.printStackTrace();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
         }
 
 
@@ -159,24 +176,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }
             return null;
         }
-
-
-        public void getAndBindProfilePhoto(GroupChannel groupChannel, ParseUser addresseeParse){
-            List<Member> members =groupChannel.getMembers();
-            Member addresseeSendB = getAdressee(members,addresseeParse.getObjectId());
-            if(addresseeSendB!= null){
-                String imageUrl = addresseeSendB.getProfileUrl();
-
-                int radius = 30; // corner radius, higher value = more rounded
-                int margin = 10; // crop margin, set to 0 for corners with no crop
-                Glide.with(context)
-                        .load(imageUrl)
-                        .bitmapTransform(new RoundedCornersTransformation(context, radius, margin))
-                        .into(chatUserPic);
-            }
-
-        }
-
 
         public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse){
             if(lastM!=null){

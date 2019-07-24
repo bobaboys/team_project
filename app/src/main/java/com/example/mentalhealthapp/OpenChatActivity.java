@@ -30,22 +30,26 @@ public class OpenChatActivity extends AppCompatActivity {
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
             //send message to server
             final String chatMessageString = chatMessage.getText().toString();
             String groupChannelStr = getIntent().getStringExtra("group_channel");
             //find correct chat from group channel string
             ChatApp.getChat(groupChannelStr, new CreateChatHandle() {
+
                 @Override
                 public void onSuccess(String TAG, GroupChannel groupChannel) {
                     Toast.makeText(OpenChatActivity.this,"group channel found successfully", Toast.LENGTH_LONG).show();
 
                     //sent message into that chat
                     ChatApp.sendMessageText(groupChannel, chatMessageString, new GetStringHandle() {
+
                         @Override
                         public void onSuccess(String TAG, String channelUrl) {
                             Toast.makeText(OpenChatActivity.this,"chat message sent successfully", Toast.LENGTH_LONG).show();
                             //update recycler view
                         }
+
 
                         @Override
                         public void onFailure(String TAG, Exception e) {
@@ -54,6 +58,7 @@ public class OpenChatActivity extends AppCompatActivity {
                         }
                     });
                 }
+
 
                 @Override
                 public void onFailure(String TAG, Exception e) {
@@ -65,12 +70,14 @@ public class OpenChatActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_chat);
         assignViewsAndListener();
     }
+
 
     private void assignViewsAndListener() {
         chatRecipient = findViewById(R.id.etRecipient_OpenChat);

@@ -10,11 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.example.mentalhealthapp.Fragments.HelperChatsFragment;
+import com.example.mentalhealthapp.Fragments.ChatListFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
 import com.example.mentalhealthapp.Fragments.HelperSearchPageFragment;
-import com.example.mentalhealthapp.Fragments.RecieverChatsFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                             currPage.setText(R.string.reflect);
                             break;
                         case R.id.navigation_chat:
-                            fragment = new HelperChatsFragment();
+                            fragment = new ChatListFragment();
                             currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_profile:
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                             currPage.setText(R.string.profile);
                             break;
                         default:
-                            fragment = new HelperChatsFragment();
+                            fragment = new ChatListFragment();
                             currPage.setText(R.string.home);
                             break;
                     }
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                             currPage.setText(R.string.reflect);
                             break;
                         case R.id.navigation_chat:
-                            fragment = new RecieverChatsFragment();
+                            fragment = new ChatListFragment();
                             currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_profile:

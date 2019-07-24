@@ -1,42 +1,28 @@
 package com.example.mentalhealthapp.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mentalhealthapp.ChatsListAdapter;
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.TagsAdapter;
 import com.example.mentalhealthapp.model.Chat;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import chatApp.ChatApp;
-import chatApp.ConnectionHandle;
+public class ChatListFragment extends Fragment {
 
-import chatApp.ChatApp;
-
-public class RecieverChatsFragment extends Fragment {
-
-    ParseUser currentUser = ParseUser.getCurrentUser();
-    ChatApp chatApp;
     List<Chat> chats;
     RecyclerView rvChatsList;
     ChatsListAdapter chatListAdapter;
@@ -44,7 +30,7 @@ public class RecieverChatsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_reciever_chats, container, false);
+        return inflater.inflate(R.layout.fragment_chat_list, container, false);
     }
 
     @Override
@@ -69,6 +55,11 @@ public class RecieverChatsFragment extends Fragment {
         query.setLimit(50);
         query.include("helper");
         query.include("reciever");
+        if(ParseUser.getCurrentUser().getBoolean("helper")){
+            query.whereEqualTo("helper", ParseUser.getCurrentUser());
+        }else{
+            query.whereEqualTo("reciever",ParseUser.getCurrentUser());
+        }
         query.findInBackground(new FindCallback<Chat>() {
             @Override
             public void done(List<Chat> objects, ParseException e) {
@@ -83,6 +74,4 @@ public class RecieverChatsFragment extends Fragment {
 
         return null;
     }
-
-
 }
