@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.mentalhealthapp.R;
 import com.sendbird.android.ApplicationUserListQuery;
 import com.sendbird.android.BaseChannel;
+import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.GroupChannelParams;
@@ -78,6 +79,10 @@ public class ChatApp extends Application {
                 }
             }
         });
+    }
+
+    public void onMessageReceived(BaseChannel channel, BaseMessage message){
+
     }
 
     public static void sendMessageText(GroupChannel groupChannel, final String message, final GetStringHandle handle){
