@@ -78,7 +78,7 @@ public class RecieverSearchPageFragment extends Fragment {
         rvTags.setLayoutManager(layoutManager);
     }
     private void getAllTags() {
-        //TODO SEARCH BAR REGEX
+        //TODO SEARCH BAR  (?)
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
         postsQuery.setLimit(50);
         /*We decided load all tags (and on code select which ones match with the search FOR LATER)

@@ -11,7 +11,7 @@ public class User extends ParseUser {
 
     User(){ }
 
-    public boolean getHelper(){
+    public boolean isHelper(){
         return getBoolean(KEY_HELPER);
     }
 

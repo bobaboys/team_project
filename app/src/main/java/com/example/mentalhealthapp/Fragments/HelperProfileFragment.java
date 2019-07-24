@@ -34,7 +34,7 @@ public class HelperProfileFragment extends Fragment {
     protected ImageView helperProfileAvatar;
     protected TextView helperProfileTags;
     protected TextView helperProfileChats;
-    //protected FloatingActionButton editHelperProfile;
+    protected FloatingActionButton editHelperProfile;
     ParseUser currentUser;
 
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
@@ -61,12 +61,12 @@ public class HelperProfileFragment extends Fragment {
         helperProfileTags = view.findViewById(R.id.tvMyTags_helper_profile);
         helperProfileChats = view.findViewById(R.id.tvMyChats_helper_profile);
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
-        //editHelperProfile = view.findViewById(R.id.f);
+        editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
 
         currentUser = ParseUser.getCurrentUser();
         helperProfileBio.setText(currentUser.getString("helperBio"));
         logOutbtn.setOnClickListener(logoutBtnListener);
-/*        editHelperProfile.setOnClickListener(new View.OnClickListener() {
+        editHelperProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clearTags();
@@ -77,7 +77,7 @@ public class HelperProfileFragment extends Fragment {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
-        });*/
+        });
         populateTags();
     }
 
