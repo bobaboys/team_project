@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mentalhealthapp.OpenChatActivity;
@@ -31,6 +30,7 @@ public class HelperChatsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Intent intent = new Intent(getContext(), OpenChatActivity.class);
+
         intent.putExtra("group_channel",
                 "sendbird_group_channel_129355554_09bc7db20f640928ed708b764866c07404c66860");
         startActivity(intent);

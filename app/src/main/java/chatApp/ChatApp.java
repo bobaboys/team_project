@@ -3,7 +3,6 @@ package chatApp;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.parse.ParseUser;
@@ -40,6 +39,8 @@ public class ChatApp extends Application {
     public static final String TAG = ChatApp.class.getSimpleName();
     private static ChatApp single_instance = null;
 
+
+    private User sendBirdUser;
     private String APP_ID;
     private ChatApp(){}
     @Override
@@ -265,5 +266,14 @@ public class ChatApp extends Application {
     //getters and setters
     public String getAPP_ID() {
         return APP_ID;
+    }
+
+
+    public User getSendBirdUser() {
+        return sendBirdUser;
+    }
+
+    public void setSendBirdUser(User sendBirdUser) {
+        this.sendBirdUser = sendBirdUser;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.mentalhealthapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,29 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.model.Chat;
-import com.example.mentalhealthapp.model.User;
 import com.parse.ParseUser;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
-import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.UserMessage;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import Utils.Utils;
-import chatApp.ChatApp;
-import chatApp.ChatAppTag;
-import chatApp.CreateChatHandle;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import okhttp3.internal.Util;
 
 public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.ViewHolder>  {
 
@@ -124,10 +112,10 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
                 int radius = 30; // corner radius, higher value = more rounded
                 int margin = 10; // crop margin, set to 0 for corners with no crop
-                Glide.with(context)
-                        .load(imageUrl)
-                        .bitmapTransform(new RoundedCornersTransformation(context, radius, margin))
-                        .into(chatUserPic);
+//                Glide.with(context)
+//                        .load(imageUrl)
+//                        .bitmapTransform(new RoundedCornersTransformation(context, radius, margin))
+//                        .into(chatUserPic);
             }
 
         }

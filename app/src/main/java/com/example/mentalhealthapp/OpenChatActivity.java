@@ -16,6 +16,7 @@ import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.sendbird.android.SendBirdException;
+import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 
 import org.parceler.Parcels;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chatApp.ChatApp;
+import chatApp.ConnectionHandle;
 import chatApp.CreateChatHandle;
 import chatApp.GetStringHandle;
 
@@ -75,26 +77,36 @@ public class OpenChatActivity extends AppCompatActivity {
         assignViewsAndListener();
         setRecyclerView();
 
-
-        String groupChannelStr = getIntent().getStringExtra("group_channel");
-        //find correct chat from group channel string
-
-        ChatApp.getChat(groupChannelStr, new CreateChatHandle() {
+        ChatApp chatApp = ChatApp.getInstance();
+        chatApp.startChatApp(this);
+        chatApp.connectToServer(currentUser.getObjectId(), new ConnectionHandle() {
             @Override
-            public void onSuccess(String TAG, GroupChannel groupChannel) {
-                Toast.makeText(OpenChatActivity.this, "group channel found successfully", Toast.LENGTH_LONG).show();
-                populateChat(groupChannel);
+            public void onSuccess(String TAG, User user) {
+                String groupChannelStr = "sendbird_group_channel_129355554_09bc7db20f640928ed708b764866c07404c66860";
+                //find correct chat from group channel string
+                ChatApp.getChat(groupChannelStr, new CreateChatHandle() {
+                    @Override
+                    public void onSuccess(String TAG, GroupChannel groupChannel) {
+                        OpenChatActivity.this.groupChannel = groupChannel;
+                        Toast.makeText(OpenChatActivity.this, "group channel found successfully", Toast.LENGTH_LONG).show();
+                        populateChat(groupChannel);
 
+                    }
+
+                    @Override
+                    public void onFailure(String TAG, Exception e) {
+                        Log.e("OPEN_CHAT_ACTIVITY", "accessing channel failed");
+                        e.printStackTrace();
+                    }
+                });
             }
 
             @Override
             public void onFailure(String TAG, Exception e) {
-                Log.e("OPEN_CHAT_ACTIVITY", "accessing channel failed");
                 e.printStackTrace();
+                //TODO offline view ?
             }
         });
-
-
 
     }
 
@@ -110,7 +122,7 @@ public class OpenChatActivity extends AppCompatActivity {
 
     protected void setRecyclerView() {
         Log.d("setRecyclerView", "attaching adapter");
-        chatAdapter = new ChatsFragmentAdapter(context, messages);
+        chatAdapter = new ChatsFragmentAdapter(this, messages);
         rv_chatBubbles.setAdapter(chatAdapter);
         rv_chatBubbles.setLayoutManager(new LinearLayoutManager(context));
     }
@@ -131,14 +143,15 @@ public class OpenChatActivity extends AppCompatActivity {
         PreviousMessageListQuery prevMessageListQuery = groupChannel.createPreviousMessageListQuery();
         prevMessageListQuery.load(30, true, new PreviousMessageListQuery.MessageListQueryResult() {
             @Override
-            public void onResult(List<BaseMessage> messages, SendBirdException e) {
+            public void onResult( List<BaseMessage> ms, SendBirdException e) {
                 if (e != null) {    // Error.
                     return;
                 }
 
-                for (BaseMessage message : messages) {
-                    if (message instanceof UserMessage) {
-                        messages.add(message);
+                for (BaseMessage message : ms) {
+                    if (message.getMentionType().name().equals("USERS")) {
+                        UserMessage userm = (UserMessage)message;
+                        messages.add(userm);
                         chatAdapter.notifyItemInserted(messages.size() - 1);
                     }
                 }
