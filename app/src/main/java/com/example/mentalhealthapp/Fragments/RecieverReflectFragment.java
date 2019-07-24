@@ -7,13 +7,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 
 public class RecieverReflectFragment extends Fragment {
 
-    protected TextView testChat;
+    protected TextView journalDate;
+    protected CalendarView calendarView;
 
     @Nullable
     @Override
@@ -24,7 +26,15 @@ public class RecieverReflectFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        testChat = view.findViewById(R.id.recreflectTest);
+        journalDate = view.findViewById(R.id.myDate);
+        calendarView = view.findViewById(R.id.rec_calendarView);
 
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                String date = (month + 1) + "/" + dayOfMonth + "/" + year;
+                journalDate.setText(date);
+            }
+        });
     }
 }
