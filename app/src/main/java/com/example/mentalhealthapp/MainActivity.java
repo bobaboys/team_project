@@ -19,6 +19,10 @@ import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
 import com.parse.ParseUser;
+import com.sendbird.android.User;
+
+import chatApp.ChatApp;
+import chatApp.ConnectionHandle;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -36,11 +40,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextMessage = findViewById(R.id.message);
-
-        final boolean helper = currentUser.getBoolean(HELPER_FIELD);
-        final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView = findViewById(R.id.nav_view);
         currPage = findViewById(R.id.currPageName_main);
+
+        final boolean helper = currentUser.getBoolean(HELPER_FIELD);
+
+        ChatApp chatApp = ChatApp.getInstance();
+        chatApp.startChatApp(this);
+        chatApp.connectToServer(currentUser.getObjectId(), new ConnectionHandle() {
+            @Override
+            public void onSuccess(String TAG, User user) {
+                setFragment(helper);
+                //set default
+                bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+            }
+
+            @Override
+            public void onFailure(String TAG, Exception e) {
+                e.printStackTrace();
+                //TODO offline view ?
+            }
+        });
+    }
+
+
+    public void setFragment(final boolean helper){
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -98,9 +123,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        //set default
-        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
+
 
     public void replaceFragment(Fragment f){
         // Begin the transaction
