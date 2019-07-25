@@ -37,7 +37,6 @@ public class HelperDetailsActivity extends AppCompatActivity {
     public Button openChat;
     public ParseUser clickedHelper;
     public final String HELPER_BIO_FIELD = "helperBio";
-    private String APP_ID;
     ParseUser currentUser = ParseUser.getCurrentUser();
 
 

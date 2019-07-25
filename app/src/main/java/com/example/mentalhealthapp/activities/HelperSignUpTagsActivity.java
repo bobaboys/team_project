@@ -21,7 +21,7 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
     protected static final String HELPER_TAGS_PARSE_OBJECT = "HelperTags";
     protected static final String USER_PARSE_CLASS = "user";
     protected static final String COLOR_PARSE_ATTRIBUTE = "Color";
-    protected static final String TAG = "tag";
+    protected static final String TAG = "tag: ";
 
     CheckBox red;
     CheckBox orange;

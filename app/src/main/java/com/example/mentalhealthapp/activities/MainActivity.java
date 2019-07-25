@@ -4,20 +4,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.Fragments.ChatOverviewListFragment;
-import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
-import com.example.mentalhealthapp.Fragments.HelperSearchPageFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
+import com.example.mentalhealthapp.R;
 import com.parse.ParseUser;
 import com.sendbird.android.User;
 
@@ -29,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     public final String HELPER_FIELD = "helper";
     public BottomNavigationView bottomNavigationView;
+    public BottomNavigationView bottomHelperNavView;
     public TextView currPage;
 
     Fragment currentCentralFragment;
@@ -40,10 +40,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextMessage = findViewById(R.id.message);
-        bottomNavigationView = findViewById(R.id.nav_view);
-        currPage = findViewById(R.id.currPageName_main);
-
         final boolean helper = currentUser.getBoolean(HELPER_FIELD);
+        bottomHelperNavView = findViewById(R.id.nav_helper_view);
+        bottomNavigationView = findViewById(R.id.nav_view);
+        if(helper){
+            bottomNavigationView.setVisibility(View.GONE);
+        }else{
+            bottomHelperNavView.setVisibility(View.GONE);
+        }
+        currPage = findViewById(R.id.currPageName_main);
 
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
@@ -54,7 +59,11 @@ public class MainActivity extends AppCompatActivity {
                 chatApp.setSendBirdUser(user);
                 setFragment(helper);
                 //set default
-                bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+                if(helper){
+                    bottomHelperNavView.setSelectedItemId(R.id.navigation_helper_home);
+                }else{
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+                }
             }
 
             @Override
@@ -65,29 +74,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     public void setFragment(final boolean helper){
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment;
-
-                if(helper){
+        if(helper){
+            bottomHelperNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment fragment;
                     switch (item.getItemId()) {
-                        case R.id.navigation_home:
-                            fragment = new HelperSearchPageFragment();
-                            currPage.setText(R.string.home);
-                            break;
-                        case R.id.navigation_reflect:
-                            fragment = new HelperReflectFragment();
-                            currPage.setText(R.string.reflect);
-                            break;
-                        case R.id.navigation_chat:
+                        case R.id.navigation_helper_home:
                             fragment = new ChatOverviewListFragment();
                             currPage.setText(R.string.chats);
                             break;
-                        case R.id.navigation_profile:
+                        case R.id.navigation_helper_reflect:
+                            fragment = new HelperReflectFragment();
+                            currPage.setText(R.string.reflect);
+                            break;
+                        case R.id.navigation_helper_profile:
                             fragment = new HelperProfileFragment();
                             currPage.setText(R.string.profile);
                             break;
@@ -96,8 +98,15 @@ public class MainActivity extends AppCompatActivity {
                             currPage.setText(R.string.home);
                             break;
                     }
+                    replaceFragment(fragment);
+                    return true;
                 }
-                else{
+            });
+        }else{
+            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment fragment;
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
                             fragment = new RecieverSearchPageFragment();
@@ -120,11 +129,11 @@ public class MainActivity extends AppCompatActivity {
                             currPage.setText(R.string.home);
                             break;
                     }
+                    replaceFragment(fragment);
+                    return true;
                 }
-                replaceFragment(fragment);
-                return true;
-            }
-        });
+            });
+        }
     }
 
 
