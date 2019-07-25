@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -152,10 +151,12 @@
         android:id="@+id/btnTakePic_helpereditprofile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="20dp"
         android:text="take new pic"
+        app:layout_constraintEnd_toStartOf="@+id/btnChoosePic_helpereditprofile"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivAvatarPic_helpereditprofile" />
 
@@ -170,7 +171,7 @@
         android:layout_marginRight="8dp"
         android:text="choose new pic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.292"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnTakePic_helpereditprofile"
         app:layout_constraintTop_toBottomOf="@+id/ivAvatarPic_helpereditprofile" />
 </android.support.constraint.ConstraintLayout>
