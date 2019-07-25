@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,14 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-<<<<<<< HEAD:app/src/main/java/com/example/mentalhealthapp/adapters/ChatsFragmentAdapter.java
-import com.example.mentalhealthapp.activities.HelperDetailsActivity;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.HelperDetailsActivity;
 import com.parse.ParseUser;
-=======
 import com.sendbird.android.SendBird;
 import com.sendbird.android.UserMessage;
->>>>>>> 19ecb5cddd05d56f6b1eb0f59a879163a2ad934b:app/src/main/java/com/example/mentalhealthapp/ChatsFragmentAdapter.java
 
 import java.util.List;
 
@@ -64,14 +62,13 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
 
         public ViewHolder(View view) {
             super(view);
-            rvOpenChat = itemView.findViewById(R.id.rv_OpenChat);
+            rvOpenChat = itemView.findViewById(R.id.rv_open_chat);
             myMessage = itemView.findViewById(R.id.messages_Sender);
             theirMessage = itemView.findViewById(R.id.messages_receiver);
             //rvOpenChat.setVisibility(View.GONE);
         }
 
-<<<<<<< HEAD:app/src/main/java/com/example/mentalhealthapp/adapters/ChatsFragmentAdapter.java
-        @Override
+/*        @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
             if(position!=RecyclerView.NO_POSITION){
@@ -80,9 +77,7 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
 //                intent.putExtra("clicked_bio", Parcels.wrap(bio));
                 context.startActivity(intent);
             }
-        }
-=======
->>>>>>> 19ecb5cddd05d56f6b1eb0f59a879163a2ad934b:app/src/main/java/com/example/mentalhealthapp/ChatsFragmentAdapter.java
+        }*/
 
 
         public void bind(final UserMessage message){

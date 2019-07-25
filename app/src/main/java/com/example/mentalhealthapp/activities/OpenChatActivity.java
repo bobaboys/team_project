@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.adapters.ChatsFragmentAdapter;
 import com.parse.ParseUser;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;

@@ -21,7 +21,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatListFragment extends Fragment {
+public class ChatOverviewListFragment  extends Fragment {
 
     List<Chat> chats;
     RecyclerView rvChatsList;

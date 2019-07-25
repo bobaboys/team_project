@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.fragments;
+package com.example.mentalhealthapp.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mentalhealthapp.Fragments.HelperBiosFragment;
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.TagsAdapter;

@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.fragments;
+package com.example.mentalhealthapp.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,8 +26,8 @@ public class RecieverReflectFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        journalDate = view.findViewById(R.id.myDate);
-        calendarView = view.findViewById(R.id.rec_calendarView);
+        //journalDate = view.findViewById(R.id.myDate);
+        //calendarView = view.findViewById(R.id.rec_calendarView);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override

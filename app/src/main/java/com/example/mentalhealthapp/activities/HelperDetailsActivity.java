@@ -1,6 +1,6 @@
 package com.example.mentalhealthapp.activities;
 
-import android.content.Context;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,24 +9,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-<<<<<<< HEAD:app/src/main/java/com/example/mentalhealthapp/activities/HelperDetailsActivity.java
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.models.Chat;
 import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.Tag;
-=======
-import com.example.mentalhealthapp.model.Chat;
-import com.example.mentalhealthapp.model.Tag;
->>>>>>> 19ecb5cddd05d56f6b1eb0f59a879163a2ad934b:app/src/main/java/com/example/mentalhealthapp/HelperDetails.java
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sendbird.android.GroupChannel;
-import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
 
 import org.parceler.Parcels;
@@ -54,16 +47,6 @@ public class HelperDetailsActivity extends AppCompatActivity {
         public void onClick(View v) {
             ChatApp.createChat(currentUser, clickedHelper, false, new CreateChatHandle() {
                 @Override
-<<<<<<< HEAD:app/src/main/java/com/example/mentalhealthapp/activities/HelperDetailsActivity.java
-                public void onSuccess(String TAG, GroupChannel groupChannel) {
-                    Intent intent = new Intent(HelperDetailsActivity.this, OpenChatActivity.class);
-                    intent.putExtra("clicked_helper",Parcels.wrap(clickedHelper));
-                    //pass current group channel url to next activity
-                    String groupChannelUrl = groupChannel.getUrl();
-                    intent.putExtra("group_channel", groupChannelUrl);
-                    startActivity(intent);
-                    Log.d("OPEN CHAT:", "chat open successful");
-=======
                 public void onSuccess(String TAG, final GroupChannel groupChannel) {
                     // Check if row already exist
                     ParseQuery<Chat> query  = new ParseQuery<Chat>(Chat.class);
@@ -78,8 +61,6 @@ public class HelperDetailsActivity extends AppCompatActivity {
                             }
                         }
                     });
-
->>>>>>> 19ecb5cddd05d56f6b1eb0f59a879163a2ad934b:app/src/main/java/com/example/mentalhealthapp/HelperDetails.java
                 }
 
                 @Override
@@ -179,7 +160,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
     }
 
     public void openChatFragment(GroupChannel groupChannel){
-        Intent intent = new Intent(HelperDetails.this, OpenChatActivity.class);
+        Intent intent = new Intent(HelperDetailsActivity.this, OpenChatActivity.class);
         intent.putExtra("clicked_helper",Parcels.wrap(clickedHelper));
         //pass current group channel url to next activity
         String groupChannelUrl = groupChannel.getUrl();

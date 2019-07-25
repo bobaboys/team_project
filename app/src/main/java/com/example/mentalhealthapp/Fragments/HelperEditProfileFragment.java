@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.fragments;
+package com.example.mentalhealthapp.Fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
 import com.example.mentalhealthapp.models.HelperTags;

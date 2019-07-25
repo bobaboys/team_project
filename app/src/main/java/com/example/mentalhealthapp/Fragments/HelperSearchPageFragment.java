@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.fragments;
+package com.example.mentalhealthapp.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
