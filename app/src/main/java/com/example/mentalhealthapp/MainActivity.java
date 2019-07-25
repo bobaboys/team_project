@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         chatApp.connectToServer(currentUser.getObjectId(), new ConnectionHandle() {
             @Override
             public void onSuccess(String TAG, User user) {
+                ChatApp chatApp = ChatApp.getInstance();
+                chatApp.setSendBirdUser(user);
                 setFragment(helper);
                 //set default
                 bottomNavigationView.setSelectedItemId(R.id.navigation_home);
