@@ -31,6 +31,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_reciever_menu" />
 
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/nav_helper_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_helper_menu" />
+
     <FrameLayout
         android:id="@+id/flContainer_main"
         android:layout_width="395dp"
