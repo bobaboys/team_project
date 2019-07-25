@@ -52,7 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
     private final View.OnClickListener takeAvatarPicListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-                onLaunchCamera();
+            onLaunchCamera();
         }
     };
 
@@ -85,7 +85,14 @@ public class SignUpActivity extends AppCompatActivity {
         AssignViewsAndListeners();
     }
 
-    public void signUp(String username, String password, String email, final Boolean helper, final ParseFile parseFile){
+    public void checkEmailValid(final String email){
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        if(!email.matches(emailPattern)){
+            Toast.makeText(getApplicationContext(), "Email address is invalid", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void signUp(final String username, String password, final String email, final Boolean helper, final ParseFile parseFile){
         final ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
@@ -122,6 +129,17 @@ public class SignUpActivity extends AppCompatActivity {
                     }
 
                 }else{
+                    switch(e.getCode()){
+                        case ParseException.USERNAME_TAKEN:{
+                            Toast.makeText(SignUpActivity.this, "Username is already taken", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        case ParseException.EMAIL_TAKEN:{
+                            Toast.makeText(SignUpActivity.this, "Email is already taken", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                    }
+                    checkEmailValid(email);
                     Log.e("SignUpActivity", "Sign up failure", e);
                     e.printStackTrace();
                 }
