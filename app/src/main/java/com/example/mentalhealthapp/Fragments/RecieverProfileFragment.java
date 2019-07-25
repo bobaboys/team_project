@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp.Fragments;
+package com.example.mentalhealthapp.fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mentalhealthapp.LoginActivity;
+import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.R;
 import com.parse.ParseFile;
 import com.parse.ParseUser;

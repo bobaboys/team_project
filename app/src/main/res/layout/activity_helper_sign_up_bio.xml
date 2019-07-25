@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HelperSignUpBio">
+    tools:context=".activities.HelperSignUpBioActivity">
 
     <TextView
         android:id="@+id/tvBioPrompt_helperSignUpBios"

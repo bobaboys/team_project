@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.mentalhealthapp.ChatsListAdapter;
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.model.Chat;
+import com.example.mentalhealthapp.models.Chat;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

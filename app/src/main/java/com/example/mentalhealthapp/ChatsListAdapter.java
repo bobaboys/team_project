@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.mentalhealthapp.model.Chat;
+import com.example.mentalhealthapp.activities.OpenChatActivity;
+import com.example.mentalhealthapp.models.Chat;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
