@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:clipToPadding="false"
     android:paddingVertical="10dp"
-    android:paddingRight="15dp"
     android:paddingLeft="60dp"
-    android:clipToPadding="false">
+    android:paddingRight="15dp">
 
     <TextView
+        android:id="@+id/my_message_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/message_body"
-        android:background="@drawable/my_chat_bubble"
-        android:textColor="#fff"
-        android:padding="10dp"
-        android:elevation="2dp"
-        android:textSize="18dp"
         android:layout_alignParentRight="true"
-        android:text="Placeholder message"
-        />
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/my_chat_bubble"
+        android:elevation="2dp"
+        android:padding="10dp"
+        android:text="@string/lorem_short"
+        android:textColor="#fff"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

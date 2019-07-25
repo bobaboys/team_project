@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mentalhealthapp.ChatsListAdapter;
+import com.example.mentalhealthapp.adapters.ChatsListAdapter;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.models.Chat;
 import com.parse.FindCallback;
@@ -67,7 +67,10 @@ public class ChatOverviewListFragment  extends Fragment {
                     e.printStackTrace();
                     return;
                 }
-                chats.addAll(objects);
+                for(Chat c: objects){
+                    chats.add(0, c);
+                }
+                //chats.addAll(objects);
                 chatListAdapter.notifyDataSetChanged();
             }
         });

@@ -114,7 +114,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
     }
 
     public void populateBioAndTags(){
-        clickedHelper = (ParseUser) Parcels.unwrap(getIntent().getParcelableExtra("clicked_bio"));
+        clickedHelper = (ParseUser) getIntent().getParcelableExtra("clicked_bio");
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
         query.include("user");
         query.include("Tag");
@@ -161,7 +161,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
 
     public void openChatFragment(GroupChannel groupChannel){
         Intent intent = new Intent(HelperDetailsActivity.this, OpenChatActivity.class);
-        intent.putExtra("clicked_helper",Parcels.wrap(clickedHelper));
+        intent.putExtra("clicked_helper",clickedHelper);
         //pass current group channel url to next activity
         String groupChannelUrl = groupChannel.getUrl();
         intent.putExtra("group_channel", groupChannelUrl);

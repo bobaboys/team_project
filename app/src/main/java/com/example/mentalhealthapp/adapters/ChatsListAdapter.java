@@ -1,4 +1,4 @@
-package com.example.mentalhealthapp;
+package com.example.mentalhealthapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.OpenChatActivity;
 import com.example.mentalhealthapp.models.Chat;
 import com.parse.ParseException;
@@ -156,16 +157,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }catch (NullPointerException e){
                 e.printStackTrace();
             }
-        }
-
-
-        public Member getAdressee(List<Member> members, String id){
-            for(Member m: members){
-                if(m.getUserId().equals(id)){
-                    return m;
-                }
-            }
-            return null;
         }
 
         public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse){
