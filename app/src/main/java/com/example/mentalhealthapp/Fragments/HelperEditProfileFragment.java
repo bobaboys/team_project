@@ -193,7 +193,6 @@ public class HelperEditProfileFragment extends Fragment {
         photoFile = getPhotoFileUri(photoFileName);
         Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
@@ -206,7 +205,6 @@ public class HelperEditProfileFragment extends Fragment {
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
             Log.d(TAG, "failed to create directory");
         }
-
         // Return the file target for the photo based on filename
         File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
         return file;
@@ -229,7 +227,6 @@ public class HelperEditProfileFragment extends Fragment {
             ParseFile avatarFile = currUser.getParseFile(AVATAR_FIELD);
             Bitmap bm = convertFileToBitmap(avatarFile);
             avatarPic.setImageBitmap(bm);
-
         }
     }
 

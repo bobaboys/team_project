@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,9 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mentalhealthapp.OpenChatActivity;
 import com.example.mentalhealthapp.R;
 import com.parse.ParseUser;
 import com.sendbird.android.SendBird;
@@ -22,21 +23,23 @@ import chatApp.ConnectionHandle;
 
 public class HelperChatsFragment extends Fragment {
 
-    protected TextView testChat;
-    private String APP_ID;
     ParseUser currentUser = ParseUser.getCurrentUser();
     private String APP_CHAT_ID;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Intent intent = new Intent(getContext(), OpenChatActivity.class);
+
+        intent.putExtra("group_channel",
+                "sendbird_group_channel_129355554_09bc7db20f640928ed708b764866c07404c66860");
+        startActivity(intent);
         return inflater.inflate(R.layout.fragment_helper_chats, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        testChat = view.findViewById(R.id.chatTest);
         startChatApp(getContext());
         connectUserToChat();
     }

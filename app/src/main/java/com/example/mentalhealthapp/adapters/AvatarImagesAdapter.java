@@ -52,7 +52,6 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         Integer avatar = avatarImages.get(i);
-        currUser = ParseUser.getCurrentUser();
         viewHolder.rootView.setTag(avatar);
 
         SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>() {
@@ -92,29 +91,34 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
             if (position != RecyclerView.NO_POSITION) {
                 Integer avatar = avatarImages.get(position);
 
-                //saving avatar image to parse server under current user avatar image file field
-                Bitmap avatarBitmap = (Bitmap) BitmapFactory.decodeResource(mActivity.getResources(), avatar);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                avatarBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] picData = stream.toByteArray();
+                //for editing: saving avatar image to parse server under current user avatar image file field
+                if(ParseUser.getCurrentUser()!=null) {
+                    Bitmap avatarBitmap = (Bitmap) BitmapFactory.decodeResource(mActivity.getResources(), avatar);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    avatarBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] picData = stream.toByteArray();
 
-                ParseFile imageFile = new ParseFile("image.png", picData);
-                currUser.put(AVATAR_FIELD, imageFile);
-                currUser.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e!=null){
-                            Log.d(TAG, "Error while saving");
-                            e.printStackTrace();
-                            return;
+                    ParseFile imageFile = new ParseFile("image.png", picData);
+                    currUser.put(AVATAR_FIELD, imageFile);
+                    currUser.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.d(TAG, "Error while saving");
+                                e.printStackTrace();
+                                return;
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                //for sign up: send avatar id back to sign up intent
+                else{
+                    Intent resultData = new Intent();
+                    resultData.putExtra(CLICKED_AVATAR_KEY,avatar);
+                    mActivity.setResult(Activity.RESULT_OK, resultData);
+                    mActivity.finish();
+                }
 
-                Intent resultData = new Intent();
-                resultData.putExtra(CLICKED_AVATAR_KEY,avatar);
-                mActivity.setResult(Activity.RESULT_OK, resultData);
-                mActivity.finish();
             }
         }
 

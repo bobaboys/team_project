@@ -5,8 +5,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.mentalhealthapp.R;
+import com.parse.ParseUser;
 import com.sendbird.android.ApplicationUserListQuery;
 import com.sendbird.android.BaseChannel;
+import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelListQuery;
 import com.sendbird.android.GroupChannelParams;
@@ -37,6 +39,8 @@ public class ChatApp extends Application {
     public static final String TAG = ChatApp.class.getSimpleName();
     private static ChatApp single_instance = null;
 
+
+    private User sendBirdUser;
     private String APP_ID;
     private ChatApp(){}
     @Override
@@ -78,6 +82,10 @@ public class ChatApp extends Application {
                 }
             }
         });
+    }
+
+    public void onMessageReceived(BaseChannel channel, BaseMessage message){
+
     }
 
     public static void sendMessageText(GroupChannel groupChannel, final String message, final GetStringHandle handle){
@@ -149,14 +157,14 @@ public class ChatApp extends Application {
 
 
     //Chats
-    public static void createChat(String userCreator, String userHelper, boolean isEmergency, final CreateChatHandle handle){
+    public static void createChat(ParseUser userCreator, ParseUser userHelper, boolean isEmergency, final CreateChatHandle handle){
         //Method called when want to create a new chat.
         List<String> userIds = new ArrayList<>();
-        userIds.add(userCreator);
-        userIds.add(userHelper);
+        userIds.add(userCreator.getObjectId());
+        userIds.add(userHelper.getObjectId());
 
         List<String> operatorIds = new ArrayList<>();
-        operatorIds.add(userHelper);
+        operatorIds.add(userHelper.getObjectId());
 
         GroupChannelParams params = new GroupChannelParams() // we create a new channel / chat with certain characteristics
                 .setPublic(false) // private conversation between helper and receiver.
@@ -258,5 +266,14 @@ public class ChatApp extends Application {
     //getters and setters
     public String getAPP_ID() {
         return APP_ID;
+    }
+
+
+    public User getSendBirdUser() {
+        return sendBirdUser;
+    }
+
+    public void setSendBirdUser(User sendBirdUser) {
+        this.sendBirdUser = sendBirdUser;
     }
 }

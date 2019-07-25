@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,21 +14,30 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mentalhealthapp.ChatsListAdapter;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.TagsAdapter;
+import com.example.mentalhealthapp.model.Chat;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
 
 public class RecieverChatsFragment extends Fragment {
 
-    protected TextView testChat;
-    private String APP_ID;
     ParseUser currentUser = ParseUser.getCurrentUser();
-    private String APP_CHAT_ID;
-
+    ChatApp chatApp;
+    List<Chat> chats;
+    RecyclerView rvChatsList;
+    ChatsListAdapter chatListAdapter;
 
     @Nullable
     @Override
@@ -37,35 +48,39 @@ public class RecieverChatsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        testChat = view.findViewById(R.id.recchatTest);
-        startChatApp(getContext());
-        connectUserToChat();
+        rvChatsList = view.findViewById(R.id.rvChatsList);
+        chats = new ArrayList<>();
+        setRecyclerView();
+        getListUrlChats();
+
     }
 
-    public  void startChatApp(Context context){
-        APP_CHAT_ID = context.getString(R.string.APP_CHAT_ID);
-        SendBird.init(APP_CHAT_ID, context);
-        //This api is called using only our secret App ID.
+    private void setRecyclerView() {
+        chatListAdapter = new ChatsListAdapter(this.getContext(), chats);
+        rvChatsList.setAdapter(chatListAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        rvChatsList.setLayoutManager(layoutManager);
     }
-    private void connectUserToChat() {
-        //connects logged in or new user to chat server
-        String currUserObjID = currentUser.getObjectId();
-        final ChatApp chatApp = ChatApp.getInstance();
-        chatApp.startChatApp(getContext());
-        chatApp.connectToServer(currUserObjID, new  ConnectionHandle(){
+
+    public ArrayList<String> getListUrlChats() {
+        ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
+        query.setLimit(50);
+        query.include("helper");
+        query.include("reciever");
+        query.findInBackground(new FindCallback<Chat>() {
             @Override
-            public void onSuccess(String TAG, User user){
-                //call new intent to start chat
-                Log.d(TAG, "Connection successful with user: " + user);
-                Toast.makeText(getContext(), "Chat connection successful!", Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onFailure(String TAG, Exception e){
-                Log.e(TAG,"Chat connection failed");
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Chat failed!", Toast.LENGTH_LONG).show();
+            public void done(List<Chat> objects, ParseException e) {
+                if(e!=null){
+                    e.printStackTrace();
+                    return;
+                }
+                chats.addAll(objects);
+                chatListAdapter.notifyDataSetChanged();
             }
         });
+
+        return null;
     }
+
 
 }

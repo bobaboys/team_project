@@ -5,5 +5,8 @@ import com.parse.ParseObject;
 
 @ParseClassName("Chat")
 public class Chat extends ParseObject {
+
+
     public Chat(){}
+
 }
