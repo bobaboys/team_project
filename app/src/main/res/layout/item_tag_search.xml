@@ -11,13 +11,14 @@
     android:layout_marginRight="20dp"
     android:clickable="false"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="#F5AFCB"
+    card_view:cardBackgroundColor="#E4D1F7"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="3dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="wrap_content"
+        android:background="#009C3E3E">
 
         <CheckBox
             android:id="@+id/cb_tag_select"
@@ -25,12 +26,13 @@
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/lorem"
-            android:textSize="30sp"
-            android:textStyle="italic"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="13dp"
+            android:textStyle="normal"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toStartOf="@+id/ic_tag_description"
             card_view:layout_constraintHorizontal_bias="0.5"
@@ -43,10 +45,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="0dp"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.5"

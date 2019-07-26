@@ -86,7 +86,6 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(mActivity, "clicked!", Toast.LENGTH_LONG).show();
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Integer avatar = avatarImages.get(position);

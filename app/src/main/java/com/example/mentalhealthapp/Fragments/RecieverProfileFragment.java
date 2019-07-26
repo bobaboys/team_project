@@ -22,10 +22,13 @@ import android.widget.Toast;
 
 import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.io.File;
+
+import Utils.Utils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -83,6 +86,9 @@ public class RecieverProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         testChat = view.findViewById(R.id.recprofileTest);
         recProfileAvatar = view.findViewById(R.id.ivAvatar_reciever_profile);
+        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
+        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+        recProfileAvatar.setImageBitmap(bm);
         recProfileTags = view.findViewById(R.id.tvMyTags_reciever_profile);
         recProfileChats = view.findViewById(R.id.tvMyChats_reciever_profile);
         currentUser = ParseUser.getCurrentUser();

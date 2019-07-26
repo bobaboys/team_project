@@ -142,6 +142,7 @@ public class SignUpActivity extends AppCompatActivity {
         chooseAvatar = findViewById(R.id.btnPickAvatar_signUpActivity);
         chooseAvatar.setOnClickListener(chooseAvatarListener);
         avatarPic = findViewById(R.id.ivAvatarPic_SignUpActivity);
+        avatarPic.setImageResource(R.drawable.blank_profile_picture);
 
     }
     public void onLaunchCamera() {
@@ -176,9 +177,6 @@ public class SignUpActivity extends AppCompatActivity {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
                 avatarPic.setImageBitmap(takenImage);
-
-            } else { // Result was a failure
-                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
 
         if(requestCode == CHOOSE_AVATAR_REQUEST && resultCode == RESULT_OK){

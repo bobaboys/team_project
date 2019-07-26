@@ -13,6 +13,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,39 +28,44 @@ import android.widget.Toast;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
+import com.example.mentalhealthapp.adapters.TagsAdapter;
+import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
+import com.example.mentalhealthapp.models.Tag;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import Utils.Utils;
 
 import static android.app.Activity.RESULT_OK;
 
 public class HelperEditProfileFragment extends Fragment {
 
     protected EditText editHelperBio;
-    protected CheckBox red;
-    protected CheckBox orange;
-    protected CheckBox yellow;
-    protected CheckBox green;
-    protected CheckBox blue;
-    protected CheckBox purple;
     protected Button saveChanges;
     protected Button takePic;
     protected Button choosePic;
     protected ImageView avatarPic;
+    protected RecyclerView rvTags;
     protected ArrayList<CheckBox> checkboxes = new ArrayList<CheckBox>();
     public final String TAG = "Helper Profile Edit:";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
-    String AVATAR_FIELD = "avatar";
-    File photoFile;
-    String CLICKED_AVATAR_KEY = "clicked_avatar";
-    static final int CHOOSE_AVATAR_REQUEST = 333;
-    ParseUser currUser;
+    protected String AVATAR_FIELD = "avatar";
+    protected File photoFile;
+    protected String CLICKED_AVATAR_KEY = "clicked_avatar";
+    public static final int CHOOSE_AVATAR_REQUEST = 333;
+    protected ParseUser currUser;
+    protected  List<Tag> tags;
+    protected TagsAdapter tagsAdapter;
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
@@ -69,7 +76,7 @@ public class HelperEditProfileFragment extends Fragment {
                 editPhoto(user);
             }
             editBio(user);
-            editTags(user, checkboxes);
+            editTags(user);
             switchFragments();
         }
     };
@@ -99,28 +106,20 @@ public class HelperEditProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         assignViewsAndListeners(view);
+        setAndPopulateRvTags();
+        getAllTags();
         currUser = ParseUser.getCurrentUser();
     }
 
     private void assignViewsAndListeners(View view) {
+        rvTags = view.findViewById(R.id.rvTags_HelperEditProfile);
         editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
-        red = view.findViewById(R.id.checkBox_Red_HelperEditProfile);
-        orange = view.findViewById(R.id.checkBox_Orange_HelperEditProfile);
-        yellow = view.findViewById(R.id.checkBox_Yellow_HelperEditProfile);
-        green = view.findViewById(R.id.checkBox_Green_HelperEditProfile);
-        blue = view.findViewById(R.id.checkBox_Blue_HelperEditProfile);
-        purple = view.findViewById(R.id.checkBox_Purple_HelperEditProfile);
         saveChanges = view.findViewById(R.id.btn_SaveChanges_HelperEditProfile);
-
-        checkboxes.add(red);
-        checkboxes.add(orange);
-        checkboxes.add(yellow);
-        checkboxes.add(green);
-        checkboxes.add(blue);
-        checkboxes.add(purple);
-
         saveChanges.setOnClickListener(saveChangesListener);
         avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);
+        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
+        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+        avatarPic.setImageBitmap(bm);
         takePic = view.findViewById(R.id.btnTakePic_helpereditprofile);
         takePic.setOnClickListener(takePicListener);
         choosePic = view.findViewById(R.id.btnChoosePic_helpereditprofile);
@@ -129,7 +128,7 @@ public class HelperEditProfileFragment extends Fragment {
     }
 
     public void editBio(ParseUser user){
-        user.put("helperBio", editHelperBio.getText().toString());
+        user.put(Constants.HELPER_BIO_FIELD, editHelperBio.getText().toString());
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -142,24 +141,21 @@ public class HelperEditProfileFragment extends Fragment {
         });
     }
 
-    public void editTags(ParseUser user, ArrayList<CheckBox> checkboxes){
-        for(int i = 0; i < checkboxes.size(); i++){
-            CheckBox box = checkboxes.get(i);
-            if(checkboxes.get(i).isChecked()){
-                CharSequence text = box.getText();
-                HelperTags tags = new HelperTags();
-                tags.setHelperTags(user, text.toString());
-                tags.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e!=null){
-                            Log.d(TAG, "Error while saving");
-                            e.printStackTrace();
-                            return;
-                        }
+    public void editTags(ParseUser user){
+        //save all tags on server for parse user
+        for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
+            HelperTags helperTags = new HelperTags();
+            helperTags.setHelperTags(user, tagsAdapter.selectedTags.get(i));
+            helperTags.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e!=null){
+                        Log.d(TAG, "Error while saving");
+                        e.printStackTrace();
+                        return;
                     }
-                }); //this saves it onto the server
-            }
+                }
+            });
         }
     }
 
@@ -226,26 +222,37 @@ public class HelperEditProfileFragment extends Fragment {
         if(requestCode == CHOOSE_AVATAR_REQUEST && resultCode == RESULT_OK){
             //get pic from parse user and set image view
             ParseFile avatarFile = currUser.getParseFile(AVATAR_FIELD);
-            Bitmap bm = convertFileToBitmap(avatarFile);
+            Bitmap bm = Utils.convertFileToBitmap(avatarFile);
             avatarPic.setImageBitmap(bm);
         }
     }
 
-    public Bitmap convertFileToBitmap(ParseFile picFile){
-        if(picFile == null){
-            return null;
-        }
-        try {
-            byte[] image = picFile.getData();
-            if(image!=null){
-                Bitmap pic = BitmapFactory.decodeByteArray(image, 0, image.length);
-                return pic;
+    private void setAndPopulateRvTags() {
+        tags = new ArrayList<>();
+        tagsAdapter = new TagsAdapter(getContext(), tags);
+        rvTags.setAdapter(tagsAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rvTags.setLayoutManager(layoutManager);
+    }
+
+    private void getAllTags() {
+        ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
+        postsQuery.setLimit(50);
+        /*We decided load all tags (and on code select which ones match with the search FOR LATER)
+         * we are concern that it could be lots of information on the database and we would need to set
+         * a limit of rows. In this case our tags are 50 tops. */
+        postsQuery.findInBackground(new FindCallback<Tag>() {
+            @Override
+            public void done(List<Tag> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error loading tags from parse server");
+                    e.printStackTrace();
+                    return;
+                }
+                tags.addAll(objects);
+                tagsAdapter.notifyDataSetChanged();
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return null;
+        });
     }
 
 }

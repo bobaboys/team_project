@@ -1,5 +1,11 @@
 package Utils;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import com.parse.ParseException;
+import com.parse.ParseFile;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,6 +27,23 @@ public class Utils {
             return simpleDateFormat.format(past);
 
         }
+    }
+
+    public static Bitmap convertFileToBitmap(ParseFile picFile){
+        if(picFile == null){
+            return null;
+        }
+        try {
+            byte[] image = picFile.getData();
+            if(image!=null){
+                Bitmap pic = BitmapFactory.decodeByteArray(image, 0, image.length);
+                return pic;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
     }
 }
 
