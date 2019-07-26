@@ -9,14 +9,19 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.TagsAdapter;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
@@ -59,7 +65,6 @@ public class HelperEditProfileFragment extends Fragment {
     protected String AVATAR_FIELD = "avatar";
     protected File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
-    protected ParseUser currUser;
     protected  List<Tag> tags;
     protected TagsAdapter tagsAdapter;
 
@@ -74,6 +79,14 @@ public class HelperEditProfileFragment extends Fragment {
             editBio(user);
             editTags(user);
             switchFragments();
+        }
+    };
+
+    protected View.OnTouchListener  touchListener = new View.OnTouchListener(){
+        @Override
+        public boolean onTouch(View v, MotionEvent event){
+            rvTags.setVisibility(ConstraintLayout.GONE);
+            return false;
         }
     };
 
@@ -104,13 +117,14 @@ public class HelperEditProfileFragment extends Fragment {
         assignViewsAndListeners(view);
         setAndPopulateRvTags();
         getAllTags();
-        currUser = ParseUser.getCurrentUser();
+        ((MainActivity)getContext()).currentCentralFragment = this;
     }
 
     private void assignViewsAndListeners(View view) {
         rvTags = view.findViewById(R.id.rvTags_HelperEditProfile);
         editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
         editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
+        editHelperBio.setOnTouchListener(touchListener);
         saveChanges = view.findViewById(R.id.btnSaveChange_Reciever_edit_profile);
         saveChanges.setOnClickListener(saveChangesListener);
         avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);
@@ -256,4 +270,11 @@ public class HelperEditProfileFragment extends Fragment {
 
     }
 
+    public RecyclerView getRvTags() {
+        return rvTags;
+    }
+
+    public void setRvTags(RecyclerView rvTags) {
+        this.rvTags = rvTags;
+    }
 }

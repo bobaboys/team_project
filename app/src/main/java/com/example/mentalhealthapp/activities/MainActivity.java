@@ -1,16 +1,20 @@
 package com.example.mentalhealthapp.activities;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mentalhealthapp.Fragments.ChatOverviewListFragment;
+import com.example.mentalhealthapp.Fragments.HelperEditProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public BottomNavigationView bottomHelperNavView;
     public TextView currPage;
 
-    Fragment currentCentralFragment;
+    public Fragment currentCentralFragment;
     final ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
@@ -151,4 +155,21 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
     }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if  (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
+            //Keyboard Hidden
+            //Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
+            if(currentCentralFragment.getClass().equals(HelperEditProfileFragment.class)){
+                RecyclerView rv = ((HelperEditProfileFragment)currentCentralFragment).getRvTags();
+                rv.setVisibility(RecyclerView.VISIBLE);
+
+            }
+        }
+    }
 }
+

@@ -91,7 +91,7 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView body, name;
+        public TextView body, name, myBody;
         public ImageView profileSender;
         LinearLayout myMessageLayout, yourMessageLayout;
 
@@ -104,17 +104,14 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
 
             name = view.findViewById(R.id.tv_author_message);
             profileSender = view.findViewById(R.id.iv_profile_pic_message);
-            if(isMyMessage){
-                body = view.findViewById(R.id.my_message_body);
-            }else{
-                body = view.findViewById(R.id.message_body);
-            }
+            myBody = view.findViewById(R.id.my_message_body);
+            body = view.findViewById(R.id.message_body);
         }
 
 
         public void bind(final UserMessage message){
             if(isMyMessage){
-                body.setText(message.getMessage());
+                myBody.setText(message.getMessage());
             }else{
                 body.setText(message.getMessage());
                 if(addressee==null)return;
