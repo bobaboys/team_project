@@ -71,8 +71,10 @@ public class SignUpActivity extends AppCompatActivity {
             String password = passwordInput.getText().toString();
             String email = emailInput.getText().toString();
             Boolean helper = radioGroup.getCheckedRadioButtonId() == R.id.radioBtnHelper_signup;
-            if(photoFile!=null){
-                parseFile = new ParseFile(photoFile);
+            if(parseFile==null){
+                Toast.makeText(SignUpActivity.this,"Please choose a profile picture!", Toast.LENGTH_SHORT).show();
+                return;
+
             }
             signUp(username, password, email, helper, parseFile);
         }
@@ -129,6 +131,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
 
                 }else{
+
                     switch(e.getCode()){
                         case ParseException.USERNAME_TAKEN:{
                             Toast.makeText(SignUpActivity.this, "Username is already taken", Toast.LENGTH_SHORT).show();
@@ -192,9 +195,18 @@ public class SignUpActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //if code is same as code which we started activity with
         if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+                //load taken image into image view
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                // Load the taken image into a preview
                 avatarPic.setImageBitmap(takenImage);
+
+                //assign taken photo to parse file
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] picData = stream.toByteArray();
+                parseFile = new ParseFile("image.png", picData);
+                Toast.makeText(SignUpActivity.this,"Parse file assigned", Toast.LENGTH_SHORT).show();
+
+                photoFile = null;
             }
 
         if(requestCode == CHOOSE_AVATAR_REQUEST && resultCode == RESULT_OK){
@@ -208,26 +220,10 @@ public class SignUpActivity extends AppCompatActivity {
             avatarBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] picData = stream.toByteArray();
             parseFile = new ParseFile("image.png", picData);
+            Toast.makeText(SignUpActivity.this,"Parse file assigned", Toast.LENGTH_SHORT).show();
             photoFile = null;
 
         }
-    }
-
-    public Bitmap convertFileToBitmap(ParseFile picFile){
-        if(picFile == null){
-            return null;
-        }
-        try {
-            byte[] image = picFile.getData();
-            if(image!=null){
-                Bitmap pic = BitmapFactory.decodeByteArray(image, 0, image.length);
-                return pic;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return null;
     }
 
 }
