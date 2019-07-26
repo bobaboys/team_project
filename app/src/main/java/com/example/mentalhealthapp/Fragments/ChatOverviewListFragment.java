@@ -55,11 +55,9 @@ public class ChatOverviewListFragment  extends Fragment {
         query.setLimit(50);
         query.include("helper");
         query.include("reciever");
-        if(ParseUser.getCurrentUser().getBoolean("helper")){
-            query.whereEqualTo("helper", ParseUser.getCurrentUser());
-        }else{
-            query.whereEqualTo("reciever",ParseUser.getCurrentUser());
-        }
+        boolean isHelper= ParseUser.getCurrentUser().getBoolean("helper");
+        query.whereEqualTo(isHelper?"helper":"reciever",ParseUser.getCurrentUser());
+
         query.findInBackground(new FindCallback<Chat>() {
             @Override
             public void done(List<Chat> objects, ParseException e) {
@@ -76,5 +74,8 @@ public class ChatOverviewListFragment  extends Fragment {
         });
 
         return null;
+    }
+    private void orderChatsByTimestamp(){
+
     }
 }
