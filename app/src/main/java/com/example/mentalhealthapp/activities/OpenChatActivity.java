@@ -13,10 +13,13 @@ import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.ChatsFragmentAdapter;
+import com.parse.Parse;
 import com.parse.ParseUser;
+import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.PreviousMessageListQuery;
+import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
@@ -41,51 +44,29 @@ public class OpenChatActivity extends AppCompatActivity {
     ChatsFragmentAdapter chatAdapter;
     ArrayList<UserMessage> messages;
     Context context;
-    private String APP_ID;
-    ParseUser currentUser = ParseUser.getCurrentUser();
     GroupChannel groupChannel;
-
+    String groupChannelStr;
 
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             //send message to server
             final String chatMessageString = chatMessage.getText().toString();
-            String groupChannelStr = getIntent().getStringExtra("group_channel");
             //find correct chat from group channel string
-            ChatApp.getChat(groupChannelStr, new CreateChatHandle() {
-
+            groupChannel.sendUserMessage(chatMessageString, new BaseChannel.SendUserMessageHandler() {
                 @Override
-                public void onSuccess(String TAG, GroupChannel groupChannel) {
-                    Toast.makeText(OpenChatActivity.this,"group channel found successfully", Toast.LENGTH_LONG).show();
-
-                    //sent message into that chat
-                    ChatApp.sendMessageText(groupChannel, chatMessageString, new GetStringHandle() {
-
-                        @Override
-                        public void onSuccess(String TAG, String channelUrl) {
-                            Toast.makeText(OpenChatActivity.this,"chat message sent successfully", Toast.LENGTH_LONG).show();
-                            //update recycler view
-                        }
-
-
-                        @Override
-                        public void onFailure(String TAG, Exception e) {
-                            e.printStackTrace();
-                            Log.e("OPEN_CHAT_ACTIVITY", "sending chat failed");
-                        }
-                    });
-                }
-
-
-                @Override
-                public void onFailure(String TAG, Exception e) {
-                    e.printStackTrace();
-                    Log.e("OPEN_CHAT_ACTIVITY", "sending chat failed");
+                public void onSent(UserMessage userMessage, SendBirdException e) {
+                    if(e!=null){
+                        Toast.makeText(OpenChatActivity.this,"Message not sent",Toast.LENGTH_LONG ).show();
+                        e.printStackTrace();
+                        return;
+                    }
+                    //You add this new message to the lowest part of the chat
+                    messages.add(userMessage);
+                    chatAdapter.notifyItemInserted(messages.size()-1);
+                    rv_chatBubbles.scrollToPosition(messages.size()-1);
                 }
             });
-
         }
     };
 
@@ -93,17 +74,24 @@ public class OpenChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_open_chat);
+
+        groupChannelStr = getIntent().getStringExtra("group_channel");
         messages = new ArrayList<>();
+
         assignViewsAndListener();
         setRecyclerView();
+        getConnectionAndChat();
+    }
 
+
+    private void getConnectionAndChat(){
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
-        chatApp.connectToServer(currentUser.getObjectId(), new ConnectionHandle() {
+        chatApp.connectToServer(ParseUser.getCurrentUser().getObjectId(), new ConnectionHandle() {
             @Override
             public void onSuccess(String TAG, User user) {
-                String groupChannelStr = "sendbird_group_channel_129355554_09bc7db20f640928ed708b764866c07404c66860";
                 //find correct chat from group channel string
                 ChatApp.getChat(groupChannelStr, new CreateChatHandle() {
                     @Override
@@ -111,13 +99,15 @@ public class OpenChatActivity extends AppCompatActivity {
                         OpenChatActivity.this.groupChannel = groupChannel;
                         Toast.makeText(OpenChatActivity.this, "group channel found successfully", Toast.LENGTH_LONG).show();
                         populateChat(groupChannel);
-
+                        sendBtn.setClickable(true); // now you are able to click and send messages.
+                        setChannelHandler(groupChannelStr);
                     }
 
                     @Override
                     public void onFailure(String TAG, Exception e) {
                         Log.e("OPEN_CHAT_ACTIVITY", "accessing channel failed");
                         e.printStackTrace();
+                        //TODO CASE FAILURE GET CHAT?
                     }
                 });
             }
@@ -128,7 +118,23 @@ public class OpenChatActivity extends AppCompatActivity {
                 //TODO offline view ?
             }
         });
+    }
 
+
+    private void setChannelHandler(String groupChannelStr){
+        SendBird.addChannelHandler(groupChannelStr, new SendBird.ChannelHandler() {
+            @Override
+            public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
+                //TODO
+                if (baseMessage.getMentionType().name().equals("USERS")) {
+                    UserMessage userM = (UserMessage)baseMessage;
+                    // You add to the lowest position of the chat this new message.
+                    messages.add(userM);
+                    chatAdapter.notifyItemInserted(messages.size()-1);
+                    rv_chatBubbles.scrollToPosition(messages.size() -1 );
+                }
+            }
+        });
     }
 
 
@@ -138,6 +144,7 @@ public class OpenChatActivity extends AppCompatActivity {
         chatRecipient.setText(chatRecipientUser.getUsername());
         chatMessage = findViewById(R.id.etChatBox_openChat);
         sendBtn = findViewById(R.id.btnChatboxSend_openChat);
+        sendBtn.setClickable(false); // protects clicks before enable connection
         rv_chatBubbles = findViewById(R.id.rv_open_chat);
         sendBtn.setOnClickListener(sendBtnListener);
     }
@@ -145,40 +152,42 @@ public class OpenChatActivity extends AppCompatActivity {
     protected void setRecyclerView() {
         Log.d("setRecyclerView", "attaching adapter");
         chatAdapter = new ChatsFragmentAdapter(this, messages);
+        chatAdapter.setAddressee(chatRecipientUser);
         rv_chatBubbles.setAdapter(chatAdapter);
         rv_chatBubbles.setLayoutManager(new LinearLayoutManager(context));
     }
+    //TODO LISTENER NEW MESSAGES.
 
     protected void populateChat(GroupChannel groupChannel) {
-//        SendBird.addChannelHandler(UNIQUE_HANDLER_ID, new SendBird.ChannelHandler() {
-//            @Override
-//            public void onMessageReceived(BaseChannel channel, BaseMessage message) {
-//                if (message instanceof UserMessage) {
-//                    messages.add((UserMessage) message);
-//                    chatAdapter.notifyItemInserted(messages.size() - 1);
-//                } else if (message instanceof FileMessage) {
-//                    // send to adapter
-//                }
-//            }
-//        });
-
+        //TODO
         PreviousMessageListQuery prevMessageListQuery = groupChannel.createPreviousMessageListQuery();
         prevMessageListQuery.load(30, true, new PreviousMessageListQuery.MessageListQueryResult() {
             @Override
             public void onResult( List<BaseMessage> ms, SendBirdException e) {
                 if (e != null) {    // Error.
+                    e.printStackTrace();
                     return;
                 }
-
                 for (BaseMessage message : ms) {
                     if (message.getMentionType().name().equals("USERS")) {
-                        UserMessage userm = (UserMessage)message;
-                        messages.add(userm);
-                        chatAdapter.notifyItemInserted(messages.size() - 1);
+                        UserMessage userM = (UserMessage)message;
+                        //The first messages on ms are the newest. therefore, if you add all of them at 0,
+                        //the newest gonna "fall" to the tail of the recycler view.
+                        // the tail (POSITION N-1) of the recycler view is the lowest part of the rv.
+                        //we wanna watch first the newest ( lowest) messages.
+                        messages.add(0,userM);
+                        chatAdapter.notifyItemInserted(0);
+                        rv_chatBubbles.scrollToPosition(messages.size() -1 );
                     }
                 }
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        SendBird.removeChannelHandler(groupChannelStr);
+        super.onDestroy();
     }
 }

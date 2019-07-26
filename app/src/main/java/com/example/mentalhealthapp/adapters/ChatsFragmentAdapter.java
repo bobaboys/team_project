@@ -1,26 +1,36 @@
 package com.example.mentalhealthapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.VibrationEffect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.activities.HelperDetailsActivity;
+import com.example.mentalhealthapp.models.Chat;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sendbird.android.SendBird;
+import com.sendbird.android.Sender;
 import com.sendbird.android.UserMessage;
 
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdapter.ViewHolder> {
     private Context context;
     private List<UserMessage> messages;
     RecyclerView rvOpenChat;
+    boolean isMyMessage;
+    private ParseUser addressee;
 
     public ChatsFragmentAdapter(Context context, List<UserMessage> messages) {
         this.context = context;
@@ -41,13 +51,32 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_messages, viewGroup, false);
+        // Get the correct layout according the author of the message.
+
+        /*UserMessage message = messages.get(i);
+        Sender sender = message.getSender();
+        String senderId = sender.getUserId();
+        String currentUserId = SendBird.getCurrentUser().getUserId();
+        isMyMessage = senderId.equals(currentUserId);
+        int layoutToInflate = isMyMessage ? R.layout.item_my_message : R.layout.item_their_message;*/
+        View view = LayoutInflater.from(context).inflate(R.layout.both_messages, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         UserMessage message = messages.get(i);
+        Sender sender = message.getSender();
+        String senderId = sender.getUserId();
+        String currentUserId = SendBird.getCurrentUser().getUserId();
+        isMyMessage = senderId.equals(currentUserId);
+        if(isMyMessage){
+            viewHolder.myMessageLayout.setVisibility(LinearLayout.VISIBLE);
+            viewHolder.yourMessageLayout.setVisibility(LinearLayout.GONE);
+        }else{
+            viewHolder.myMessageLayout.setVisibility(LinearLayout.GONE);
+            viewHolder.yourMessageLayout.setVisibility(LinearLayout.VISIBLE);
+        }
         viewHolder.bind(message);
     }
 
@@ -56,42 +85,58 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
         return messages.size();
     }
 
+
+    public void setAddressee(ParseUser addressee) {
+        this.addressee = addressee;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder{
-        TextView myMessage;
-        TextView theirMessage;
+        public TextView body, name;
+        public ImageView profileSender;
+        LinearLayout myMessageLayout, yourMessageLayout;
 
         public ViewHolder(View view) {
             super(view);
-            rvOpenChat = itemView.findViewById(R.id.rv_open_chat);
-            myMessage = itemView.findViewById(R.id.messages_Sender);
-            theirMessage = itemView.findViewById(R.id.messages_receiver);
-            //rvOpenChat.setVisibility(View.GONE);
-        }
+            myMessageLayout = view.findViewById(R.id.ly_my_msg);
+            yourMessageLayout = view.findViewById(R.id.ly_sender_msg);
 
-/*        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            if(position!=RecyclerView.NO_POSITION){
-                ParseUser bio = bios.get(position);
-                Intent intent = new Intent(context, HelperDetailsActivity.class);
-//                intent.putExtra("clicked_bio", Parcels.wrap(bio));
-                context.startActivity(intent);
+            rvOpenChat = itemView.findViewById(R.id.rv_open_chat);
+
+            name = view.findViewById(R.id.tv_author_message);
+            profileSender = view.findViewById(R.id.iv_profile_pic_message);
+            if(isMyMessage){
+                body = view.findViewById(R.id.my_message_body);
+            }else{
+                body = view.findViewById(R.id.message_body);
             }
-        }*/
+        }
 
 
         public void bind(final UserMessage message){
-//            ParseUser user = ParseUser.getCurrentUser();
-//            SendBird.getCurrentUser();
-            if(message.getSender().equals(SendBird.getCurrentUser())){
-                myMessage.setVisibility(View.VISIBLE);
-                myMessage.setText(message.getMessage());
-                theirMessage.setVisibility(View.GONE);
+            if(isMyMessage){
+                body.setText(message.getMessage());
             }else{
-                theirMessage.setVisibility(View.VISIBLE);
-                theirMessage.setText(message.getMessage());
-                myMessage.setVisibility(View.GONE);
+                body.setText(message.getMessage());
+                if(addressee==null)return;
+                name.setText(addressee.getUsername());
+                try {
+
+                    int radius = 50; // corner radius, higher value = more rounded
+                    int margin = 0; // crop margin, set to 0 for corners with no crop
+                    //get pic from parse user and set image view
+                    ParseFile avatarPic = addressee.getParseFile("avatar");
+                    Glide.with(context)
+                            .load(avatarPic.getFile())
+                            .bitmapTransform(new RoundedCornersTransformation(context, radius, margin))
+                            .into(profileSender);
+                }catch (ParseException e){
+                    e.printStackTrace();
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+
             }
+
         }
     }
 }

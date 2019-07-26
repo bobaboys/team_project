@@ -88,19 +88,6 @@ public class ChatApp extends Application {
 
     }
 
-    public static void sendMessageText(GroupChannel groupChannel, final String message, final GetStringHandle handle){
-        groupChannel.sendUserMessage(message, new BaseChannel.SendUserMessageHandler() {
-            @Override
-            public void onSent(UserMessage userMessage, SendBirdException e) {
-                if (e != null) {    // Error.
-                    handle.onFailure(ChatAppTag.SEND_MESSAGE_TEXT.getTag(), e);
-                    return;
-                }
-                handle.onSuccess(ChatAppTag.SEND_MESSAGE_TEXT.getTag(), message);
-            }
-        });
-    }
-
     public void disconnectFromServer(final GeneralHandle handle){
         SendBird.disconnect(new SendBird.DisconnectHandler() {
             @Override

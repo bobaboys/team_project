@@ -20,7 +20,6 @@
     <color name="pastel_014">#AAAAFF</color>
     <color name="pastel_015">#8CEFFD</color>
     <color name="pastel_016">#B8E2EF</color>
-
     <color name="pastel_017">#A4F0B7</color>
     <color name="pastel_018">#B4D1B6</color>
     <color name="pastel_019">#8FFF6F</color>
@@ -28,5 +27,20 @@
     <color name="pastel_021">#BAFEA3</color>
     <color name="pastel_022">#FFFF99</color>
     <color name="pastel_023">#F2F4B3</color>
+
+
+
+    <color name="snow">#fffafa</color>
+    <color name="seashell2">#eee5de</color>
+    <color name="snow4">#8b8989</color>
+    <color name="seashell4">#8b8682</color>
+    <color name="lavender">#e6e6fa</color>
+    <color name="thistle">#d8bfd8</color>
+    <color name="mediumpurple">#9370db</color>
+    <color name="lightslateblue">#8470ff</color>
+    <color name="plum">#dda0dd</color>
+    <color name="palegoldenrod">#eee8aa</color>
+    <color name="lightyellow">#ffffe0</color>
+    <color name="lemonchiffon">#fffacd</color>
 
 </resources>

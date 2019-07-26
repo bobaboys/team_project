@@ -80,9 +80,9 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         public void onClick(View v) {
             int position = getAdapterPosition();
             if(position!=RecyclerView.NO_POSITION){
-                ParseUser bio = bios.get(position).user;
+                ParseUser helper = bios.get(position).user;
                 Intent intent = new Intent(context, HelperDetailsActivity.class);
-                intent.putExtra("clicked_bio", Parcels.wrap(bio));
+                intent.putExtra("clicked_bio", helper);
                 context.startActivity(intent);
             }
         }
