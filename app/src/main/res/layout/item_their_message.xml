@@ -14,13 +14,12 @@
         android:layout_width="87dp"
         android:layout_height="23dp"
         android:layout_alignTop="@id/iv_profile_pic_message"
-        android:layout_marginTop="8dp"
         android:layout_toRightOf="@id/iv_profile_pic_message"
         android:paddingBottom="4dp"
         android:text="@string/lorem_short"
         app:layout_constraintBottom_toTopOf="@+id/message_body"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="84dp" />
+        app:layout_constraintStart_toEndOf="@+id/iv_profile_pic_message"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/message_body"
@@ -33,7 +32,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/their_chat_bubble"
         android:text="@string/lorem"
         android:textSize="18sp"
@@ -52,7 +50,7 @@
         android:layout_marginRight="16dp"
         android:contentDescription="@string/profile_iv_description"
         app:layout_constraintEnd_toStartOf="@+id/tv_author_message"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />

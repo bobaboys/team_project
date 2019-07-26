@@ -26,7 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.HelperDetailsActivity" />
-        <activity android:name=".activities.OpenChatActivity" />
+        <activity android:name=".activities.OpenChatActivity"
+                  android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name" />
