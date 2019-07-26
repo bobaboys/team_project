@@ -3,6 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name ="emergencyRed">#FA2F2F</color>
 
     <color name="pastel_001">#FF4848</color>
     <color name="pastel_002">#800080</color>

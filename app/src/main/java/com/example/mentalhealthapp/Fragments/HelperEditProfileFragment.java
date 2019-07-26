@@ -110,6 +110,7 @@ public class HelperEditProfileFragment extends Fragment {
     private void assignViewsAndListeners(View view) {
         rvTags = view.findViewById(R.id.rvTags_HelperEditProfile);
         editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
+        editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
         saveChanges = view.findViewById(R.id.btnSaveChange_Reciever_edit_profile);
         saveChanges.setOnClickListener(saveChangesListener);
         avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);
@@ -249,6 +250,10 @@ public class HelperEditProfileFragment extends Fragment {
                 tagsAdapter.notifyDataSetChanged();
             }
         });
+    }
+    private void setRvWithCurrentUserTags(){
+
+
     }
 
 }

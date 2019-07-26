@@ -21,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordInput;
     private Button loginBtn;
     private Button signUpBtn;
+    private Button emergencyBtn;
     private ParseUser currentUser;
 
     private final View.OnClickListener loginBtnListener = new View.OnClickListener() {
@@ -38,6 +39,13 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
             finish();
+        }
+    };
+
+    private final View.OnClickListener emergencyBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
         }
     };
 
@@ -80,5 +88,8 @@ public class LoginActivity extends AppCompatActivity {
         signUpBtn = findViewById(R.id.btnSignup_login);
         loginBtn.setOnClickListener(loginBtnListener);
         signUpBtn.setOnClickListener(signupBtnListener);
+        emergencyBtn = findViewById(R.id.btnEmergency_login);
+        emergencyBtn.setOnClickListener(emergencyBtnListener);
+
     }
 }

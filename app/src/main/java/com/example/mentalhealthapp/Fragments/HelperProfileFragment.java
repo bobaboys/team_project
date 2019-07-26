@@ -80,7 +80,7 @@ public class HelperProfileFragment extends Fragment {
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
         currentUser = ParseUser.getCurrentUser();
-        helperProfileBio.setText(currentUser.getString("helperBio"));
+        helperProfileBio.setText(currentUser.getString(Constants.HELPER_BIO_FIELD));
         logOutbtn.setOnClickListener(logoutBtnListener);
         editHelperProfile.setOnClickListener(new View.OnClickListener() {
             @Override

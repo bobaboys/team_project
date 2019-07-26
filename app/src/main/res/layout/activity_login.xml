@@ -11,12 +11,12 @@
         android:id="@+id/btnLogin_login"
         android:layout_width="196dp"
         android:layout_height="49dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="60dp"
         android:background="@color/lemonchiffon"
         android:text="LOGIN"
         android:textColor="@color/mediumpurple"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword_login" />
 
@@ -43,7 +43,7 @@
         android:layout_height="54dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:hint="@string/password"
@@ -51,21 +51,39 @@
         android:textColorHighlight="@color/mediumpurple"
         android:textColorLink="@color/mediumpurple"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.475"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etUsername_login" />
 
     <Button
+
+
         android:id="@+id/btnSignup_login"
         android:layout_width="196dp"
         android:layout_height="49dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:background="@color/lemonchiffon"
         android:text="@string/new_user"
         android:textColor="@color/mediumpurple"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin_login" />
+
+    <Button
+        android:id="@+id/btnEmergency_login"
+        android:layout_width="122dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rounded_button"
+        android:text="EMERGENCY"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignup_login"
+        app:layout_constraintVertical_bias="0.187" />
 
 </android.support.constraint.ConstraintLayout>

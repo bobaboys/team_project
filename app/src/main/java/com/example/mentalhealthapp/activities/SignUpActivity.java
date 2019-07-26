@@ -205,7 +205,6 @@ public class SignUpActivity extends AppCompatActivity {
                 byte[] picData = stream.toByteArray();
                 parseFile = new ParseFile("image.png", picData);
                 Toast.makeText(SignUpActivity.this,"Parse file assigned", Toast.LENGTH_SHORT).show();
-
                 photoFile = null;
             }
 

@@ -101,7 +101,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("tag",selectedTag);
                     resultFragment.setArguments(bundle);
-
                 }
             });
         }
