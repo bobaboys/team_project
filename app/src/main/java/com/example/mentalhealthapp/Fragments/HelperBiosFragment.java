@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.HelperBiosAdapter;
 import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.TagsParcel;
@@ -49,6 +50,7 @@ public class HelperBiosFragment extends Fragment {
 
         rvBios = view.findViewById(R.id.rvHelperBios);
         mBios = new ArrayList<>();
+        ((MainActivity)getContext()).currentCentralFragment = this;
         setRecyclerView();
         loadBios();
     }
