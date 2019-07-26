@@ -66,8 +66,6 @@ public class RecieverSearchPageFragment extends Fragment {
         });
         setRecyclerView();
         getAllTags();
-
-
     }
 
     private void setRecyclerView() {

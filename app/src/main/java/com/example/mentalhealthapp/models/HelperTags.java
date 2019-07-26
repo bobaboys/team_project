@@ -1,5 +1,6 @@
 package com.example.mentalhealthapp.models;
 
+import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -17,8 +18,8 @@ public class HelperTags extends ParseObject {
         return getString(TAG_KEY);
     }
 
-    public void setHelperTags(ParseUser user, String color){
+    public void setHelperTags(ParseUser user, Tag tag){
         put(USER_KEY, user);
-        put(TAG_KEY, color);
+        put(TAG_KEY, ParseObject.createWithoutData(Constants.SEARCH_OPTIONS_CLASS, tag.getObjectId()));
     }
 }

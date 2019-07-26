@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.AvatarImagesActivity;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -33,7 +34,6 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
     List<Integer> avatarImages = new ArrayList<>();
     RecyclerView rvAvatarPics;
     String CLICKED_AVATAR_KEY = "clicked_avatar";
-    ParseUser currUser;
     String AVATAR_FIELD = "avatar";
     public final String TAG = "Helper Profile Edit:";
 
@@ -86,11 +86,9 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(mActivity, "clicked!", Toast.LENGTH_LONG).show();
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Integer avatar = avatarImages.get(position);
-
                 //for editing: saving avatar image to parse server under current user avatar image file field
                 if(ParseUser.getCurrentUser()!=null) {
                     Bitmap avatarBitmap = (Bitmap) BitmapFactory.decodeResource(mActivity.getResources(), avatar);
@@ -99,8 +97,8 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
                     byte[] picData = stream.toByteArray();
 
                     ParseFile imageFile = new ParseFile("image.png", picData);
-                    currUser.put(AVATAR_FIELD, imageFile);
-                    currUser.saveInBackground(new SaveCallback() {
+                    ParseUser.getCurrentUser().put(AVATAR_FIELD, imageFile);
+                    ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
                             if (e != null) {
@@ -110,6 +108,9 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
                             }
                         }
                     });
+                    Intent resultData = new Intent();
+                    mActivity.setResult(Activity.RESULT_OK, resultData);
+                    mActivity.finish();
                 }
                 //for sign up: send avatar id back to sign up intent
                 else{

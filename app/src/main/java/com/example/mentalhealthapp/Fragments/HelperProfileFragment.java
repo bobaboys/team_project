@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.Fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,13 +19,21 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
+import com.example.mentalhealthapp.models.SearchOptions;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
+
+import Utils.Utils;
 
 public class HelperProfileFragment extends Fragment {
 
@@ -56,9 +65,16 @@ public class HelperProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        testProf = view.findViewById(R.id.profileTest);
+        assignViewsAndListeners(view);
+        populateTags();
+    }
+
+    private void assignViewsAndListeners(View view) {
         helperProfileBio =view.findViewById(R.id.tvMyBio_helper_profile);
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
+        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
+        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+        helperProfileAvatar.setImageBitmap(bm);
         helperProfileTags = view.findViewById(R.id.tvMyTags_helper_profile);
         helperProfileChats = view.findViewById(R.id.tvMyChats_helper_profile);
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
@@ -78,7 +94,6 @@ public class HelperProfileFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-        populateTags();
     }
 
     public void clearTags(){
@@ -100,17 +115,22 @@ public class HelperProfileFragment extends Fragment {
     }
 
     public void populateTags(){
-
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
-        query.include("user");
-        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        query.include(Constants.USER_FIELD);
+        query.include(Constants.TAG_FIELD);
+        query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
         query.findInBackground(new FindCallback<HelperTags>() {
             @Override
             public void done(List<HelperTags> objects, ParseException e) {
                 String colors = "";
                 if(e==null){
                     for(HelperTags tag : objects){
-                        colors = colors + tag.getTag() + " ";
+                        //get tag string from tag's search options object
+                        ParseObject searchOption = ParseObject.create(Constants.SEARCH_OPTIONS_CLASS);
+                        searchOption = tag.getParseObject(Constants.TAG_FIELD);
+                        String tagString = searchOption.getString(Constants.TAG_FIELD);
+                        colors = colors + tagString + " ";
+
                     }
                     helperProfileTags.setText(colors);
 

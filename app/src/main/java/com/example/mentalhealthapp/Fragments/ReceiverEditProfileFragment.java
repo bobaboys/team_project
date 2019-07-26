@@ -13,8 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +24,7 @@ import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
-import com.example.mentalhealthapp.adapters.TagsAdapter;
 import com.example.mentalhealthapp.models.Constants;
-import com.example.mentalhealthapp.models.HelperTags;
-import com.example.mentalhealthapp.models.Tag;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -45,23 +40,19 @@ import Utils.Utils;
 
 import static android.app.Activity.RESULT_OK;
 
-public class HelperEditProfileFragment extends Fragment {
-
+public class ReceiverEditProfileFragment extends Fragment {
     protected EditText editHelperBio;
     protected Button saveChanges;
     protected Button takePic;
     protected Button choosePic;
     protected ImageView avatarPic;
-    protected RecyclerView rvTags;
-    public final String TAG = "Helper Profile Edit:";
+    public final String TAG = "Receiver Profile Edit:";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
     protected String AVATAR_FIELD = "avatar";
     protected File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
     protected ParseUser currUser;
-    protected  List<Tag> tags;
-    protected TagsAdapter tagsAdapter;
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
@@ -71,8 +62,6 @@ public class HelperEditProfileFragment extends Fragment {
             if(photoFile!=null) {
                 editPhoto(user);
             }
-            editBio(user);
-            editTags(user);
             switchFragments();
         }
     };
@@ -95,64 +84,28 @@ public class HelperEditProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_helper_edit_profile, container, false);
+        return inflater.inflate(R.layout.fragement_reciever_edit_profile, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         assignViewsAndListeners(view);
-        setAndPopulateRvTags();
-        getAllTags();
         currUser = ParseUser.getCurrentUser();
     }
 
     private void assignViewsAndListeners(View view) {
-        rvTags = view.findViewById(R.id.rvTags_HelperEditProfile);
-        editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
-        saveChanges = view.findViewById(R.id.btnSaveChange_Reciever_edit_profile);
+        saveChanges = view.findViewById(R.id.btnSaveChange_reciever_edit_profile);
         saveChanges.setOnClickListener(saveChangesListener);
-        avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);
+        avatarPic = view.findViewById(R.id.ivAvatar_reciever_edit_profile);
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         avatarPic.setImageBitmap(bm);
-        takePic = view.findViewById(R.id.btnTakePic_helpereditprofile);
+        takePic = view.findViewById(R.id.btnTakePic_reciever_edit_profiile);
         takePic.setOnClickListener(takePicListener);
-        choosePic = view.findViewById(R.id.btnChoosePic_helpereditprofile);
+        choosePic = view.findViewById(R.id.btnChoosePic_reciever_edit_profile);
         choosePic.setOnClickListener(choosePicListener);
 
-    }
-
-    public void editBio(ParseUser user){
-        user.put(Constants.HELPER_BIO_FIELD, editHelperBio.getText().toString());
-        user.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e!=null){
-                    Log.d(TAG, "Error while saving");
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        });
-    }
-
-    public void editTags(ParseUser user){
-        //save all tags on server for parse user
-        for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
-            HelperTags helperTags = new HelperTags();
-            helperTags.setHelperTags(user, tagsAdapter.selectedTags.get(i));
-            helperTags.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e!=null){
-                        Log.d(TAG, "Error while saving");
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            });
-        }
     }
 
     private void editPhoto(ParseUser user) {
@@ -217,38 +170,11 @@ public class HelperEditProfileFragment extends Fragment {
         }
         if(requestCode == CHOOSE_AVATAR_REQUEST && resultCode == RESULT_OK){
             //get pic from parse user and set image view
-            ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(AVATAR_FIELD);
+            ParseFile avatarFile = currUser.getParseFile(AVATAR_FIELD);
             Bitmap bm = Utils.convertFileToBitmap(avatarFile);
             avatarPic.setImageBitmap(bm);
         }
     }
 
-    private void setAndPopulateRvTags() {
-        tags = new ArrayList<>();
-        tagsAdapter = new TagsAdapter(getContext(), tags);
-        rvTags.setAdapter(tagsAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        rvTags.setLayoutManager(layoutManager);
-    }
-
-    private void getAllTags() {
-        ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
-        postsQuery.setLimit(50);
-        /*We decided load all tags (and on code select which ones match with the search FOR LATER)
-         * we are concern that it could be lots of information on the database and we would need to set
-         * a limit of rows. In this case our tags are 50 tops. */
-        postsQuery.findInBackground(new FindCallback<Tag>() {
-            @Override
-            public void done(List<Tag> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error loading tags from parse server");
-                    e.printStackTrace();
-                    return;
-                }
-                tags.addAll(objects);
-                tagsAdapter.notifyDataSetChanged();
-            }
-        });
-    }
 
 }
