@@ -37,7 +37,6 @@ import Utils.Utils;
 
 public class HelperProfileFragment extends Fragment {
 
-    protected TextView testProf;
     protected Button logOutbtn;
     protected TextView helperProfileBio;
     protected ImageView helperProfileAvatar;

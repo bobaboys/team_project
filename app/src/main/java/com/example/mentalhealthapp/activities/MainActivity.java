@@ -155,21 +155,5 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
     }
-
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        if  (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
-            //Keyboard Hidden
-            //Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
-            if(currentCentralFragment.getClass().equals(HelperEditProfileFragment.class)){
-                RecyclerView rv = ((HelperEditProfileFragment)currentCentralFragment).getRvTags();
-                rv.setVisibility(RecyclerView.VISIBLE);
-
-            }
-        }
-    }
 }
 

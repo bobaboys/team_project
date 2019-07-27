@@ -41,7 +41,7 @@ public class ChatApp extends Application {
 
 
     private User sendBirdUser;
-    private String APP_ID;
+    private static String APP_ID;
     private ChatApp(){}
     @Override
     public void onCreate() {
@@ -54,14 +54,14 @@ public class ChatApp extends Application {
         return  single_instance;
     }
 
-    public  void startChatApp(Context context){
+    public static void startChatApp(Context context){
         APP_ID = context.getString(R.string.APP_CHAT_ID);
         SendBird.init(APP_ID, context);
         //This api is called using only our secret App ID.
     }
 
     //will create user if you don't have one
-    public void connectToServer(String userId, final ConnectionHandle handle){
+    public static void connectToServer(String userId, final ConnectionHandle handle){
         SendBird.connect(userId, new SendBird.ConnectHandler() {
             @Override
             public void onConnected(User user, SendBirdException e) {

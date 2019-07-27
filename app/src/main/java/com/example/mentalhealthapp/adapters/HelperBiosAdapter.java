@@ -2,6 +2,7 @@ package com.example.mentalhealthapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,12 +13,16 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.activities.HelperDetailsActivity;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.UserWithTags;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import Utils.Utils;
 
 public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.ViewHolder> {
 
@@ -91,14 +96,10 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
             if(bio.user.getString(HELPER_BIO_KEY)!=null&&bio.user.getBoolean("helper")){
                 tvUsername.setText(bio.user.getString(USERNAME_KEY));
                 tvBio.setText(bio.user.getString(HELPER_BIO_KEY));
+                ParseFile avatarFile = bio.user.getParseFile(Constants.AVATAR_FIELD);
+                Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+                helperPic.setImageBitmap(bm);
             }
-
-// USE FOR IMAGE LATER
-//                ParseFile image = post.getImage();
-//                if(image!= null){
-//                    Glide.with(context).load(image.getUrl()).into(ivImage);
-//                }
-
         }
     }
 }

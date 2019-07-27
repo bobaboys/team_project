@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/ivHelperDetails"
-        android:layout_width="344dp"
-        android:layout_height="248dp"
+        android:layout_width="222dp"
+        android:layout_height="152dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="36dp"
@@ -17,15 +17,14 @@
         android:layout_marginRight="8dp"
         app:layout_constraintBottom_toTopOf="@+id/tvBio_helperdetails"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvBio_helperdetails"
-        android:layout_width="342dp"
-        android:layout_height="111dp"
+        android:layout_width="354dp"
+        android:layout_height="83dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="20dp"
@@ -34,21 +33,23 @@
         android:text="Bio:"
         app:layout_constraintBottom_toTopOf="@+id/tvTags_helperdetails"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.585"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivHelperDetails" />
 
     <TextView
         android:id="@+id/tvTags_helperdetails"
-        android:layout_width="344dp"
-        android:layout_height="104dp"
+        android:layout_width="347dp"
+        android:layout_height="76dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="tags:"
+        android:text="Tags:"
         app:layout_constraintBottom_toTopOf="@+id/btnChat_helperdetails"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvBio_helperdetails" />
 
@@ -56,11 +57,47 @@
         android:id="@+id/btnChat_helperdetails"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/chat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTags_helperdetails" />
+
+    <TextView
+        android:id="@+id/tvHelperBioText_HelperDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:text="Helper's Bio:"
+        app:layout_constraintBottom_toTopOf="@+id/tvBio_helperdetails"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvHelpersTagsText_HelperDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:text="Helper's Tags:"
+        app:layout_constraintBottom_toTopOf="@+id/tvTags_helperdetails"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvHelperUsername_HelperDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvHelperBioText_HelperDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivHelperDetails"
+        app:layout_constraintVertical_bias="0.3" />
 </android.support.constraint.ConstraintLayout>

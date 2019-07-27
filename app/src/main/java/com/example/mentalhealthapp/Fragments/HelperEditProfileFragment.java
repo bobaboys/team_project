@@ -57,6 +57,7 @@ public class HelperEditProfileFragment extends Fragment {
     protected Button saveChanges;
     protected Button takePic;
     protected Button choosePic;
+    protected Button editTags;
     protected ImageView avatarPic;
     protected RecyclerView rvTags;
     public final String TAG = "Helper Profile Edit:";
@@ -81,11 +82,19 @@ public class HelperEditProfileFragment extends Fragment {
             switchFragments();
         }
     };
+    protected View.OnClickListener editTagsListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            rvTags.setVisibility(ConstraintLayout.VISIBLE);
+            editTags.setVisibility(ConstraintLayout.GONE);
+        }
+    };
 
     protected View.OnTouchListener  touchListener = new View.OnTouchListener(){
         @Override
         public boolean onTouch(View v, MotionEvent event){
             rvTags.setVisibility(ConstraintLayout.GONE);
+            editTags.setVisibility(ConstraintLayout.VISIBLE);
             return false;
         }
     };
@@ -125,6 +134,8 @@ public class HelperEditProfileFragment extends Fragment {
         editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
         editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
         editHelperBio.setOnTouchListener(touchListener);
+        editTags = view.findViewById(R.id.edit_tags);
+        editTags.setOnClickListener(editTagsListener);
         saveChanges = view.findViewById(R.id.btnSaveChange_Reciever_edit_profile);
         saveChanges.setOnClickListener(saveChangesListener);
         avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);

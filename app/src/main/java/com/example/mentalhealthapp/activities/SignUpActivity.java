@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -120,7 +121,6 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     });
 
-                    //Intent intent = new Intent(SignUpActivity.this, helper? HelperSignUpBioActivity.class : MainActivity.class);
                     Intent intent;
                     if(helper){
                         intent = new Intent(SignUpActivity.this, HelperSignUpBioActivity.class);
