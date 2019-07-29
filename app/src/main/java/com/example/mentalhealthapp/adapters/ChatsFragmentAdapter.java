@@ -51,14 +51,6 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        // Get the correct layout according the author of the message.
-
-        /*UserMessage message = messages.get(i);
-        Sender sender = message.getSender();
-        String senderId = sender.getUserId();
-        String currentUserId = SendBird.getCurrentUser().getUserId();
-        isMyMessage = senderId.equals(currentUserId);
-        int layoutToInflate = isMyMessage ? R.layout.item_my_message : R.layout.item_their_message;*/
         View view = LayoutInflater.from(context).inflate(R.layout.both_messages, viewGroup, false);
         return new ViewHolder(view);
     }
