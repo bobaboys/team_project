@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.ChatsFragmentAdapter;
+import com.parse.DeleteCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -200,11 +202,16 @@ public class OpenChatActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(emergency){
             //remove chat channel and log out anonymous user
+            ParseUser user = ParseUser.getCurrentUser();
+            user.deleteInBackground(new DeleteCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Toast.makeText(OpenChatActivity.this,"user deleted", Toast.LENGTH_SHORT).show();;
+                }
+            });
             ParseUser.logOut();
-            onDestroy();
             Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish();
         }
     }
 }

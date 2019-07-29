@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +27,7 @@ import com.sendbird.android.User;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
@@ -63,45 +65,20 @@ public class LoginActivity extends AppCompatActivity {
     private final View.OnClickListener emergencyBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ChatApp.startChatApp(LoginActivity.this);
-            ChatApp.connectToServer(onCallNeedHelp.getObjectId(), new ConnectionHandle() {
-                @Override
-                public void onSuccess(String TAG, User user) {
-                    //create chat between need help and on call
-                    ChatApp.createChat(onCallNeedHelp, onCallHelper, false, new CreateChatHandle() {
-                        @Override
-                        public void onSuccess(String TAG, final GroupChannel groupChannel) {
-                            // Check if row already exist
-                            ParseQuery<Chat> query  = new ParseQuery<Chat>(Chat.class);
-                            query.whereEqualTo("chatUrl",groupChannel.getUrl());
-                            query.findInBackground(new FindCallback<Chat>() {
-                                @Override
-                                public void done(List<Chat> objects, ParseException e) {
-                                    if(objects.size() == 0){// no rows, create new one.
-                                        createChatParse(groupChannel);
-                                    }else {// there is a row with the same info. skip create a new one.
-                                        openChatFragment(groupChannel);
-                                    }
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailure(String TAG, Exception e) {
-                            Log.e("OPEN CHAT:", "chat open successful");
-                            e.printStackTrace();
-                            Toast.makeText(LoginActivity.this, "can't open chat", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(String TAG, Exception e) {
-                    Toast.makeText(LoginActivity.this, "can't connect to server", Toast.LENGTH_SHORT).show();
-                }
-            });
+            //assigns need help, on call, and starts chat
+            assignOnCallNeedHelp();
         }
     };
+//
+//    private class EmergencyAsyncTask extends AsyncTask<Void, Void, Void>
+//    {
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            assignOnCallNeedHelp();
+//            return null;
+//        }
+//    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +91,49 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         AssignViewsAndListeners();
-        assignOnCallHelperAndHelpee();
     }
 
-    //assign on call helper and need help helpee
-    private void assignOnCallHelperAndHelpee() {
+    private void startAnonymousChat() {
+        ChatApp.startChatApp(LoginActivity.this);
+        ChatApp.connectToServer(onCallNeedHelp.getObjectId(), new ConnectionHandle() {
+            @Override
+            public void onSuccess(String TAG, User user) {
+                //create chat between need help and on call
+                ChatApp.createChat(onCallNeedHelp, onCallHelper, false, new CreateChatHandle() {
+                    @Override
+                    public void onSuccess(String TAG, final GroupChannel groupChannel) {
+                        // Check if row already exist
+                        ParseQuery<Chat> query  = new ParseQuery<Chat>(Chat.class);
+                        query.whereEqualTo("chatUrl",groupChannel.getUrl());
+                        query.findInBackground(new FindCallback<Chat>() {
+                            @Override
+                            public void done(List<Chat> objects, ParseException e) {
+                                if(objects.size() == 0){// no rows, create new one.
+                                    createChatParse(groupChannel);
+                                }else {// there is a row with the same info. skip create a new one.
+                                    openChatFragment(groupChannel);
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String TAG, Exception e) {
+                        Log.e("OPEN CHAT:", "chat open successful");
+                        e.printStackTrace();
+                        Toast.makeText(LoginActivity.this, "can't open chat", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String TAG, Exception e) {
+                Toast.makeText(LoginActivity.this, "can't connect to server", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void assignOnCallNeedHelp() {
         //log in anonymously
         ParseAnonymousUtils.logIn(new LogInCallback() {
             @Override
@@ -126,6 +141,12 @@ public class LoginActivity extends AppCompatActivity {
                 if(e==null){
                     Log.d("LoginActivity", "emergency login successful!");
                     onCallNeedHelp = user;
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            assignOnCallHelper();
+                        }
+                    });
                 }
                 else{
                     Log.e("LoginActivity", "Login failure");
@@ -134,11 +155,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    private void assignOnCallHelper() {
         //assign on call helper
-        ParseQuery<ParseUser> query2 = ParseQuery.getQuery(ParseUser.class);
+        ParseQuery<ParseUser> query2 = ParseQuery.getQuery("_User");
         query2.include(Constants.USERNAME_FIELD);
-        query2.whereEqualTo(Constants.USERNAME_FIELD, "ON_CALL");
         query2.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
@@ -147,8 +169,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+        startAnonymousChat();
     }
-
     public void login(String username, String password, ParseUser user){
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
