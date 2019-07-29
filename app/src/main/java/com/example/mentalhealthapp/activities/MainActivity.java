@@ -1,20 +1,16 @@
 package com.example.mentalhealthapp.activities;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mentalhealthapp.Fragments.ChatOverviewListFragment;
-import com.example.mentalhealthapp.Fragments.HelperEditProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
@@ -52,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             bottomHelperNavView.setVisibility(View.GONE);
         }
-        currPage = findViewById(R.id.currPageName_main);
+        currPage = findViewById(R.id.tv_sender_name);
 
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);

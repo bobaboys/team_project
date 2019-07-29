@@ -1,13 +1,23 @@
 package Utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class Utils {
     public static String getTimeStamp(long milis){
@@ -44,6 +54,38 @@ public class Utils {
             return null;
         }
         return null;
+    }
+
+    public static void playAudioFromUrl(String url, Context context){
+        final MediaPlayer mediaPlayer = new MediaPlayer();
+        // Set type to streaming
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        // Listen for if the audio file can't be prepared
+        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                // ... react appropriately ...
+                // The MediaPlayer has moved to the Error state, must be reset!
+                return false;
+            }
+        });
+        // Attach to when audio file is prepared for playing
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mediaPlayer.start();
+            }
+        });
+        // Set the data source to the remote URL
+        try {
+            mediaPlayer.setDataSource(url);
+        }catch (IOException e){
+            e.printStackTrace();
+            Toast.makeText(context,"Couldn't play this audio", Toast.LENGTH_LONG).show();
+        }
+
+        // Trigger an async preparation which will file listener when completed
+        mediaPlayer.prepareAsync();
     }
 }
 

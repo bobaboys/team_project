@@ -20,7 +20,7 @@ public final class Constants {
     public static final String HELPER_FIELD = "helper";
     public static final String AVATAR_FIELD = "avatar";
     public static final String TAG_FIELD = "Tag";
-
+    public static final String AUDIO_RECORD_FAIL_TAG= "AUDIO_RECORDING";
 
     //REQUEST CODES:
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
