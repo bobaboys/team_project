@@ -14,6 +14,7 @@ public class ParseApp extends Application {
         ParseObject.registerSubclass(HelperTags.class);
         ParseObject.registerSubclass(Tag.class);
         ParseObject.registerSubclass(Chat.class);
+        ParseObject.registerSubclass(Journal.class);
         final Parse.Configuration configuration = new Parse.Configuration.Builder(this)
                 .applicationId("alex-elena-michelle")
                 .clientKey("javier")
