@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,6 +47,7 @@ public class OpenChatActivity extends AppCompatActivity {
     Context context;
     GroupChannel groupChannel;
     String groupChannelStr;
+    Boolean emergency;
 
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
         @Override
@@ -76,6 +78,10 @@ public class OpenChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_open_chat);
+        if(getIntent().getStringExtra("emergency") != null){
+            //coming from emergency button
+            emergency = true;
+        }
 
         groupChannelStr = getIntent().getStringExtra("group_channel");
         messages = new ArrayList<>();
@@ -180,7 +186,6 @@ public class OpenChatActivity extends AppCompatActivity {
                         rv_chatBubbles.scrollToPosition(messages.size() -1 );
                     }
                 }
-
             }
         });
     }
@@ -189,5 +194,17 @@ public class OpenChatActivity extends AppCompatActivity {
     protected void onDestroy() {
         SendBird.removeChannelHandler(groupChannelStr);
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(emergency){
+            //remove chat channel and log out anonymous user
+            ParseUser.logOut();
+            onDestroy();
+            Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

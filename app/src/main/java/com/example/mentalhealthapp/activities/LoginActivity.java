@@ -14,6 +14,7 @@ import com.example.mentalhealthapp.models.Chat;
 import com.example.mentalhealthapp.models.Constants;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
+import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -32,7 +33,6 @@ import chatApp.CreateChatHandle;
 
 
 public class LoginActivity extends AppCompatActivity {
-
     private EditText usernameInput;
     private EditText passwordInput;
     private Button loginBtn;
@@ -115,23 +115,19 @@ public class LoginActivity extends AppCompatActivity {
         }
         AssignViewsAndListeners();
         assignOnCallHelperAndHelpee();
-
     }
 
     //assign on call helper and need help helpee
     private void assignOnCallHelperAndHelpee() {
-        final ParseUser user = new ParseUser();
-        String randomUsername = getRandomString();
-        user.setUsername(randomUsername);
-        user.setPassword("password");
-        user.setEmail(randomUsername + "@gmail.com");
-        user.signUpInBackground(new SignUpCallback() {
+        //log in anonymously
+        ParseAnonymousUtils.logIn(new LogInCallback() {
             @Override
-            public void done(ParseException e) {
+            public void done(ParseUser user, ParseException e) {
                 if(e==null){
                     Log.d("LoginActivity", "emergency login successful!");
-                    onCallNeedHelp = user; //TODO: check if null or not
-                }else{
+                    onCallNeedHelp = user;
+                }
+                else{
                     Log.e("LoginActivity", "Login failure");
                     Toast.makeText(LoginActivity.this,"emergency log in failed", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -139,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //assign on call helper
         ParseQuery<ParseUser> query2 = ParseQuery.getQuery(ParseUser.class);
         query2.include(Constants.USERNAME_FIELD);
         query2.whereEqualTo(Constants.USERNAME_FIELD, "ON_CALL");
@@ -206,19 +203,8 @@ public class LoginActivity extends AppCompatActivity {
         //pass current group channel url to next activity
         String groupChannelUrl = groupChannel.getUrl();
         intent.putExtra("group_channel", groupChannelUrl);
+        intent.putExtra("emergency", "emergency");
         startActivity(intent);
         Log.d("OPEN CHAT:", "chat open successful");
-    }
-
-    protected String getRandomString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 10) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
     }
 }

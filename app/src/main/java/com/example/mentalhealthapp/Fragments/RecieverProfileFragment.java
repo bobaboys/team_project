@@ -32,8 +32,6 @@ public class RecieverProfileFragment extends Fragment {
     protected ImageView recProfileAvatar;
     protected TextView recProfileChats;
     protected ParseUser currentUser;
-    protected Button btnTakePic;
-    protected Button btnChoosePic;
     protected FloatingActionButton editRecieverProfile;
 
     public final String TAG = "Reciever Profiile:";
