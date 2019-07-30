@@ -130,4 +130,6 @@ public class ReceiverJournalFragment extends Fragment {
         }
     }
 
+
+
 }

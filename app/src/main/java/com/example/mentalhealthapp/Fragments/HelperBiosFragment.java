@@ -65,7 +65,7 @@ public class HelperBiosFragment extends Fragment {
     private void loadBios() {
         final ParseQuery<HelperTags> helpersTagsQ = new ParseQuery<>(HelperTags.class);
         helpersTagsQ.setLimit(20); //TODO: change 20
-        helpersTagsQ.include("user");//TODO PROBLEMS WITH QUERIES
+        helpersTagsQ.include("user");
         helpersTagsQ.whereContainedIn("Tag", tags.selectedTags); // looks for helpers with these tags.
         helpersTagsQ.findInBackground(new FindCallback<HelperTags>() {
             @Override
@@ -78,7 +78,6 @@ public class HelperBiosFragment extends Fragment {
                 ArrayList<UserWithTags> helpersWithAllTags= new ArrayList<>();
                 for(int i = 0; i < objects.size(); i++){
                     HelperTags helper = objects.get(i);
-                    //TODO para cada usuario con tag, hacer un nuevo a un userWith tags o en su defecto a;adir solo tag a UWT existente
                     int j=searchUser(helpersWithAllTags,helper.getUser());
                     if(j==-1){//User not found on list.
                         // Make new UserWT and add first tag

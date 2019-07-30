@@ -155,5 +155,10 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(MainActivity.this, "Can't go back!", Toast.LENGTH_SHORT).show();
+    }
 }
 

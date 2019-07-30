@@ -22,6 +22,7 @@ import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.SearchOptions;
+import com.example.mentalhealthapp.models.Tag;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
@@ -121,17 +122,32 @@ public class HelperProfileFragment extends Fragment {
         query.findInBackground(new FindCallback<HelperTags>() {
             @Override
             public void done(List<HelperTags> objects, ParseException e) {
-                String colors = "";
+                String strListOfTags = "";
                 if(e==null){
-                    for(HelperTags tag : objects){
-                        //get tag string from tag's search options object
-                        ParseObject searchOption = ParseObject.create(Constants.SEARCH_OPTIONS_CLASS);
-                        searchOption = tag.getParseObject(Constants.TAG_FIELD);
-                        String tagString = searchOption.getString(Constants.TAG_FIELD);
-                        colors = colors + tagString + " ";
+                        for(int i = 0; i < objects.size(); i++){
+                            HelperTags helperTag = objects.get(i);
+                            //second to last tag
+                            if(i == objects.size() - 2){
+                                strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", and ";
+                                continue;
+                            }
+                            //last tag
+                            if(i == objects.size() - 1){
+                                strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag");
+                                break;
+                            }
+                            strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", ";
+                            //TODO POPULATE WITH CARDS INSTEAD OF STR ONLY
+                        }
+//
+//                        //get tag string from tag's search options object
+//                        ParseObject searchOption = ParseObject.create(Constants.SEARCH_OPTIONS_CLASS);
+//                        searchOption = tag.getParseObject(Constants.TAG_FIELD);
+//                        String tagString = searchOption.getString(Constants.TAG_FIELD);
+//                        colors = colors + tagString + " ";
 
-                    }
-                    helperProfileTags.setText(colors);
+
+                    helperProfileTags.setText(strListOfTags);
 
                 }else{
                     Log.e("HelperProfileFragment", "failure in populating tags");
