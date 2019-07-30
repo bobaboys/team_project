@@ -140,8 +140,19 @@ public class HelperDetailsActivity extends AppCompatActivity {
             public void done(List<HelperTags> objects, ParseException e) {
                 String strListOfTags = "";
                 if(e==null){
-                    for(HelperTags helperTag : objects){
-                        strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ " ";
+                    for(int i = 0; i < objects.size(); i++){
+                        HelperTags helperTag = objects.get(i);
+                        //second to last tag
+                        if(i == objects.size() - 2){
+                            strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", and ";
+                            continue;
+                        }
+                        //last tag
+                        if(i == objects.size() - 1){
+                            strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag");
+                            break;
+                        }
+                        strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", ";
                         //TODO POPULATE WITH CARDS INSTEAD OF STR ONLY
                     }
                     helperTags.setText(strListOfTags);

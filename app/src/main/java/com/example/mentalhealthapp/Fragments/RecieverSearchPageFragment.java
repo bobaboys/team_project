@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -55,13 +57,17 @@ public class RecieverSearchPageFragment extends Fragment {
                 TagsParcel selectedTagsParcel= new TagsParcel();
                 selectedTagsParcel.selectedTags =tagsAdapter.selectedTags;
 
-                Fragment resultFragment = new HelperBiosFragment();
-                ((MainActivity)getActivity()).replaceFragment(resultFragment);
-
+                Fragment fragment = new HelperBiosFragment();
                 //passing to result of list of helpers
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("selectedTags", Parcels.wrap(selectedTagsParcel));
-                resultFragment.setArguments(bundle);
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.flContainer_main, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
             }
         });
         setRecyclerView();

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +18,7 @@ import android.widget.ImageView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.MainActivity;
-import com.example.mentalhealthapp.fragments.TagDetailsFragment;
+import com.example.mentalhealthapp.Fragments.TagDetailsFragment;
 import com.example.mentalhealthapp.models.Tag;
 
 import java.util.ArrayList;
@@ -69,7 +72,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
         CardView cardTag;
         ImageView description;
 
-        public ViewHolder(View view) {
+        public ViewHolder(final View view) {
             super(view);
             tagName = itemView.findViewById(R.id.cb_tag_select);
             cardTag = itemView.findViewById(R.id.card_tag);
@@ -93,14 +96,18 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
                 public void onClick(View v) {
                     Tag selectedTag = getSelectedTag();
 
-
+                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     Fragment resultFragment = new TagDetailsFragment();
-                    ((MainActivity)context).replaceFragment(resultFragment);
-
                     //passing to result of list of helpers
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("tag",selectedTag);
                     resultFragment.setArguments(bundle);
+
+                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.flContainer_main, resultFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
             });
         }

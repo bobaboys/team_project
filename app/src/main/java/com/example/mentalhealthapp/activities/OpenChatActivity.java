@@ -212,6 +212,8 @@ public class OpenChatActivity extends AppCompatActivity {
             ParseUser.logOut();
             Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
             startActivity(intent);
+            return;
         }
+        super.onBackPressed();
     }
 }
