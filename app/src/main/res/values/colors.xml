@@ -42,8 +42,8 @@
     <color name="lightslateblue">#8470ff</color>
     <color name="plum">#dda0dd</color>
     <color name="palegoldenrod">#eee8aa</color>
-    <color name="lightyellow">#ffffe0</color>
-    <color name="lemonchiffon">#fffacd</color>
+    <color name="lightyellow">#FFFFE0</color>
+    <color name="lemonchiffon">#FFFACD</color>
 
 
 </resources>
