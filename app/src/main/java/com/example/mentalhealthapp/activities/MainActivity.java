@@ -13,11 +13,9 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.Fragments.ChatOverviewListFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
-import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
-import com.example.mentalhealthapp.Fragments.ReceiverEditProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
-import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
+import com.example.mentalhealthapp.Fragments.ReflectFragment;
 import com.example.mentalhealthapp.R;
 import com.parse.ParseUser;
 import com.sendbird.android.User;
@@ -31,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     public final String HELPER_FIELD = "helper";
     public BottomNavigationView bottomNavigationView;
     public BottomNavigationView bottomHelperNavView;
-    public TextView currPage;
 
     public Fragment currentCentralFragment;
     final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -50,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         }else{
             bottomHelperNavView.setVisibility(View.GONE);
         }
-        currPage = findViewById(R.id.tv_sender_name);
 
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
@@ -85,19 +81,15 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.navigation_helper_home:
                             fragment = new ChatOverviewListFragment();
-                            currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_helper_reflect:
-                            fragment = new HelperReflectFragment();
-                            currPage.setText(R.string.reflect);
+                            fragment = new ReflectFragment();
                             break;
                         case R.id.navigation_helper_profile:
                             fragment = new HelperProfileFragment();
-                            currPage.setText(R.string.profile);
                             break;
                         default:
                             fragment = new ChatOverviewListFragment();
-                            currPage.setText(R.string.home);
                             break;
                     }
                     FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
@@ -115,23 +107,18 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
                             fragment = new RecieverSearchPageFragment();
-                            currPage.setText(R.string.home);
                             break;
                         case R.id.navigation_reflect:
-                            fragment = new RecieverReflectFragment();
-                            currPage.setText(R.string.reflect);
+                            fragment = new ReflectFragment();
                             break;
                         case R.id.navigation_chat:
                             fragment = new ChatOverviewListFragment();
-                            currPage.setText(R.string.chats);
                             break;
                         case R.id.navigation_profile:
                             fragment = new RecieverProfileFragment();
-                            currPage.setText(R.string.profile);
                             break;
                         default:
                             fragment = new RecieverSearchPageFragment();
-                            currPage.setText(R.string.home);
                             break;
                     }
 
@@ -160,6 +147,5 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
     }
-
 }
 

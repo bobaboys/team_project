@@ -34,7 +34,6 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.ViewHolder>  {
 
     List<Chat> chats;
-    RecyclerView rvChats;
     Context context;
 
     public ChatsListAdapter(Context context, List<Chat> chats) {

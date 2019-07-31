@@ -24,6 +24,7 @@ import com.example.mentalhealthapp.Fragments.TagDetailsFragment;
 import com.example.mentalhealthapp.models.Tag;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable {
@@ -153,14 +154,13 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
 
 
         public void bind(final Tag tag){
-            if(tag.getString(TAG_TABLE_FIELD)!=null){
-
+                tagName.setChecked(selectedTags.contains(getSelectedTag()));
+                //selectedTags.get(tag.getObjectId();
                 tagName.setText(tag.getString(TAG_TABLE_FIELD));
                 //int random = Random.next SET A RANDOM COLOR FROM PALETE
                 //cardTag.setCardBackgroundColor(R.color.);
                 //TODO
 
-            }
         }
 
         public Tag getSelectedTag(){

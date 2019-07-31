@@ -1,6 +1,7 @@
 package Utils;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -11,6 +12,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -84,7 +88,6 @@ public class Utils {
         btn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(
                     enable ? R.color.white : R.color.pastel_009)));
     }
-
 
 }
 

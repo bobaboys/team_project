@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lavender"
+    android:background="@color/white"
     tools:context=".activities.LoginActivity">
 
     <Button
         android:id="@+id/btnLogin_login"
         android:layout_width="196dp"
         android:layout_height="49dp"
-        android:layout_marginTop="60dp"
-        android:background="@color/lemonchiffon"
+        android:layout_marginTop="40dp"
+        android:background="@color/lavender"
         android:text="LOGIN"
         android:textColor="@color/mediumpurple"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,16 +26,17 @@
         android:layout_height="54dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="216dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:hint="@string/username"
         android:textColorHighlight="@color/mediumpurple"
+        android:textColorHint="@color/lavender"
         android:textColorLink="@color/mediumpurple"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     <EditText
         android:id="@+id/etPassword_login"
@@ -43,10 +44,11 @@
         android:layout_height="54dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:hint="@string/password"
+        android:textColorHint="@color/lavender"
         android:inputType="textPassword"
         android:textColorHighlight="@color/mediumpurple"
         android:textColorLink="@color/mediumpurple"
@@ -60,8 +62,8 @@
         android:id="@+id/btnSignup_login"
         android:layout_width="196dp"
         android:layout_height="49dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/lemonchiffon"
+        android:layout_marginTop="32dp"
+        android:background="@color/lavender"
         android:text="@string/new_user"
         android:textColor="@color/mediumpurple"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +75,7 @@
         android:id="@+id/btnEmergency_login"
         android:layout_width="122dp"
         android:layout_height="39dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/rounded_button"
         android:text="EMERGENCY"
@@ -84,6 +86,21 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSignup_login"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="290dp"
+        android:layout_height="217dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="153dp"
+        android:layout_marginRight="153dp"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.Journal;
 import com.parse.FindCallback;
@@ -23,7 +24,7 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
-public class ReceiverCreateEntryFragment extends Fragment {
+public class CreateEntryJournalFragment extends Fragment {
     protected TextView date;
     protected EditText journalEntry;
     protected Button save;
@@ -82,6 +83,7 @@ public class ReceiverCreateEntryFragment extends Fragment {
                             e.printStackTrace();
                             return;
                         }
+                        (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
                     }
                 });
             }else{
@@ -98,9 +100,12 @@ public class ReceiverCreateEntryFragment extends Fragment {
                             e.printStackTrace();
                             return;
                         }
+                        (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
                     }
                 });
             }
+
+            //todo go back.
         }
     };
 }
