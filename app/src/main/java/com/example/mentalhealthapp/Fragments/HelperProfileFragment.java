@@ -17,18 +17,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
-import com.example.mentalhealthapp.models.SearchOptions;
 import com.example.mentalhealthapp.models.Tag;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -42,7 +38,6 @@ public class HelperProfileFragment extends Fragment {
     protected TextView helperProfileBio;
     protected ImageView helperProfileAvatar;
     protected TextView helperProfileTags;
-    protected TextView helperProfileChats;
     protected FloatingActionButton editHelperProfile;
     ParseUser currentUser;
 
@@ -76,7 +71,6 @@ public class HelperProfileFragment extends Fragment {
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         helperProfileAvatar.setImageBitmap(bm);
         helperProfileTags = view.findViewById(R.id.tvMyTags_helper_profile);
-        helperProfileChats = view.findViewById(R.id.tvMyChats_helper_profile);
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
         currentUser = ParseUser.getCurrentUser();

@@ -63,6 +63,7 @@
         android:background="@drawable/bg_btnreccalendar"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:text="Select a date!"
         android:textColor="@color/mediumpurple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
