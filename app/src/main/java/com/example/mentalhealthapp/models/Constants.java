@@ -21,10 +21,13 @@ public final class Constants {
     public static final String AVATAR_FIELD = "avatar";
     public static final String TAG_FIELD = "Tag";
     public static final String AUDIO_RECORD_FAIL_TAG= "AUDIO_RECORDING";
+    public static final String PROGRESS_BAR_DOWNLOAD="PROGRESS_BAR_DOWNLOAD";
+    public static final String AUDIO_PLAY_FAIL_TAG="AUDIO_PLAY_FAIL_TAG";
 
     //REQUEST CODES:
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
+    public static final int WRITE_REQUEST_CODE = 300;
 
     //OTHER:
     public static final String TAG = "tag: ";

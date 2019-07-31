@@ -76,6 +76,6 @@ public class ChatOverviewListFragment  extends Fragment {
         return null;
     }
     private void orderChatsByTimestamp(){
-
+        //TODO
     }
 }

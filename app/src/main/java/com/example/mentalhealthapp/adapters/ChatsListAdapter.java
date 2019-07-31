@@ -161,7 +161,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
         public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse){
             if(lastM!=null){
-                if( lastM.getMentionType().name().equals("USERS")){ // Message is a Text Message.
+                try{
                     UserMessage lastMUser = (UserMessage) lastM;
                     String senderId = lastMUser.getSender().getUserId();
                     String authorAndMessage = senderId.equals(ParseUser.getCurrentUser().getObjectId())
@@ -169,7 +169,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                             addresseeParse.getUsername()+": ";
                     authorAndMessage += lastMUser.getMessage();
                     lastMessage.setText(authorAndMessage);
-                }else{ // Message is an Attachment
+                }catch (ClassCastException e){
+                     // Message is an Attachment
                     FileMessage lastMFile = (FileMessage) lastM;
                     String senderId = lastMFile.getSender().getUserId();
                     String authorAndAttachMessage = senderId.equals(ParseUser.getCurrentUser().getObjectId())

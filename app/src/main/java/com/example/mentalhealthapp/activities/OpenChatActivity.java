@@ -1,13 +1,16 @@
 package com.example.mentalhealthapp.activities;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,24 +42,33 @@ import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import Utils.Utils;
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
 import chatApp.CreateChatHandle;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+import pub.devrel.easypermissions.EasyPermissions;
 
 
-@RuntimePermissions
 public class OpenChatActivity extends AppCompatActivity {
 
-    //EditText chatRecipient;
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+
     EditText chatMessage;
     Button sendBtn;
     ParseUser chatRecipientUser;
@@ -67,11 +79,15 @@ public class OpenChatActivity extends AppCompatActivity {
     String groupChannelStr;
     Boolean emergency;
     TextView senderName;
-    ImageView profilePic, appLogo,back;
+    ImageView profilePic, appLogo, back;
     ImageButton record;
     MediaRecorder mediaRecorder;
     String mFileName;
-
+    boolean mStartRecording;
+    String audioId;
+    // Requesting permission to RECORD_AUDIO
+    private boolean permissionToRecordAccepted = false;
+    private String[] permissions = {Manifest.permission.RECORD_AUDIO};
 
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
         //Send text msg btn Listener
@@ -83,22 +99,22 @@ public class OpenChatActivity extends AppCompatActivity {
             groupChannel.sendUserMessage(chatMessageString, new BaseChannel.SendUserMessageHandler() {
                 @Override
                 public void onSent(UserMessage userMessage, SendBirdException e) {
-                    if(e!=null){
-                        Toast.makeText(OpenChatActivity.this,"Message not sent",Toast.LENGTH_LONG ).show();
+                    if (e != null) {
+                        Toast.makeText(OpenChatActivity.this, "Message not sent", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                         return;
                     }
                     //You add this new message to the lowest part of the chat
                     messages.add(userMessage);
-                    chatAdapter.notifyItemInserted(messages.size()-1);
-                    rv_chatBubbles.scrollToPosition(messages.size()-1);
+                    chatAdapter.notifyItemInserted(messages.size() - 1);
+                    rv_chatBubbles.scrollToPosition(messages.size() - 1);
                 }
             });
         }
     };
 
 
-    View.OnClickListener backListener =new View.OnClickListener() {
+    View.OnClickListener backListener = new View.OnClickListener() {
         // Back btn (top of the chat) listener
         @Override
         public void onClick(View v) {
@@ -107,43 +123,96 @@ public class OpenChatActivity extends AppCompatActivity {
     };
 
 
-    View.OnTouchListener recordListener = new View.OnTouchListener() {
+    View.OnClickListener recordListener = new View.OnClickListener() {
         @Override
-
-        public boolean onTouch(View v, MotionEvent event) {
-            int action = event.getAction();
-            if(action==MotionEvent.ACTION_DOWN){
-                startRecord();
-            }else if(action==MotionEvent.ACTION_BUTTON_RELEASE){
-
-                //stop recording
-                if(mediaRecorder==null)return false;
-                stopRecord(mediaRecorder);
-
-                //send recording
-                if(mFileName==null)return false;
-
-                FileMessageParams fmp = new FileMessageParams();
-                final File file = new File(mFileName);
-                fmp.setFile(file).setFileName(mFileName);
-                sendFileMsg(fmp);
-
-                mFileName=null;
-            }
-            return false;
+        public void onClick(View v) {
+            onRecord(mStartRecording);
+            mStartRecording = !mStartRecording;
         }
     };
 
 
-    private  void  sendFileMsg(FileMessageParams fmp ){
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_RECORD_AUDIO_PERMISSION:
+                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if (!permissionToRecordAccepted ) finish();
+
+    }
+
+    private void onRecord(boolean start) {
+        if (start) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    }
+
+    public void startRecording() {
+        requestPermission();
+        if(!permissionToRecordAccepted) return;
+        Date d = new Date();
+        audioId = ParseUser.getCurrentUser().getUsername().toLowerCase() + d.getTime();
+
+        // Set the file location for the audio
+        mFileName =  Environment.getExternalStorageDirectory() + File.separator ;
+        mFileName += audioId + ".3gp";
+        startRecording2();
+    }
+
+    public void startRecording2() {
+        // Create the recorder
+        mediaRecorder = new MediaRecorder();
+        //mediaRecorder.reset();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setOutputFile(mFileName);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        //mediaRecorder.setMaxDuration(60000);
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            //Log.e(Constants.AUDIO_RECORD_FAIL_TAG, "prepare() failed");
+            e.printStackTrace();
+        }
+        mediaRecorder.start();
+
+    }
+
+
+    public void stopRecording() {
+        //stop recording
+        if (mediaRecorder == null) return;
+        stopRecording(mediaRecorder);
+    }
+
+
+    public void stopRecording(MediaRecorder mediaRecorder) {
+        // Stop the recording of the audio
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        sendFile();
+        mediaRecorder = null;
+    }
+
+
+
+    private void sendFile() {
+        FileMessageParams fmp = new FileMessageParams();
+        File file = new File(mFileName);
+        fmp.setFileName(audioId).setFile(file);
         groupChannel.sendFileMessage(fmp, new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
                 //TODO
                 //You add this new message to the lowest part of the chat
                 messages.add(fileMessage);
-                chatAdapter.notifyItemInserted(messages.size()-1);
-                rv_chatBubbles.scrollToPosition(messages.size()-1);
+                chatAdapter.notifyItemInserted(messages.size() - 1);
+                rv_chatBubbles.scrollToPosition(messages.size() - 1);
             }
         });
     }
@@ -154,14 +223,15 @@ public class OpenChatActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_open_chat);
         emergency = false;
-        if(getIntent().getStringExtra("emergency") != null){
+        mStartRecording = true;
+        if (getIntent().getStringExtra("emergency") != null) {
             //coming from emergency button
             emergency = true;
         }
 
         groupChannelStr = getIntent().getStringExtra("group_channel");
         messages = new ArrayList<>();
-        mediaRecorder=null;
+        mediaRecorder = null;
 
         assignViewsAndListener();
         setRecyclerView();
@@ -169,7 +239,7 @@ public class OpenChatActivity extends AppCompatActivity {
     }
 
 
-    private void getConnectionAndChat(){
+    private void getConnectionAndChat() {
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
         chatApp.connectToServer(ParseUser.getCurrentUser().getObjectId(), new ConnectionHandle() {
@@ -203,13 +273,13 @@ public class OpenChatActivity extends AppCompatActivity {
     }
 
 
-    private void setChannelHandler(String groupChannelStr){
+    private void setChannelHandler(String groupChannelStr) {
         SendBird.addChannelHandler(groupChannelStr, new SendBird.ChannelHandler() {
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 messages.add(baseMessage);
-                chatAdapter.notifyItemInserted(messages.size()-1);
-                rv_chatBubbles.scrollToPosition(messages.size() -1 );
+                chatAdapter.notifyItemInserted(messages.size() - 1);
+                rv_chatBubbles.scrollToPosition(messages.size() - 1);
             }
         });
     }
@@ -232,9 +302,9 @@ public class OpenChatActivity extends AppCompatActivity {
                     .load(avatarPic.getFile())
                     .bitmapTransform(new RoundedCornersTransformation(this, 50, 0))
                     .into(profilePic);
-        }catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -242,7 +312,7 @@ public class OpenChatActivity extends AppCompatActivity {
         back.setOnClickListener(backListener);
 
         record = findViewById(R.id.ib_record_audio);
-        record.setOnTouchListener(recordListener);
+        record.setOnClickListener(recordListener);
     }
 
     protected void setRecyclerView() {
@@ -257,15 +327,15 @@ public class OpenChatActivity extends AppCompatActivity {
         PreviousMessageListQuery prevMessageListQuery = groupChannel.createPreviousMessageListQuery();
         prevMessageListQuery.load(30, true, new PreviousMessageListQuery.MessageListQueryResult() {
             @Override
-            public void onResult( List<BaseMessage> ms, SendBirdException e) {
+            public void onResult(List<BaseMessage> ms, SendBirdException e) {
                 if (e != null) {    // Error.
                     e.printStackTrace();
                     return;
                 }
                 for (BaseMessage message : ms) {
-                    messages.add(0,message);
+                    messages.add(0, message);
                     chatAdapter.notifyItemInserted(0);
-                    rv_chatBubbles.scrollToPosition(messages.size() -1 );
+                    rv_chatBubbles.scrollToPosition(messages.size() - 1);
                 }
             }
         });
@@ -279,7 +349,7 @@ public class OpenChatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(emergency){
+        if (emergency) {
             //remove chat channel and log out anonymous user
             ParseUser.logOut();
             onDestroy();
@@ -291,49 +361,11 @@ public class OpenChatActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
-    public void startRecord(){
-        Date d = new Date();
-        String audioId = ParseUser.getCurrentUser().getUsername() + d.getTime();
-        OpenChatActivityPermissionsDispatcher.startRecordWithPermissionCheck(this);
-// Verify that the device has a mic first
-        PackageManager packageManager = this.getPackageManager();
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)) {
-            // Set the file location for the audio
-            mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-            mFileName += "/"+audioId+".3gp";
-            // Create the recorder
-            mediaRecorder = new MediaRecorder();
-            // Set the audio format and encoder
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            // Setup the output location
-            mediaRecorder.setOutputFile(mFileName);
-            // Start the recording
-            try {
-                mediaRecorder.prepare();
-                mediaRecorder.start();
-            } catch (IOException e) {
-                Log.e(Constants.AUDIO_RECORD_FAIL_TAG, "prepare() failed");
-            }
-        } else { // no mic on device
-            Toast.makeText(this, "This device doesn't have a mic!", Toast.LENGTH_LONG).show();
-
-        }
-    }
-
-    public void stopRecord(MediaRecorder mediaRecorder){
-        // Stop the recording of the audio
-        mediaRecorder.stop();
-        mediaRecorder.reset();
-        mediaRecorder.release();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        OpenChatActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(OpenChatActivity.this, new
+                String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                REQUEST_RECORD_AUDIO_PERMISSION);
     }
 }
+
+

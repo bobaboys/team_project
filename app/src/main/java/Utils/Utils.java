@@ -1,19 +1,34 @@
 package Utils;
 
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -56,37 +71,12 @@ public class Utils {
         return null;
     }
 
-    public static void playAudioFromUrl(String url, Context context){
-        final MediaPlayer mediaPlayer = new MediaPlayer();
-        // Set type to streaming
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        // Listen for if the audio file can't be prepared
-        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                // ... react appropriately ...
-                // The MediaPlayer has moved to the Error state, must be reset!
-                return false;
-            }
-        });
-        // Attach to when audio file is prepared for playing
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mediaPlayer.start();
-            }
-        });
-        // Set the data source to the remote URL
-        try {
-            mediaPlayer.setDataSource(url);
-        }catch (IOException e){
-            e.printStackTrace();
-            Toast.makeText(context,"Couldn't play this audio", Toast.LENGTH_LONG).show();
-        }
-
-        // Trigger an async preparation which will file listener when completed
-        mediaPlayer.prepareAsync();
+    public static boolean isSDCardPresent() {
+        return Environment.getExternalStorageState()
+                .equals(Environment.MEDIA_MOUNTED);
     }
+
+
 }
 
 
