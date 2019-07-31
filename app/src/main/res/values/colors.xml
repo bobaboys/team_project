@@ -30,11 +30,12 @@
     <color name="pastel_023">#F2F4B3</color>
 
 
-
+    <color name="white">#fff</color>
     <color name="snow">#fffafa</color>
     <color name="seashell2">#eee5de</color>
     <color name="snow4">#8b8989</color>
     <color name="seashell4">#8b8682</color>
+    <color name="gray_record">#535353</color>
     <color name="lavender">#e6e6fa</color>
     <color name="thistle">#d8bfd8</color>
     <color name="mediumpurple">#9370db</color>

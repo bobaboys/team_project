@@ -1,8 +1,14 @@
 package com.example.mentalhealthapp.activities;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,16 +16,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.ChatsFragmentAdapter;
 import com.parse.DeleteCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.FileMessage;
+import com.sendbird.android.FileMessageParams;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.PreviousMessageListQuery;
 import com.sendbird.android.SendBird;
@@ -27,66 +39,189 @@ import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 
-import org.parceler.Parcels;
-
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import Utils.Utils;
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
 import chatApp.CreateChatHandle;
-import chatApp.GetStringHandle;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 
 public class OpenChatActivity extends AppCompatActivity {
 
-    EditText chatRecipient;
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+
     EditText chatMessage;
     Button sendBtn;
     ParseUser chatRecipientUser;
     RecyclerView rv_chatBubbles;
     ChatsFragmentAdapter chatAdapter;
-    ArrayList<UserMessage> messages;
-    Context context;
+    ArrayList<BaseMessage> messages;
     GroupChannel groupChannel;
     String groupChannelStr;
     Boolean emergency;
+    TextView senderName;
+    ImageView profilePic, appLogo, back;
+    ImageButton record;
+    MediaRecorder mediaRecorder;
+    String mFileName;
+    boolean mStartRecording;
+    String audioId;
+    // Requesting permission to RECORD_AUDIO
+    private boolean permissionToRecordAccepted = false;
+    private String[] permissions = {Manifest.permission.RECORD_AUDIO};
 
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
+        //Send text msg btn Listener
         @Override
         public void onClick(View v) {
-            //send message to server
+
             final String chatMessageString = chatMessage.getText().toString();
             //find correct chat from group channel string
             groupChannel.sendUserMessage(chatMessageString, new BaseChannel.SendUserMessageHandler() {
                 @Override
                 public void onSent(UserMessage userMessage, SendBirdException e) {
-                    if(e!=null){
-                        Toast.makeText(OpenChatActivity.this,"Message not sent",Toast.LENGTH_LONG ).show();
+                    if (e != null) {
+                        Toast.makeText(OpenChatActivity.this, "Message not sent", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                         return;
                     }
                     //You add this new message to the lowest part of the chat
                     messages.add(userMessage);
-                    chatAdapter.notifyItemInserted(messages.size()-1);
-                    rv_chatBubbles.scrollToPosition(messages.size()-1);
+                    chatAdapter.notifyItemInserted(messages.size() - 1);
+                    rv_chatBubbles.scrollToPosition(messages.size() - 1);
                 }
             });
         }
     };
 
 
+    View.OnClickListener backListener = new View.OnClickListener() {
+        // Back btn (top of the chat) listener
+        @Override
+        public void onClick(View v) {
+            OpenChatActivity.super.onBackPressed();
+        }
+    };
+
+
+    View.OnClickListener recordListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onRecord(mStartRecording);
+            mStartRecording = !mStartRecording;
+
+        }
+    };
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_RECORD_AUDIO_PERMISSION:
+                permissionToRecordAccepted  = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                break;
+        }
+        if (!permissionToRecordAccepted ) finish();
+
+    }
+
+    private void onRecord(boolean start) {
+        record.setImageTintList(ColorStateList.valueOf(getResources().getColor(
+                start ? R.color.colorAccent : R.color.gray_record )));
+        if (start) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    }
+
+    public void startRecording() {
+        requestPermission();
+        if(!permissionToRecordAccepted) return;
+        Date d = new Date();
+        audioId = ParseUser.getCurrentUser().getUsername().toLowerCase() + d.getTime();
+
+        // Set the file location for the audio
+        mFileName =  Environment.getExternalStorageDirectory() + File.separator ;
+        mFileName += audioId + ".3gp";
+        startRecording2();
+    }
+
+    public void startRecording2() {
+        // Create the recorder
+        mediaRecorder = new MediaRecorder();
+        //mediaRecorder.reset();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setOutputFile(mFileName);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        //mediaRecorder.setMaxDuration(60000);
+        try {
+            mediaRecorder.prepare();
+        } catch (IOException e) {
+            //Log.e(Constants.AUDIO_RECORD_FAIL_TAG, "prepare() failed");
+            e.printStackTrace();
+        }
+        mediaRecorder.start();
+
+    }
+
+
+    public void stopRecording() {
+        //stop recording
+        if (mediaRecorder == null) return;
+        stopRecording(mediaRecorder);
+    }
+
+
+    public void stopRecording(MediaRecorder mediaRecorder) {
+        // Stop the recording of the audio
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        sendFile();
+        mediaRecorder = null;
+    }
+
+
+
+    private void sendFile() {
+        FileMessageParams fmp = new FileMessageParams();
+        File file = new File(mFileName);
+        fmp.setFileName(audioId).setFile(file);
+        groupChannel.sendFileMessage(fmp, new BaseChannel.SendFileMessageHandler() {
+            @Override
+            public void onSent(FileMessage fileMessage, SendBirdException e) {
+                //TODO
+                //You add this new message to the lowest part of the chat
+                messages.add(fileMessage);
+                chatAdapter.notifyItemInserted(messages.size() - 1);
+                rv_chatBubbles.scrollToPosition(messages.size() - 1);
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_open_chat);
-        if(getIntent().getStringExtra("emergency") != null){
+        emergency = false;
+        mStartRecording = true;
+        if (getIntent().getStringExtra("emergency") != null) {
             //coming from emergency button
             emergency = true;
         }
 
         groupChannelStr = getIntent().getStringExtra("group_channel");
         messages = new ArrayList<>();
+        mediaRecorder = null;
 
         assignViewsAndListener();
         setRecyclerView();
@@ -94,7 +229,7 @@ public class OpenChatActivity extends AppCompatActivity {
     }
 
 
-    private void getConnectionAndChat(){
+    private void getConnectionAndChat() {
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
         chatApp.connectToServer(ParseUser.getCurrentUser().getObjectId(), new ConnectionHandle() {
@@ -115,7 +250,6 @@ public class OpenChatActivity extends AppCompatActivity {
                     public void onFailure(String TAG, Exception e) {
                         Log.e("OPEN_CHAT_ACTIVITY", "accessing channel failed");
                         e.printStackTrace();
-                        //TODO CASE FAILURE GET CHAT?
                     }
                 });
             }
@@ -129,32 +263,46 @@ public class OpenChatActivity extends AppCompatActivity {
     }
 
 
-    private void setChannelHandler(String groupChannelStr){
+    private void setChannelHandler(String groupChannelStr) {
         SendBird.addChannelHandler(groupChannelStr, new SendBird.ChannelHandler() {
             @Override
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
-                //TODO
-                if (baseMessage.getMentionType().name().equals("USERS")) {
-                    UserMessage userM = (UserMessage)baseMessage;
-                    // You add to the lowest position of the chat this new message.
-                    messages.add(userM);
-                    chatAdapter.notifyItemInserted(messages.size()-1);
-                    rv_chatBubbles.scrollToPosition(messages.size() -1 );
-                }
+                messages.add(baseMessage);
+                chatAdapter.notifyItemInserted(messages.size() - 1);
+                rv_chatBubbles.scrollToPosition(messages.size() - 1);
             }
         });
     }
 
 
     private void assignViewsAndListener() {
-        chatRecipient = findViewById(R.id.etRecipient_OpenChat);
         chatRecipientUser = (ParseUser) getIntent().getParcelableExtra("clicked_helper");
-        chatRecipient.setText(chatRecipientUser.getUsername());
         chatMessage = findViewById(R.id.etChatBox_openChat);
         sendBtn = findViewById(R.id.btnChatboxSend_openChat);
         sendBtn.setClickable(false); // protects clicks before enable connection
         rv_chatBubbles = findViewById(R.id.rv_open_chat);
         sendBtn.setOnClickListener(sendBtnListener);
+        senderName = findViewById(R.id.tv_sender_name);
+        senderName.setText(chatRecipientUser.getUsername());
+        profilePic = findViewById(R.id.iv_profile_pic_mini);
+        appLogo = findViewById(R.id.logo_app);
+        try {
+            ParseFile avatarPic = chatRecipientUser.getParseFile("avatar");
+            Glide.with(this)
+                    .load(avatarPic.getFile())
+                    .bitmapTransform(new RoundedCornersTransformation(this, 50, 0))
+                    .into(profilePic);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        back = findViewById(R.id.iv_back_btn);
+        back.setOnClickListener(backListener);
+
+        record = findViewById(R.id.ib_record_audio);
+        record.setOnClickListener(recordListener);
     }
 
     protected void setRecyclerView() {
@@ -162,31 +310,22 @@ public class OpenChatActivity extends AppCompatActivity {
         chatAdapter = new ChatsFragmentAdapter(this, messages);
         chatAdapter.setAddressee(chatRecipientUser);
         rv_chatBubbles.setAdapter(chatAdapter);
-        rv_chatBubbles.setLayoutManager(new LinearLayoutManager(context));
+        rv_chatBubbles.setLayoutManager(new LinearLayoutManager(this));
     }
-    //TODO LISTENER NEW MESSAGES.
 
     protected void populateChat(GroupChannel groupChannel) {
-        //TODO
         PreviousMessageListQuery prevMessageListQuery = groupChannel.createPreviousMessageListQuery();
         prevMessageListQuery.load(30, true, new PreviousMessageListQuery.MessageListQueryResult() {
             @Override
-            public void onResult( List<BaseMessage> ms, SendBirdException e) {
+            public void onResult(List<BaseMessage> ms, SendBirdException e) {
                 if (e != null) {    // Error.
                     e.printStackTrace();
                     return;
                 }
                 for (BaseMessage message : ms) {
-                    if (message.getMentionType().name().equals("USERS")) {
-                        UserMessage userM = (UserMessage)message;
-                        //The first messages on ms are the newest. therefore, if you add all of them at 0,
-                        //the newest gonna "fall" to the tail of the recycler view.
-                        // the tail (POSITION N-1) of the recycler view is the lowest part of the rv.
-                        //we wanna watch first the newest ( lowest) messages.
-                        messages.add(0,userM);
-                        chatAdapter.notifyItemInserted(0);
-                        rv_chatBubbles.scrollToPosition(messages.size() -1 );
-                    }
+                    messages.add(0, message);
+                    chatAdapter.notifyItemInserted(0);
+                    rv_chatBubbles.scrollToPosition(messages.size() - 1);
                 }
             }
         });
@@ -200,7 +339,7 @@ public class OpenChatActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(emergency){
+        if (emergency) {
             //remove chat channel and log out anonymous user
             ParseUser user = ParseUser.getCurrentUser();
             user.deleteInBackground(new DeleteCallback() {
@@ -212,8 +351,17 @@ public class OpenChatActivity extends AppCompatActivity {
             ParseUser.logOut();
             Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
             startActivity(intent);
+            finish();
             return;
         }
         super.onBackPressed();
     }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(OpenChatActivity.this, new
+                String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                REQUEST_RECORD_AUDIO_PERMISSION);
+    }
 }
+
+
