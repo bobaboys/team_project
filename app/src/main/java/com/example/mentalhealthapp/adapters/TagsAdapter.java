@@ -101,7 +101,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             tags.clear();
-            tags.addAll((List)results.values);
+            if((List)results.values!=null){
+                tags.addAll((List)results.values);
+            }
             notifyDataSetChanged();
         }
     };
