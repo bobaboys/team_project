@@ -13,10 +13,9 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.Fragments.ChatOverviewListFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
-import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
-import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
+import com.example.mentalhealthapp.Fragments.ReflectFragment;
 import com.example.mentalhealthapp.R;
 import com.parse.ParseUser;
 import com.sendbird.android.User;
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new ChatOverviewListFragment();
                             break;
                         case R.id.navigation_helper_reflect:
-                            fragment = new HelperReflectFragment();
+                            fragment = new ReflectFragment();
                             break;
                         case R.id.navigation_helper_profile:
                             fragment = new HelperProfileFragment();
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new RecieverSearchPageFragment();
                             break;
                         case R.id.navigation_reflect:
-                            fragment = new RecieverReflectFragment();
+                            fragment = new ReflectFragment();
                             break;
                         case R.id.navigation_chat:
                             fragment = new ChatOverviewListFragment();
@@ -148,6 +147,5 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
     }
-
 }
 

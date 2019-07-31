@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class RecieverReflectFragment extends Fragment {
+public class ReflectFragment extends Fragment {
 
     protected TextView journalDate;
     protected CalendarView calendarView;
@@ -68,10 +68,7 @@ public class RecieverReflectFragment extends Fragment {
         allEntries.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Fragment fragment = new ReceiverJournalFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("date", date);
-                fragment.setArguments(bundle);
+                Fragment fragment = new JournalFragment();
                 switchToAnotherFragment(fragment);
             }
         });
@@ -79,7 +76,7 @@ public class RecieverReflectFragment extends Fragment {
         createEntry.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Fragment fragment = new ReceiverCreateEntryFragment();
+                Fragment fragment = new CreateEntryJournalFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("date", date);
                 if(createEntry.getText().equals(CREATE_KEY)){
@@ -104,7 +101,7 @@ public class RecieverReflectFragment extends Fragment {
                 if(e == null){
                     createEntry.setText(CREATE_KEY);
                     for(int i = 0; i < objects.size(); i++){
-                        if(RecieverReflectFragment.this.date.equals(objects.get(i).getDate())){
+                        if(ReflectFragment.this.date.equals(objects.get(i).getDate())){
                             createEntry.setText(EDIT_KEY);
                             break;
                         }

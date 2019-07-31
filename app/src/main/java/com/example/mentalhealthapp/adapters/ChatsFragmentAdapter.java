@@ -172,7 +172,7 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
                 //GET FILE FROM INTERNET.
                 String audioId = fileMessage.getSender().getUserId().toLowerCase();
                 audioId += fileMessage.getMessageId()+".3gp";
-                String pathDownload = Environment.getExternalStorageDirectory() + "/" + "audios"+"/";
+                String pathDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath() ;
                 String absFilePath =pathDownload+audioId;
 
                 File outputFile = new File(absFilePath);

@@ -58,30 +58,18 @@ public class DownloadTaskAndPlay {
         @Override
         protected void onPostExecute(Void result) {
             try {
+                Utils.enableDisablePlay(context,playButton, true);
                 if (outputFile != null) {
                     play(outputFile.getAbsolutePath());
-                    Utils.enableDisablePlay(context,playButton, true);;//*** esta bien enable aqui?
                     //buttonText.setText(R.string.downloadCompleted);//If Download completed then change button text
                 } else {
                     Log.e(TAG,"Error downloading audio");
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Utils.enableDisablePlay(context,playButton, true);
-                        }
-                    }, 3000);
 
                 }
             } catch (Exception e) {
                 e.printStackTrace();
 
                 Toast.makeText(context,"Error downloading audio",Toast.LENGTH_LONG).show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.enableDisablePlay(context,playButton, true);
-                    }
-                }, 3000);
                 Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
 
             }
@@ -105,7 +93,7 @@ public class DownloadTaskAndPlay {
 
                 }
 
-
+/**************
                 //Get File if SD card is present
                 if (Utils.isSDCardPresent()) {
 
@@ -113,6 +101,9 @@ public class DownloadTaskAndPlay {
                             pathDownload);
                 } else
                     Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
+ *************/
+                apkStorage = new File(
+                        pathDownload);//******************* no estamos usando la SD
 
                 //If File is not present create directory
                 if (!apkStorage.exists()) {
@@ -160,5 +151,14 @@ public class DownloadTaskAndPlay {
         player.setDataSource(SOMETHINGCANTREMEMBERWHAT);
         player.prepare();
         player.start();
+        player.setOnCompletionListener(completionListener);
     }
+
+    MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            //  TODO
+            Utils.enableDisablePlay(context,playButton, true);
+        }
+    };
 }
