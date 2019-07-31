@@ -189,12 +189,21 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
                 Log.e(Constants.AUDIO_RECORD_FAIL_TAG, "prepare() failed");
             }
         }
-
+        MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                //  TODO
+                Utils.enableDisablePlay(context,isMyMessage?playMine:playYou, true);
+            }
+        };
 
         public void play(String absFilePath) throws IOException{//TODO GET NO SE QUE GET HAHAHA
             player.setDataSource(absFilePath);
             player.prepare();
             player.start();
+            Utils.enableDisablePlay(context,isMyMessage?playMine:playYou, false);
+            player.setOnCompletionListener(completionListener);
+
         }
 
         public ViewHolder(View view) {
@@ -225,6 +234,7 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
         public void bind(){
             if(isTextMessage) bindTextMsg();
         }
+
 
         private void bindTextMsg(){
             if(isMyMessage){

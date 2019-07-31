@@ -3,6 +3,7 @@ package Utils;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -10,8 +11,10 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -74,6 +77,12 @@ public class Utils {
     public static boolean isSDCardPresent() {
         return Environment.getExternalStorageState()
                 .equals(Environment.MEDIA_MOUNTED);
+    }
+
+    public static void enableDisablePlay(Context context, ImageView btn, boolean enable){
+        btn.setEnabled(enable);
+        btn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(
+                    enable ? R.color.white : R.color.pastel_009)));
     }
 
 

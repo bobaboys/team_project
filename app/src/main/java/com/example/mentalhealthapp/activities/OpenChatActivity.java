@@ -1,12 +1,10 @@
 package com.example.mentalhealthapp.activities;
 
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.media.MediaRecorder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -15,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +24,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.ChatsFragmentAdapter;
-import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -42,15 +38,8 @@ import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,9 +49,6 @@ import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
 import chatApp.CreateChatHandle;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class OpenChatActivity extends AppCompatActivity {
@@ -128,6 +114,7 @@ public class OpenChatActivity extends AppCompatActivity {
         public void onClick(View v) {
             onRecord(mStartRecording);
             mStartRecording = !mStartRecording;
+
         }
     };
 
@@ -145,6 +132,8 @@ public class OpenChatActivity extends AppCompatActivity {
     }
 
     private void onRecord(boolean start) {
+        record.setImageTintList(ColorStateList.valueOf(getResources().getColor(
+                start ? R.color.colorAccent : R.color.gray_record )));
         if (start) {
             startRecording();
         } else {

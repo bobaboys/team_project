@@ -4,14 +4,11 @@ package com.example.mentalhealthapp.models;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.mentalhealthapp.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,7 +52,7 @@ public class DownloadTaskAndPlay {
         protected void onPreExecute() {
             super.onPreExecute();
             //TODO CHANGE COLOR IMAGEVIEW PLAY BTN. BLOCK MAYBE?
-            playButton.setEnabled(false);
+            Utils.enableDisablePlay(context,playButton, false);
         }
 
         @Override
@@ -63,18 +60,16 @@ public class DownloadTaskAndPlay {
             try {
                 if (outputFile != null) {
                     play(outputFile.getAbsolutePath());
-                    playButton.setEnabled(true);//*** esta bien enable aqui?
+                    Utils.enableDisablePlay(context,playButton, true);;//*** esta bien enable aqui?
                     //buttonText.setText(R.string.downloadCompleted);//If Download completed then change button text
                 } else {
-                    Toast.makeText(context,"Error downloading audio",Toast.LENGTH_LONG).show();
+                    Log.e(TAG,"Error downloading audio");
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            playButton.setEnabled(true);
+                            Utils.enableDisablePlay(context,playButton, true);
                         }
                     }, 3000);
-
-                    Log.e(TAG, "Download Failed");
 
                 }
             } catch (Exception e) {
@@ -84,7 +79,7 @@ public class DownloadTaskAndPlay {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        playButton.setEnabled(true);
+                        Utils.enableDisablePlay(context,playButton, true);
                     }
                 }, 3000);
                 Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
