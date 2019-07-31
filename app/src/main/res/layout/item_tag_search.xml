@@ -11,7 +11,7 @@
     android:layout_marginRight="20dp"
     android:clickable="false"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="#E4D1F7"
+    card_view:cardBackgroundColor="@color/lavender"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="3dp">
 
@@ -29,11 +29,13 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
+            android:fontFamily="casual"
             android:maxLines="1"
             android:text="Search Tag"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/seashell4"
             android:textSize="15dp"
-            android:textStyle="normal"
+            android:textStyle="normal|bold"
             android:typeface="normal"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toStartOf="@+id/ic_tag_description"

@@ -17,34 +17,24 @@
         android:layout_marginRight="34dp"
         android:onClick="Logout"
         android:text="Logout"
+        android:textColor="@color/mediumpurple"
+        android:background="@color/lavender"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ivAvatar_reciever_profile"
-        android:layout_width="120dp"
-        android:layout_height="119dp"
+        android:layout_width="225dp"
+        android:layout_height="205dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="208dp"
+        android:layout_marginTop="152dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.534"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvMyChats_reciever_profile"
-        android:layout_width="320dp"
-        android:layout_height="211dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginBottom="156dp"
-        android:text="My Chats:"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_Edit_RecieverProfile"
@@ -52,14 +42,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="301dp"
         android:layout_marginLeft="301dp"
-        android:layout_marginTop="36dp"
         android:layout_marginEnd="54dp"
         android:layout_marginRight="54dp"
         android:layout_marginBottom="79dp"
         android:clickable="true"
+        app:backgroundTint="@color/lightslateblue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvMyChats_reciever_profile"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 </android.support.constraint.ConstraintLayout>

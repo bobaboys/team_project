@@ -32,6 +32,8 @@
     <string name="edit_bio">Edit bio...</string>
     <string name="edit_tags">Edit Tags</string>
     <string name="play_description">Play btn</string>
+    <string name="journal_title">Thought Journal</string>
+    <string name="all_entries">All my entries</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="recipient">recipient:</string>

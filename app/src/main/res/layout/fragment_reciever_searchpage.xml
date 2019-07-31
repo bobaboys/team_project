@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView_tags" />
 
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fb_search_for_helpers"
         android:layout_width="wrap_content"
@@ -53,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:actionViewClass="android.support.v7.widget.SearchView"
