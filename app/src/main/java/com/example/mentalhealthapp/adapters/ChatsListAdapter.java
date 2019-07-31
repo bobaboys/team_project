@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.OpenChatActivity;
 import com.example.mentalhealthapp.models.Chat;
+import com.example.mentalhealthapp.models.CompleteChat;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -26,6 +27,8 @@ import com.sendbird.android.Member;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.UserMessage;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 import Utils.Utils;
@@ -33,13 +36,13 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.ViewHolder>  {
 
-    List<Chat> chats;
+    List<CompleteChat> channels;
     Context context;
 
-    public ChatsListAdapter(Context context, List<Chat> chats) {
+    public ChatsListAdapter(Context context, List<CompleteChat> channels) {
 
         this.context = context;
-        this.chats = chats;
+        this.channels = channels;
     }
 
 
@@ -53,17 +56,17 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull final ChatsListAdapter.ViewHolder viewHolder, final int i) {
-        Chat chat = chats.get(i);
+        CompleteChat chat = channels.get(i);
         viewHolder.bind(chat);
     }
 
 
     @Override
     public int getItemCount() {
-        if (chats == null) {
+        if (channels == null) {
             return 0;
         }
-        return chats.size();
+        return channels.size();
     }
 
 
@@ -71,8 +74,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         TextView title, lastMessage, timeStamp;
         ImageView chatUserPic;
         ConstraintLayout itemChat;
-        String chatUrl;
-        Chat chatParse;
+        CompleteChat channel;
         ParseUser addresseeParse;
 
         public ViewHolder(View view) {
@@ -94,48 +96,32 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
 
         public void openChat(){
-            if(chatParse == null) return; // there is not chatParse on the item, click does nothing. TODO toast?
-            if(chatUrl == null) chatUrl= chatParse.getString("chatUrl");
+            if(channel.chat == null) return; // there is not chatParse on the item, click does nothing. TODO toast?
             if(addresseeParse==null)addresseeParse = obtainFromParseAddressee();
             Intent i = new Intent(context, OpenChatActivity.class);
-            i.putExtra("group_channel", chatUrl );
             i.putExtra("clicked_helper", addresseeParse);
+            i.putExtra("group_channel", channel.groupChannel.getUrl());//TODO
             context.startActivity(i);
 
         }
 
 
-        public void bind(final Chat chat) {
+        public void bind(final CompleteChat complete ) {
 
-            chatParse = chat;  //This Chat object is gonna be called in other methods.
-            chatUrl= chatParse.getString("chatUrl");
+            channel = complete;  //This Chat object is gonna be called in other methods
 
-            //Method called when want to select an specific channel
-            GroupChannel.getChannel(chatUrl, new GroupChannel.GroupChannelGetHandler() {
+            // getting the adressee information (in parseServer) to populate the chat overview.
+            addresseeParse = obtainFromParseAddressee();
+            title.setText(addresseeParse.getUsername()); // Username comes from Parse.
 
-                @Override
-                public void onResult(GroupChannel groupChannel, SendBirdException e) {
-
-                    if (e != null) {    // Error.
-                        e.printStackTrace();
-                        Log.d("CHAT_OVERVIEW","Imposible populate chat overview");
-                        return;
-                    }
-
-                    // getting the adressee information (in parseServer) to populate the chat overview.
-                    addresseeParse = obtainFromParseAddressee();
-                    title.setText(addresseeParse.getUsername()); // Username comes from Parse.
-
-                    getAndBindParseProfilePhoto( addresseeParse);
-                    BaseMessage  lastM = groupChannel.getLastMessage();
-                    bindAccordingTypeOfMessage( lastM,  addresseeParse);
-                }
-            });
+            getAndBindParseProfilePhoto( addresseeParse);
+            BaseMessage  lastM = channel.groupChannel.getLastMessage();
+            bindAccordingTypeOfMessage( lastM,  addresseeParse);
         }
 
         public ParseUser obtainFromParseAddressee() {
             boolean currentIsHelperParse = ParseUser.getCurrentUser().getBoolean("helper");
-             return currentIsHelperParse? chatParse.getParseUser("reciever") : chatParse.getParseUser("helper") ;
+             return currentIsHelperParse? channel.chat.getParseUser("reciever") : channel.chat.getParseUser("helper") ;
         }
 
         public void getAndBindParseProfilePhoto( ParseUser addresseeParse){

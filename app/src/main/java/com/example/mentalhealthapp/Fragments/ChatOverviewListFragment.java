@@ -13,17 +13,23 @@ import android.view.ViewGroup;
 import com.example.mentalhealthapp.adapters.ChatsListAdapter;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.models.Chat;
+import com.example.mentalhealthapp.models.CompleteChat;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.sendbird.android.BaseMessage;
+import com.sendbird.android.GroupChannel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import chatApp.ChatApp;
+import chatApp.CreateChatHandle;
+
 public class ChatOverviewListFragment  extends Fragment {
 
-    List<Chat> chats;
+    ArrayList<CompleteChat> completeChats;
     RecyclerView rvChatsList;
     ChatsListAdapter chatListAdapter;
 
@@ -37,20 +43,20 @@ public class ChatOverviewListFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvChatsList = view.findViewById(R.id.rvChatsList);
-        chats = new ArrayList<>();
+        completeChats = new ArrayList<>();
         setRecyclerView();
-        getListUrlChats();
+        getCompleteChats();
 
     }
 
     private void setRecyclerView() {
-        chatListAdapter = new ChatsListAdapter(this.getContext(), chats);
+        chatListAdapter = new ChatsListAdapter(this.getContext(), completeChats);
         rvChatsList.setAdapter(chatListAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         rvChatsList.setLayoutManager(layoutManager);
     }
 
-    public ArrayList<String> getListUrlChats() {
+    public void getCompleteChats() {
         ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
         query.setLimit(50);
         query.include("helper");
@@ -61,21 +67,52 @@ public class ChatOverviewListFragment  extends Fragment {
         query.findInBackground(new FindCallback<Chat>() {
             @Override
             public void done(List<Chat> objects, ParseException e) {
-                if(e!=null){
+                if (e != null) {
                     e.printStackTrace();
                     return;
                 }
-                for(Chat c: objects){
-                    chats.add(0, c);
+                for (Chat chat : objects) {
+                    //TODO CALL CHANNEL and order by timestamp.
+                    final CompleteChat cc = new CompleteChat();
+                    cc.chat = chat;
+                    ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
+                        @Override
+                        public void onSuccess(String TAG, GroupChannel groupChannel) {
+                            cc.groupChannel = groupChannel;
+                            addByTimestamp(completeChats, cc);
+                        }
+
+                        @Override
+                        public void onFailure(String TAG, Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
-                //chats.addAll(objects);
-                chatListAdapter.notifyDataSetChanged();
+
             }
         });
-
-        return null;
     }
-    private void orderChatsByTimestamp(){
+    private void addByTimestamp(ArrayList<CompleteChat> list, CompleteChat element){
         //TODO
+        element.timestampLast = getLastTimestampLong(element.groupChannel);
+        int index=list.size(); // default case, add to the tail. (or head if empty)
+
+        for(int i=0;i<list.size();i++){
+            if(element.timestampLast>list.get(i).timestampLast){// bigger --> newer
+                index = i;
+                break;
+            }
+        }
+
+        list.add(index,element);
+        chatListAdapter.notifyItemInserted(index);
+        rvChatsList.scrollToPosition(0);
+    }
+
+
+    private long getLastTimestampLong(GroupChannel gc){
+        BaseMessage lastM = gc.getLastMessage();
+        return lastM.getCreatedAt();
+
     }
 }
