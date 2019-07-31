@@ -12,10 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.models.Constants;
@@ -24,7 +21,6 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import org.apache.commons.io.FileUtils;
 
@@ -43,8 +39,6 @@ public class ReceiverJournalFragment extends Fragment {
     ArrayList<Journal> entries;
     ArrayAdapter<String> itemsAdapter; //class within Android widget package
     ListView lvItems;
-    EditText newEntry;
-    Button addEntry;
     protected String date;
 
     @Override
@@ -56,8 +50,7 @@ public class ReceiverJournalFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         lvItems = (ListView) view.findViewById(R.id.lvItems);
-        addEntry = view.findViewById(R.id.btnAddItem_receiver);
-        newEntry = view.findViewById(R.id.etNewItem_receiverjournal);
+        entries = new ArrayList<>();
         Bundle bundle = getArguments();
         date = bundle.getString("date");
         readItems();
@@ -67,33 +60,10 @@ public class ReceiverJournalFragment extends Fragment {
         populateJournal();
         setupListViewListener();
 
-        addEntry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String itemText = newEntry.getText().toString();
-                itemsAdapter.add(itemText);
-                Journal journal = new Journal();
-                journal.setJournalUser(ParseUser.getCurrentUser());
-                journal.setJournalEntry(itemText);
-                journal.setDate(date);
-                journal.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e!=null){
-                            Log.d("Journal entry", "Error while saving");
-                            e.printStackTrace();
-                            return;
-                        }
-                    }
-                });
-                writeItems();
-                newEntry.setText("");
-                Toast.makeText(getContext(), "Journal entry added!", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void populateJournal(){
+        entries.clear();
         items.clear();
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
@@ -104,6 +74,7 @@ public class ReceiverJournalFragment extends Fragment {
             public void done(List<Journal> objects, ParseException e) {
                 if(e == null){
                     for(int i = 0; i < objects.size(); i++){
+                        entries.add(objects.get(i));
                         items.add(objects.get(i).getDate() + ": " + objects.get(i).getJournalEntry());
                     }
                 }else{
@@ -115,20 +86,11 @@ public class ReceiverJournalFragment extends Fragment {
     }
 
     private void setupListViewListener() {
-        lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                items.remove(position);
-                itemsAdapter.notifyDataSetChanged();
-                writeItems();
-                return true;
-            }
-        });
 
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new ReceiverJournalEditFragment();
+                Fragment fragment = new ReceiverCreateEntryFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.flContainer_main, fragment);
