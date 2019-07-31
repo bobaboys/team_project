@@ -6,7 +6,7 @@
         />
 
     <solid
-        android:color="@color/snow"
+        android:color="@color/lavender"
         />
 
 </shape>
