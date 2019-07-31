@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 
 import com.example.mentalhealthapp.R;
@@ -24,12 +26,12 @@ import com.example.mentalhealthapp.models.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
+public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable {
     public ArrayList<Tag> selectedTags;
     public final String TAG_TABLE_FIELD = "Tag";
     private Context context;
-    private List<Tag> tags;
-
+    protected List<Tag> tags;
+    protected List<Tag> tagsFull;
 
     public TagsAdapter(Context context, List<Tag> tags) {
         this.context = context;
@@ -65,6 +67,43 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
     public int getItemCount() {
         return tags.size();
     }
+
+    public void setTagsListFull(){
+        tagsFull = new ArrayList<>(tags); //TODO: CHANGE THIS
+    }
+
+    @Override
+    public Filter getFilter() {
+        return tagFilter;
+    }
+
+    private Filter tagFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Tag> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0){
+                filteredList.addAll(tagsFull);
+            }
+            else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for(Tag item: tagsFull){
+                    if(item.getString(TAG_TABLE_FIELD).toLowerCase().contains(filterPattern)){
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            tags.clear();
+            tags.addAll((List)results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     class ViewHolder extends RecyclerView.ViewHolder {
 

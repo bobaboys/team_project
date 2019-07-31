@@ -67,6 +67,7 @@ public class HelperEditProfileFragment extends Fragment {
     protected File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
     protected  List<Tag> tags;
+    protected  List<Tag> tagsFull;
     protected TagsAdapter tagsAdapter;
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {

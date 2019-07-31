@@ -8,4 +8,8 @@ public class Tag extends ParseObject {
 
     public Tag(){}
 
+    public String getText(){
+        return getString("Tag");
+    }
+
 }

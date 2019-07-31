@@ -35,6 +35,7 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
     RecyclerView rvTags;
     TagsAdapter tagsAdapter;
     List<Tag> tags;
+    List<Tag> tagsFull;
     View.OnClickListener submitListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
