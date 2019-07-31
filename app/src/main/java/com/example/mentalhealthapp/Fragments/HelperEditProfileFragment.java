@@ -134,6 +134,7 @@ public class HelperEditProfileFragment extends Fragment {
         editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
         editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
         editHelperBio.setOnTouchListener(touchListener);
+
         editTags = view.findViewById(R.id.edit_tags);
         editTags.setOnClickListener(editTagsListener);
         saveChanges = view.findViewById(R.id.btnSaveChange_Reciever_edit_profile);

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.example.mentalhealthapp.Fragments.ChatOverviewListFragment;
 import com.example.mentalhealthapp.Fragments.HelperEditProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
 import com.example.mentalhealthapp.Fragments.HelperReflectFragment;
+import com.example.mentalhealthapp.Fragments.ReceiverEditProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverReflectFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
@@ -102,7 +104,10 @@ public class MainActivity extends AppCompatActivity {
                             currPage.setText(R.string.home);
                             break;
                     }
+                    FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     replaceFragment(fragment);
+                    fragmentTransaction.commit();
                     return true;
                 }
             });
@@ -133,7 +138,11 @@ public class MainActivity extends AppCompatActivity {
                             currPage.setText(R.string.home);
                             break;
                     }
+
+                    FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     replaceFragment(fragment);
+                    fragmentTransaction.commit();
                     return true;
                 }
             });
@@ -156,9 +165,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(MainActivity.this, "Can't go back!", Toast.LENGTH_SHORT).show();
-    }
 }
 

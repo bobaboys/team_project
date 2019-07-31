@@ -58,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
-            finish();
         }
     };
 
@@ -88,7 +87,6 @@ public class LoginActivity extends AppCompatActivity {
         if(currentUser != null){
             Intent intent = new Intent (LoginActivity.this, MainActivity.class);
             startActivity(intent);
-            finish();
         }
         AssignViewsAndListeners();
     }
@@ -179,7 +177,6 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("LoginActivity", "Login successful!");
                     final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
-                    finish();
                 }else{
                     Log.e("LoginActivity", "Login failure");
                     Toast.makeText(LoginActivity.this,"Invalid username and/or password", Toast.LENGTH_LONG).show();

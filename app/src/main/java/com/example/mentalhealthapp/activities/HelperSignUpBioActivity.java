@@ -26,7 +26,6 @@ public class HelperSignUpBioActivity extends AppCompatActivity {
             user.saveInBackground();
             Intent intent = new Intent(HelperSignUpBioActivity.this, HelperSignUpTagsActivity.class);
             startActivity(intent);
-            finish();
         }
     };
 

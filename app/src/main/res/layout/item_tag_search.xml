@@ -27,34 +27,38 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/lorem"
+            android:text="Search Tag"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="13dp"
+            android:textSize="15dp"
             android:textStyle="normal"
+            android:typeface="normal"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toStartOf="@+id/ic_tag_description"
             card_view:layout_constraintHorizontal_bias="0.5"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/ic_tag_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="34dp"
+            android:layout_height="21dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             android:contentDescription="@string/help"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.5"
             card_view:layout_constraintStart_toEndOf="@+id/cb_tag_select"
             card_view:layout_constraintTop_toTopOf="parent"
-            card_view:srcCompat="@android:drawable/ic_menu_help" />
+            card_view:layout_constraintVertical_bias="1.0"
+            card_view:srcCompat="@drawable/image" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
