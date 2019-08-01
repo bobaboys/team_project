@@ -5,9 +5,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:paddingVertical="10dp"
+    android:paddingVertical="4dp"
     android:paddingLeft="60dp"
-    android:paddingRight="15dp">
+    android:paddingRight="20dp">
 
     <TextView
         android:id="@+id/my_message_body"
@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/my_chat_bubble"
         android:elevation="2dp"
-        android:padding="10dp"
+        android:padding="7dp"
         android:text="@string/lorem_short"
         android:textColor="#fff"
         android:textSize="18dp"

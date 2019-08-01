@@ -112,6 +112,9 @@ public class ChatOverviewListFragment  extends Fragment {
 
     private long getLastTimestampLong(GroupChannel gc){
         BaseMessage lastM = gc.getLastMessage();
+        if(lastM==null){
+            return 0;
+        }
         return lastM.getCreatedAt();
 
     }

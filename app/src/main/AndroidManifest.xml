@@ -31,10 +31,11 @@
         </activity>
         <activity android:name=".activities.HelperDetailsActivity" />
         <activity android:name=".activities.OpenChatActivity"
-                  android:windowSoftInputMode="adjustPan"/>
+                  android:windowSoftInputMode="stateVisible"/>
         <activity
             android:name=".activities.MainActivity"
             android:windowSoftInputMode="adjustPan"
+            android:isScrollContainer="false"
             android:label="@string/app_name"
              />
 
