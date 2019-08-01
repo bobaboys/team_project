@@ -3,6 +3,7 @@ package com.example.mentalhealthapp.Fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,10 +17,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,10 +67,12 @@ public class HelperEditProfileFragment extends Fragment {
     protected  List<Tag> tags;
     protected  List<Tag> tagsFull;
     protected TagsAdapter tagsAdapter;
+    protected MediaPlayer buttonClickSound;
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             ParseUser user = ParseUser.getCurrentUser();
             //update parse server user with avatar photo
             if(photoFile!=null) {
@@ -86,6 +86,7 @@ public class HelperEditProfileFragment extends Fragment {
     protected View.OnClickListener editTagsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             rvTags.setVisibility(ConstraintLayout.VISIBLE);
             editTags.setVisibility(ConstraintLayout.GONE);
         }
@@ -103,6 +104,7 @@ public class HelperEditProfileFragment extends Fragment {
     protected View.OnClickListener takePicListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             onLaunchCamera();
         }
     };
@@ -110,6 +112,7 @@ public class HelperEditProfileFragment extends Fragment {
     protected View.OnClickListener choosePicListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             Intent intent = new Intent(getContext(), AvatarImagesActivity.class);
             startActivityForResult(intent, CHOOSE_AVATAR_REQUEST);
         }
@@ -124,6 +127,7 @@ public class HelperEditProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         assignViewsAndListeners(view);
         setAndPopulateRvTags();
         getAllTags();

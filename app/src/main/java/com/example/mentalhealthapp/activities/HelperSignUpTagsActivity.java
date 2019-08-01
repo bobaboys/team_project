@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.activities;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,17 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.TagsAdapter;
-import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.Tag;
-import com.example.mentalhealthapp.models.TagsParcel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -36,9 +33,12 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
     TagsAdapter tagsAdapter;
     List<Tag> tags;
     List<Tag> tagsFull;
+    protected MediaPlayer buttonClickSound;
+
     View.OnClickListener submitListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             //save all tags on server for parse user
             for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
                 HelperTags helperTags = new HelperTags();
@@ -64,6 +64,7 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helper_sign_up_tags);
+        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
 
         submit = findViewById(R.id.btnSubmit_Helper);
         submit.setOnClickListener(submitListener);

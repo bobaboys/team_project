@@ -1,5 +1,6 @@
 package com.example.mentalhealthapp.Fragments;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.Journal;
 import com.parse.FindCallback;
@@ -31,6 +31,7 @@ public class CreateEntryJournalFragment extends Fragment {
     protected String dateOfEntry;
     protected Boolean alreadyExists;
     protected Journal existingEntry;
+    protected MediaPlayer buttonClickSound;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class CreateEntryJournalFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         date = view.findViewById(R.id.tv_date_createJournal);
         journalEntry = view.findViewById(R.id.et_addEntry_createJournal);
         save = view.findViewById(R.id.btn_saveEntry_createJournal);
@@ -73,6 +74,7 @@ public class CreateEntryJournalFragment extends Fragment {
     protected View.OnClickListener saveNewEntryListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             if(alreadyExists){
                 existingEntry.setJournalEntry(journalEntry.getText().toString());
                 existingEntry.saveInBackground(new SaveCallback() {

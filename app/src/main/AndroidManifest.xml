@@ -14,7 +14,8 @@
     <application
         android:name=".models.ParseApp"
         android:allowBackup="true"
-        android:label=".ChatApp"
+        android:icon="@drawable/logopic"
+        android:label="Lavender"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">

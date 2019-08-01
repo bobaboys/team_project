@@ -83,7 +83,7 @@
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="137dp"
+            android:layout_width="wrap_content"
             android:layout_height="49dp"
             android:layout_marginStart="141dp"
             android:layout_marginLeft="141dp"
@@ -91,7 +91,8 @@
             android:layout_marginEnd="74dp"
             android:layout_marginRight="74dp"
             android:fontFamily="cursive"
-            android:text="Lavender"
+            android:text=" Lavender"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="36sp"
             android:textStyle="bold"

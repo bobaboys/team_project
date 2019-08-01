@@ -2,6 +2,7 @@ package com.example.mentalhealthapp.Fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.LoginActivity;
@@ -31,6 +33,8 @@ public class RecieverProfileFragment extends Fragment {
     protected ImageView recProfileAvatar;
     protected ParseUser currentUser;
     protected FloatingActionButton editRecieverProfile;
+    protected TextView username;
+    protected MediaPlayer buttonClickSound;
 
     public final String TAG = "Reciever Profiile:";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
@@ -41,6 +45,7 @@ public class RecieverProfileFragment extends Fragment {
     protected View.OnClickListener logOutBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             ParseUser.logOut();
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
@@ -56,6 +61,7 @@ public class RecieverProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         recProfileAvatar = view.findViewById(R.id.ivAvatar_reciever_profile);
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
@@ -64,9 +70,12 @@ public class RecieverProfileFragment extends Fragment {
         btnLogOut = view.findViewById(R.id.btnLogout_ProfileRec);
         btnLogOut.setOnClickListener(logOutBtnListener);
         editRecieverProfile = view.findViewById(R.id.fab_Edit_RecieverProfile);
+        username = view.findViewById(R.id.tv_username_receiverProfile);
+        username.setText(currentUser.getUsername());
         editRecieverProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonClickSound.start();
                 Fragment fragment = new ReceiverEditProfileFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
