@@ -3,6 +3,7 @@ package com.example.mentalhealthapp.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.MainActivity;
@@ -33,6 +35,7 @@ public class HelperBiosFragment extends Fragment {
     protected RecyclerView rvBios;
     protected List<UserWithTags> mBios;
     protected TagsParcel tags;
+    protected TextView alternateText, title;
 
     @Nullable
     @Override
@@ -49,6 +52,8 @@ public class HelperBiosFragment extends Fragment {
         tags = (TagsParcel) Parcels.unwrap( bundle.getParcelable("selectedTags"));
 
         rvBios = view.findViewById(R.id.rvHelperBios);
+        alternateText = view.findViewById(R.id.tv_alternate_text);
+        title = view.findViewById(R.id.tv_title_bios_list);
         mBios = new ArrayList<>();
         ((MainActivity)getContext()).currentCentralFragment = this;
         setRecyclerView();
@@ -75,28 +80,44 @@ public class HelperBiosFragment extends Fragment {
                     e.printStackTrace();
                     return;
                 }
-                ArrayList<UserWithTags> helpersWithAllTags= new ArrayList<>();
-                for(int i = 0; i < objects.size(); i++){
-                    HelperTags helper = objects.get(i);
-                    int j=searchUser(helpersWithAllTags,helper.getUser());
-                    if(j==-1){//User not found on list.
-                        // Make new UserWT and add first tag
-                        UserWithTags uwt = new UserWithTags();
-                        uwt.user = helper.getUser();
-                        uwt.tags.add(helper.getTag());
-                        //Add new user with tags to arraylist
-                        helpersWithAllTags.add(uwt);
-
-                    }else{
-                        // user was found, add tag to it.
-                        helpersWithAllTags.get(j).tags.add(helper.getTag());
-                    }
-                }
-                biosAdapter.addAll(helpersWithAllTags);
-                biosAdapter.notifyDataSetChanged();
+                visibilityLayout(objects.size()==0);
+                if(objects.size()!=0) fillListOfBios(objects);
             }
         });
     }
+
+
+    private void visibilityLayout(boolean isEmpty){
+        rvBios.setVisibility(isEmpty?
+                ConstraintLayout.GONE : ConstraintLayout.VISIBLE);
+        alternateText.setVisibility(isEmpty?
+                ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
+        title.setVisibility(isEmpty?
+                ConstraintLayout.GONE : ConstraintLayout.VISIBLE);
+    }
+
+    private void fillListOfBios(List<HelperTags> objects){
+        ArrayList<UserWithTags> helpersWithAllTags= new ArrayList<>();
+        for(int i = 0; i < objects.size(); i++){
+            HelperTags helper = objects.get(i);
+            int j=searchUser(helpersWithAllTags,helper.getUser());
+            if(j==-1){//User not found on list.
+                // Make new UserWT and add first tag
+                UserWithTags uwt = new UserWithTags();
+                uwt.user = helper.getUser();
+                uwt.tags.add(helper.getTag());
+                //Add new user with tags to arraylist
+                helpersWithAllTags.add(uwt);
+
+            }else{
+                // user was found, add tag to it.
+                helpersWithAllTags.get(j).tags.add(helper.getTag());
+            }
+        }
+        biosAdapter.addAll(helpersWithAllTags);
+        biosAdapter.notifyDataSetChanged();
+    }
+
 
     public int searchUser(ArrayList<UserWithTags> helpersWithAllTags, ParseUser user){
         if (user.getObjectId() == null) {

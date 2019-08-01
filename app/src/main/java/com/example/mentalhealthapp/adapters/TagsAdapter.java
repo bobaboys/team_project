@@ -65,18 +65,15 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     }
 
     @Override
-    public int getItemCount() {
-        return tags.size();
-    }
+    public int getItemCount() { return tags.size(); }
 
     public void setTagsListFull(){
         tagsFull = new ArrayList<>(tags); //TODO: CHANGE THIS
     }
 
     @Override
-    public Filter getFilter() {
-        return tagFilter;
-    }
+    public Filter getFilter() { return tagFilter; }
+
 
     private Filter tagFilter = new Filter() {
         @Override
