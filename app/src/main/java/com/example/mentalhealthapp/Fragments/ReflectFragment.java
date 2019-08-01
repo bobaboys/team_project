@@ -1,5 +1,6 @@
 package com.example.mentalhealthapp.Fragments;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ public class ReflectFragment extends Fragment {
     protected String date;
     public final String CREATE_KEY = "Create Entry";
     public final String EDIT_KEY = "View Entry";
+    protected MediaPlayer buttonClickSound;
 
     @Nullable
     @Override
@@ -46,6 +48,7 @@ public class ReflectFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
+        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         journalDate = view.findViewById(R.id.myDate);
         calendarView = view.findViewById(R.id.calendarView);
         createEntry = view.findViewById(R.id.btn_createEntry);
@@ -68,6 +71,7 @@ public class ReflectFragment extends Fragment {
         allEntries.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                buttonClickSound.start();
                 Fragment fragment = new JournalFragment();
                 switchToAnotherFragment(fragment);
             }
@@ -76,6 +80,7 @@ public class ReflectFragment extends Fragment {
         createEntry.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                buttonClickSound.start();
                 Fragment fragment = new CreateEntryJournalFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("date", date);

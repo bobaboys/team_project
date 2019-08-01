@@ -2,6 +2,7 @@ package com.example.mentalhealthapp.Fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,12 +41,14 @@ public class HelperProfileFragment extends Fragment {
     protected TextView helperProfileTags;
     protected TextView helperName;
     protected FloatingActionButton editHelperProfile;
-    ParseUser currentUser;
+    protected TextView helperProfileUsername;
+    protected MediaPlayer buttonClickSound;
 
 
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             ParseUser.logOut();
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
@@ -61,6 +64,7 @@ public class HelperProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         assignViewsAndListeners(view);
         populateTags();
     }
@@ -71,13 +75,20 @@ public class HelperProfileFragment extends Fragment {
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+
         helperProfileAvatar.setImageBitmap(bm);
         helperProfileTags = view.findViewById(R.id.tvMyTags_helper_profile);
         helperName = view.findViewById(R.id.tvHelperName_HelperProfileFragment);
         helperName.setText(currentUser.getString(Constants.NAME_FIELD));
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
+<<<<<<< HEAD
         helperProfileBio.setText(currentUser.getString(Constants.HELPER_BIO_FIELD));
+=======
+        helperProfileUsername = view.findViewById(R.id.tv_username_helperProfile);
+        helperProfileUsername.setText(ParseUser.getCurrentUser().getUsername());
+        helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
+>>>>>>> 3b83f6f0775fde7d67be2931530aa48da47cc92f
         logOutbtn.setOnClickListener(logoutBtnListener);
         editHelperProfile.setOnClickListener(new View.OnClickListener() {
             @Override

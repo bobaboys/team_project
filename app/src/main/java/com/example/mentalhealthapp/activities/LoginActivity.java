@@ -1,7 +1,7 @@
 package com.example.mentalhealthapp.activities;
 
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,13 +21,10 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.User;
 
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
@@ -43,10 +40,12 @@ public class LoginActivity extends AppCompatActivity {
     protected ParseUser currentUser;
     protected ParseUser onCallNeedHelp;
     private ParseUser onCallHelper;
+    protected MediaPlayer buttonClickSound;
 
     private final View.OnClickListener loginBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             final String username = usernameInput.getText().toString();
             final String password = passwordInput.getText().toString();
             login(username, password, currentUser);
@@ -56,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     private final View.OnClickListener signupBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
         }
@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     private final View.OnClickListener emergencyBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             //assigns need help, on call, and starts chat
             assignOnCallNeedHelp();
         }
@@ -73,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         currentUser = ParseUser.getCurrentUser();
         if(currentUser != null){
             Intent intent = new Intent (LoginActivity.this, MainActivity.class);

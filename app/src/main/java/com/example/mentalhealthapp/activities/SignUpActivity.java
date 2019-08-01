@@ -3,6 +3,7 @@ package com.example.mentalhealthapp.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,7 +20,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -43,6 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
     private final String HELPER_FIELD = "helper";
     private final String AVATAR_FIELD = "avatar";
     String CLICKED_AVATAR_KEY = "clicked_avatar";
+    protected MediaPlayer buttonClickSound;
 
     static final int CHOOSE_AVATAR_REQUEST = 333;
     private ImageView avatarPic;
@@ -53,6 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
     private final View.OnClickListener takeAvatarPicListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             onLaunchCamera();
         }
     };
@@ -60,6 +62,7 @@ public class SignUpActivity extends AppCompatActivity {
     private View.OnClickListener chooseAvatarListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             Intent intent = new Intent(SignUpActivity.this, AvatarImagesActivity.class);
             startActivityForResult(intent, CHOOSE_AVATAR_REQUEST);
         }
@@ -68,6 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
     private final View.OnClickListener signUpBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             String username = usernameInput.getText().toString();
             String password = passwordInput.getText().toString();
             String email = emailInput.getText().toString();
@@ -85,6 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         AssignViewsAndListeners();
         Toast.makeText(this, "Your username will be public! Choose accordingly", Toast.LENGTH_SHORT).show();
     }

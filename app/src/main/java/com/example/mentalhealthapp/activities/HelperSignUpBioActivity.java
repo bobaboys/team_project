@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.activities;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,9 +23,12 @@ public class HelperSignUpBioActivity extends AppCompatActivity {
     EditText NameInput;
     TextView NamePrompt;
     Button Submit;
+    protected MediaPlayer buttonClickSound;
+
     View.OnClickListener submitBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
             String bioInput = HelperBioInput.getText().toString();
             if(bioInput == null){
                 Toast.makeText(HelperSignUpBioActivity.this, "Please enter a bio!", Toast.LENGTH_SHORT).show();
@@ -48,6 +52,7 @@ public class HelperSignUpBioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helper_sign_up_bio);
+        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
 
         HelperBioPrompt = findViewById(R.id.tvBioPrompt_helperSignUpBios);
         HelperBioInput = findViewById(R.id.tvBioText_HelperSignUpBio);
