@@ -122,13 +122,12 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_sender_name"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/iv_back_btn"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@color/pastel_009" />
+            app:srcCompat="@drawable/logopic" />
 
         <ImageView
             android:id="@+id/iv_back_btn"
