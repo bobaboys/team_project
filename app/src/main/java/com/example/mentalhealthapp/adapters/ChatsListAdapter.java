@@ -112,7 +112,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
             // getting the adressee information (in parseServer) to populate the chat overview.
             addresseeParse = obtainFromParseAddressee();
-            title.setText( .getUsername()); // Username comes from Parse.
+            title.setText(addresseeParse.getUsername()); // Username comes from Parse.
 
             getAndBindParseProfilePhoto( addresseeParse);
             BaseMessage  lastM = channel.groupChannel.getLastMessage();

@@ -134,7 +134,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:clickable="true"
             android:focusable="auto"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -142,7 +141,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/btn_dialog" />
+            app:srcCompat="@drawable/ic_backspace_black_24dp" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayout5"
