@@ -34,14 +34,14 @@ import java.util.List;
 import Utils.Utils;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdapter.ViewHolder> {
+public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapter.ViewHolder> {
     private Context context;
     private List<BaseMessage> messages;
     RecyclerView rvOpenChat;
     boolean isMyMessage, isTextMessage;
     private ParseUser addressee;
 
-    public ChatsFragmentAdapter(Context context, List<BaseMessage> messages) {
+    public MessagesChatAdapter(Context context, List<BaseMessage> messages) {
         this.context = context;
         this.messages = messages;
     }
@@ -163,6 +163,7 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
 
         private void stopPlaying() {
             player.release();
+            Log.d("Play", "Stopped");
             player = null;
         }
 
@@ -193,6 +194,7 @@ public class ChatsFragmentAdapter extends RecyclerView.Adapter<ChatsFragmentAdap
             @Override
             public void onCompletion(MediaPlayer mp) {
                 //  TODO
+                Log.e("Play Task:","Correctly reproduced");
                 Utils.enableDisablePlay(context,isMyMessage?playMine:playYou, true);
             }
         };

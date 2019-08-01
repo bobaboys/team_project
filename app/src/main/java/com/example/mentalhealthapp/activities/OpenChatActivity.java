@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.adapters.ChatsFragmentAdapter;
+import com.example.mentalhealthapp.adapters.MessagesChatAdapter;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import Utils.Utils;
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
 import chatApp.CreateChatHandle;
@@ -60,7 +59,7 @@ public class OpenChatActivity extends AppCompatActivity {
     Button sendBtn;
     ParseUser chatRecipientUser;
     RecyclerView rv_chatBubbles;
-    ChatsFragmentAdapter chatAdapter;
+    MessagesChatAdapter chatAdapter;
     ArrayList<BaseMessage> messages;
     GroupChannel groupChannel;
     String groupChannelStr;
@@ -240,7 +239,7 @@ public class OpenChatActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String TAG, GroupChannel groupChannel) {
                         OpenChatActivity.this.groupChannel = groupChannel;
-                        Toast.makeText(OpenChatActivity.this, "group channel found successfully", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(OpenChatActivity.this, "group channel found successfully", Toast.LENGTH_LONG).show();
                         populateChat(groupChannel);
                         sendBtn.setClickable(true); // now you are able to click and send messages.
                         setChannelHandler(groupChannelStr);
@@ -307,7 +306,7 @@ public class OpenChatActivity extends AppCompatActivity {
 
     protected void setRecyclerView() {
         Log.d("setRecyclerView", "attaching adapter");
-        chatAdapter = new ChatsFragmentAdapter(this, messages);
+        chatAdapter = new MessagesChatAdapter(this, messages);
         chatAdapter.setAddressee(chatRecipientUser);
         rv_chatBubbles.setAdapter(chatAdapter);
         rv_chatBubbles.setLayoutManager(new LinearLayoutManager(this));
