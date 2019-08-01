@@ -111,7 +111,7 @@ public class RecieverSearchPageFragment extends Fragment {
     }
     private void getAllTags() {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
-        postsQuery.setLimit(50);
+        postsQuery.setLimit(150);
         postsQuery.addDescendingOrder("Category");
         /*We decided load all tags (and on code select which ones match with the search FOR LATER)
          * we are concern that it could be lots of information on the database and we would need to set

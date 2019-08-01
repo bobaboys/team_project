@@ -129,7 +129,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             if(addresseeParse==null)return;
 
             try {
-                int radius = 30; // corner radius, higher value = more rounded
+                int radius = 120; // corner radius, higher value = more rounded
                 int margin = 10; // crop margin, set to 0 for corners with no crop
                 //get pic from parse user and set image view
                 ParseFile avatarPic = addresseeParse.getParseFile("avatar");

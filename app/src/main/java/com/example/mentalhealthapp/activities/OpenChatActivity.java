@@ -290,7 +290,7 @@ public class OpenChatActivity extends AppCompatActivity {
             ParseFile avatarPic = chatRecipientUser.getParseFile("avatar");
             Glide.with(this)
                     .load(avatarPic.getFile())
-                    .bitmapTransform(new RoundedCornersTransformation(this, 50, 0))
+                    .bitmapTransform(new RoundedCornersTransformation(this, 120, 0))
                     .into(profilePic);
         } catch (ParseException e) {
             e.printStackTrace();

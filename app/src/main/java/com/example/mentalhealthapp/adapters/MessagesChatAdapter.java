@@ -249,7 +249,7 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
                     ParseFile avatarPic = addressee.getParseFile("avatar");
                     Glide.with(context)
                             .load(avatarPic.getFile())
-                            .bitmapTransform(new RoundedCornersTransformation(context, 50, 0))
+                            .bitmapTransform(new RoundedCornersTransformation(context, 120, 0))
                             .into(profileSender);
                 }catch (ParseException e){
                     e.printStackTrace();
