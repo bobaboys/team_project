@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.parse.ParseUser;
@@ -14,14 +15,28 @@ import com.parse.ParseUser;
 public class HelperSignUpBioActivity extends AppCompatActivity {
 
     public final String HELPER_BIO_FIELD = "helperBio";
+    public final String NAME_FIELD = "name";
+
     TextView HelperBioPrompt;
     EditText HelperBioInput;
+    EditText NameInput;
+    TextView NamePrompt;
     Button Submit;
     View.OnClickListener submitBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             String bioInput = HelperBioInput.getText().toString();
+            if(bioInput == null){
+                Toast.makeText(HelperSignUpBioActivity.this, "Please enter a bio!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String nameInput = NameInput.getText().toString();
+            if(nameInput == null){
+                Toast.makeText(HelperSignUpBioActivity.this, "Please enter a name!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             ParseUser user = ParseUser.getCurrentUser();
+            user.put(NAME_FIELD,nameInput);
             user.put(HELPER_BIO_FIELD,bioInput);
             user.saveInBackground();
             Intent intent = new Intent(HelperSignUpBioActivity.this, HelperSignUpTagsActivity.class);
@@ -36,6 +51,8 @@ public class HelperSignUpBioActivity extends AppCompatActivity {
 
         HelperBioPrompt = findViewById(R.id.tvBioPrompt_helperSignUpBios);
         HelperBioInput = findViewById(R.id.tvBioText_HelperSignUpBio);
+        NamePrompt = findViewById(R.id.tvYourName_helperSignUpBio);
+        NameInput= findViewById(R.id.etYourName_helperSignUpBio);
         Submit = findViewById(R.id.btnSubmit_HelperSignUpBios);
         Submit.setOnClickListener(submitBtnListener);
     }

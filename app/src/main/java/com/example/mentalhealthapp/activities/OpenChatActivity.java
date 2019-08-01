@@ -240,7 +240,6 @@ public class OpenChatActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String TAG, GroupChannel groupChannel) {
                         OpenChatActivity.this.groupChannel = groupChannel;
-                        //Toast.makeText(OpenChatActivity.this, "group channel found successfully", Toast.LENGTH_LONG).show();
                         populateChat(groupChannel);
                         sendBtn.setClickable(true); // now you are able to click and send messages.
                         setChannelHandler(groupChannelStr);

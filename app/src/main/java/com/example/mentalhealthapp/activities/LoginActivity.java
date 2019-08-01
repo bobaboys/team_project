@@ -68,16 +68,6 @@ public class LoginActivity extends AppCompatActivity {
             assignOnCallNeedHelp();
         }
     };
-//
-//    private class EmergencyAsyncTask extends AsyncTask<Void, Void, Void>
-//    {
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            assignOnCallNeedHelp();
-//            return null;
-//        }
-//    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         startAnonymousChat();
     }
-    public void login(String username, String password, ParseUser user){
+    public void login(final String username, String password, ParseUser user){
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
@@ -180,6 +170,8 @@ public class LoginActivity extends AppCompatActivity {
                 }else{
                     Log.e("LoginActivity", "Login failure");
                     Toast.makeText(LoginActivity.this,"Invalid username and/or password", Toast.LENGTH_LONG).show();
+                    usernameInput.setText("");
+                    passwordInput.setText("");
                     e.printStackTrace();
                 }
             }

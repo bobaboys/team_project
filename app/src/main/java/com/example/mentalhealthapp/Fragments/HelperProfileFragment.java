@@ -38,6 +38,7 @@ public class HelperProfileFragment extends Fragment {
     protected TextView helperProfileBio;
     protected ImageView helperProfileAvatar;
     protected TextView helperProfileTags;
+    protected TextView helperName;
     protected FloatingActionButton editHelperProfile;
     ParseUser currentUser;
 
@@ -65,15 +66,17 @@ public class HelperProfileFragment extends Fragment {
     }
 
     private void assignViewsAndListeners(View view) {
+        currentUser = ParseUser.getCurrentUser();
         helperProfileBio =view.findViewById(R.id.tvMyBio_helper_profile);
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         helperProfileAvatar.setImageBitmap(bm);
         helperProfileTags = view.findViewById(R.id.tvMyTags_helper_profile);
+        helperName = view.findViewById(R.id.tvHelperName_HelperProfileFragment);
+        helperName.setText(currentUser.getString(Constants.NAME_FIELD));
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
-        currentUser = ParseUser.getCurrentUser();
         helperProfileBio.setText(currentUser.getString(Constants.HELPER_BIO_FIELD));
         logOutbtn.setOnClickListener(logoutBtnListener);
         editHelperProfile.setOnClickListener(new View.OnClickListener() {
@@ -133,12 +136,6 @@ public class HelperProfileFragment extends Fragment {
                             strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", ";
                             //TODO POPULATE WITH CARDS INSTEAD OF STR ONLY
                         }
-//
-//                        //get tag string from tag's search options object
-//                        ParseObject searchOption = ParseObject.create(Constants.SEARCH_OPTIONS_CLASS);
-//                        searchOption = tag.getParseObject(Constants.TAG_FIELD);
-//                        String tagString = searchOption.getString(Constants.TAG_FIELD);
-//                        colors = colors + tagString + " ";
 
 
                     helperProfileTags.setText(strListOfTags);

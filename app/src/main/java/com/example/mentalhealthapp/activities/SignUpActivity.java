@@ -205,7 +205,6 @@ public class SignUpActivity extends AppCompatActivity {
                 takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] picData = stream.toByteArray();
                 parseFile = new ParseFile("image.png", picData);
-                Toast.makeText(SignUpActivity.this,"Parse file assigned", Toast.LENGTH_SHORT).show();
                 photoFile = null;
             }
 
@@ -220,7 +219,6 @@ public class SignUpActivity extends AppCompatActivity {
             avatarBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] picData = stream.toByteArray();
             parseFile = new ParseFile("image.png", picData);
-            Toast.makeText(SignUpActivity.this,"Parse file assigned", Toast.LENGTH_SHORT).show();
             photoFile = null;
 
         }

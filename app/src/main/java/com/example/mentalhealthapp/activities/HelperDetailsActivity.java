@@ -75,7 +75,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
                 public void onFailure(String TAG, Exception e) {
                     Log.e("OPEN CHAT:", "chat open failed");
                     e.printStackTrace();
-                    Toast.makeText(HelperDetailsActivity.this, "can't open chat", Toast.LENGTH_LONG).show();
+                    Toast.makeText(HelperDetailsActivity.this, "Can't open chat", Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -127,7 +127,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
     public void populateDetails(){
         clickedHelper = (ParseUser) getIntent().getParcelableExtra("clicked_bio");
         helperBio.setText(clickedHelper.getString(Constants.HELPER_BIO_FIELD));
-        helperUsername.setText(clickedHelper.getString(Constants.USERNAME_FIELD));
+        helperUsername.setText(clickedHelper.getString(Constants.NAME_FIELD));
         ParseFile avatarFile = clickedHelper.getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         helperAvatarPic.setImageBitmap(bm);
@@ -174,7 +174,6 @@ public class HelperDetailsActivity extends AppCompatActivity {
             public void onSuccess(String TAG, User user){
                 //call new intent to start chat
                 Log.d(TAG, "Connection successful with user: " + user);
-                Toast.makeText(HelperDetailsActivity.this, "Chat connection successful!", Toast.LENGTH_LONG).show();
             }
             @Override
             public void onFailure(String TAG, Exception e){

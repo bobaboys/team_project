@@ -16,6 +16,7 @@ public final class Constants {
     //Fields:
     public static final String USER_FIELD = "user";
     public static final String USERNAME_FIELD = "username";
+    public static final String NAME_FIELD = "name";
     public static final String HELPER_BIO_FIELD = "helperBio";
     public static final String HELPER_FIELD = "helper";
     public static final String AVATAR_FIELD = "avatar";
