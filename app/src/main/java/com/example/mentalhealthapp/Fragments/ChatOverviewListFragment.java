@@ -24,14 +24,19 @@ import com.sendbird.android.GroupChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import Utils.EndlessRecyclerViewScrollListener;
 import chatApp.ChatApp;
 import chatApp.CreateChatHandle;
 
 public class ChatOverviewListFragment  extends Fragment {
 
+    public static int LIMIT_QUERY = 25;
     ArrayList<CompleteChat> completeChats;
     RecyclerView rvChatsList;
     ChatsListAdapter chatListAdapter;
+    LinearLayoutManager layoutManager;
+    EndlessRecyclerViewScrollListener scrollListener;
+
 
     @Nullable
     @Override
@@ -45,25 +50,40 @@ public class ChatOverviewListFragment  extends Fragment {
         rvChatsList = view.findViewById(R.id.rvChatsList);
         completeChats = new ArrayList<>();
         setRecyclerView();
-        getCompleteChats();
+        completeChats.clear();
+        chatListAdapter.notifyDataSetChanged();
+        scrollListener.resetState();
+        getCompleteChats(1);//TODO EXPLAIN THIS. STARTS IN 0? IN 1?
 
     }
 
     private void setRecyclerView() {
         chatListAdapter = new ChatsListAdapter(this.getContext(), completeChats);
         rvChatsList.setAdapter(chatListAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        layoutManager= new LinearLayoutManager(this.getContext());
         rvChatsList.setLayoutManager(layoutManager);
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if(totalItemsCount>=LIMIT_QUERY){
+                    getCompleteChats(page);
+                }
+                // If initially there was not enough items to fill the view  ( page 1)
+                // there is not necesary call again the infinite scroll page. ( WE GOT LAST PAGE )
+            }
+        };
+        rvChatsList.addOnScrollListener(scrollListener);
     }
 
-    public void getCompleteChats() {
+    public void getCompleteChats(int page) {
         ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
-        query.setLimit(50);
+        query.setLimit(LIMIT_QUERY);
+        query.setSkip(50*(page-1));
         query.include("helper");
         query.include("reciever");
         boolean isHelper= ParseUser.getCurrentUser().getBoolean("helper");
         query.whereEqualTo(isHelper?"helper":"reciever",ParseUser.getCurrentUser());
-
+        scrollListener.resetState();
         query.findInBackground(new FindCallback<Chat>() {
             @Override
             public void done(List<Chat> objects, ParseException e) {
@@ -78,6 +98,7 @@ public class ChatOverviewListFragment  extends Fragment {
                     ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
                         @Override
                         public void onSuccess(String TAG, GroupChannel groupChannel) {
+
                             cc.groupChannel = groupChannel;
                             addByTimestamp(completeChats, cc);
                         }
@@ -88,6 +109,7 @@ public class ChatOverviewListFragment  extends Fragment {
                         }
                     });
                 }
+
 
             }
         });
@@ -107,15 +129,13 @@ public class ChatOverviewListFragment  extends Fragment {
         list.add(index,element);
         chatListAdapter.notifyItemInserted(index);
         rvChatsList.scrollToPosition(0);
+
     }
 
 
     private long getLastTimestampLong(GroupChannel gc){
         BaseMessage lastM = gc.getLastMessage();
-        if(lastM==null){
-            return 0;
-        }
+        if(lastM==null) return 0;
         return lastM.getCreatedAt();
-
     }
 }
