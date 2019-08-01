@@ -14,10 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.LoginActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -30,7 +29,6 @@ public class RecieverProfileFragment extends Fragment {
 
     protected Button btnLogOut;
     protected ImageView recProfileAvatar;
-    protected TextView recProfileChats;
     protected ParseUser currentUser;
     protected FloatingActionButton editRecieverProfile;
 
@@ -62,7 +60,6 @@ public class RecieverProfileFragment extends Fragment {
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         recProfileAvatar.setImageBitmap(bm);
-        recProfileChats = view.findViewById(R.id.tvMyChats_reciever_profile);
         currentUser = ParseUser.getCurrentUser();
         btnLogOut = view.findViewById(R.id.btnLogout_ProfileRec);
         btnLogOut.setOnClickListener(logOutBtnListener);

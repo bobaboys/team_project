@@ -81,6 +81,7 @@ public class OpenChatActivity extends AppCompatActivity {
         public void onClick(View v) {
 
             final String chatMessageString = chatMessage.getText().toString();
+            chatMessage.setText("");
             //find correct chat from group channel string
             groupChannel.sendUserMessage(chatMessageString, new BaseChannel.SendUserMessageHandler() {
                 @Override
@@ -309,7 +310,8 @@ public class OpenChatActivity extends AppCompatActivity {
         chatAdapter = new MessagesChatAdapter(this, messages);
         chatAdapter.setAddressee(chatRecipientUser);
         rv_chatBubbles.setAdapter(chatAdapter);
-        rv_chatBubbles.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layout = new LinearLayoutManager(this);
+        rv_chatBubbles.setLayoutManager(layout);
     }
 
     protected void populateChat(GroupChannel groupChannel) {

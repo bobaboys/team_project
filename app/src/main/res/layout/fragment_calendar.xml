@@ -57,6 +57,7 @@
         android:fontFamily="casual"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:text="Select a date!"
         android:textColor="@color/mediumpurple"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -31,6 +31,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
+        android:padding="7dp"
         android:layout_marginLeft="8dp"
         android:background="@drawable/their_chat_bubble"
         android:text="@string/lorem"

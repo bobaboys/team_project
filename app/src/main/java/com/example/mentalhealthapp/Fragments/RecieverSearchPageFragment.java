@@ -1,5 +1,7 @@
 package com.example.mentalhealthapp.Fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +18,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.mentalhealthapp.Fragments.HelperBiosFragment;
 import com.example.mentalhealthapp.activities.MainActivity;
@@ -83,6 +87,7 @@ public class RecieverSearchPageFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         super.onViewCreated(view, savedInstanceState);
         rvTags = view.findViewById(R.id.rvTagsSearch);
         searchForHelpers = view.findViewById(R.id.fb_search_for_helpers);
@@ -93,6 +98,9 @@ public class RecieverSearchPageFragment extends Fragment {
         tagsSearch = view.findViewById(R.id.searchView_tags);
         tagsSearch.setOnQueryTextListener(searchViewListener);
         tagsSearch.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        tagsSearch.onActionViewExpanded();
+        tagsSearch.setQueryHint("Search for issues you want help with");
+        hideKeyboardFrom(getContext(),view);
     }
 
     private void setRecyclerView() {
@@ -104,6 +112,7 @@ public class RecieverSearchPageFragment extends Fragment {
     private void getAllTags() {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
         postsQuery.setLimit(50);
+        postsQuery.addDescendingOrder("Category");
         /*We decided load all tags (and on code select which ones match with the search FOR LATER)
          * we are concern that it could be lots of information on the database and we would need to set
          * a limit of rows. In this case our tags are 50 tops. */
@@ -121,4 +130,9 @@ public class RecieverSearchPageFragment extends Fragment {
             }
         });
     }
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
 }
