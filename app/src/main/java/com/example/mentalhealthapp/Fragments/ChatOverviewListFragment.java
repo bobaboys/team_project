@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +37,9 @@ public class ChatOverviewListFragment  extends Fragment {
     ChatsListAdapter chatListAdapter;
     LinearLayoutManager layoutManager;
     EndlessRecyclerViewScrollListener scrollListener;
+    private SwipeRefreshLayout swipeContainer;
+
+
 
 
     @Nullable
@@ -48,6 +52,21 @@ public class ChatOverviewListFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvChatsList = view.findViewById(R.id.rvChatsList);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                completeChats.clear();
+                chatListAdapter.notifyDataSetChanged();
+                getCompleteChats(0);
+            }
+        });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
         completeChats = new ArrayList<>();
         setRecyclerView();
         completeChats.clear();
@@ -73,6 +92,7 @@ public class ChatOverviewListFragment  extends Fragment {
             }
         };
         rvChatsList.addOnScrollListener(scrollListener);
+
     }
 
     public void getCompleteChats(int page) {
@@ -109,8 +129,7 @@ public class ChatOverviewListFragment  extends Fragment {
                         }
                     });
                 }
-
-
+                swipeContainer.setRefreshing(false);
             }
         });
     }
