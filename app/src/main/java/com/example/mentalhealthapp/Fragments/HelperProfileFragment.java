@@ -15,11 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.LoginActivity;
+import com.example.mentalhealthapp.adapters.SelectedTagsAdapter;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.Tag;
@@ -29,6 +31,7 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Utils.Utils;
@@ -41,9 +44,10 @@ public class HelperProfileFragment extends Fragment {
     protected TextView helperProfileTags;
     protected TextView helperName;
     protected FloatingActionButton editHelperProfile;
-    protected TextView helperProfileUsername;
     protected MediaPlayer buttonClickSound;
-
+    protected GridView tagsGridView;
+    protected ArrayList<String> allHelperTags = new ArrayList<>();
+    protected SelectedTagsAdapter profTagsAdapter;
 
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
         @Override
@@ -66,29 +70,22 @@ public class HelperProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         assignViewsAndListeners(view);
-        populateTags();
+        populateGridViewTags();
     }
 
     private void assignViewsAndListeners(View view) {
-        currentUser = ParseUser.getCurrentUser();
         helperProfileBio =view.findViewById(R.id.tvMyBio_helper_profile);
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
-
+        tagsGridView = view.findViewById(R.id.gvTags_helperProfile);
         helperProfileAvatar.setImageBitmap(bm);
-        helperProfileTags = view.findViewById(R.id.tvMyTags_helper_profile);
-        helperName = view.findViewById(R.id.tvHelperName_HelperProfileFragment);
-        helperName.setText(currentUser.getString(Constants.NAME_FIELD));
+        helperName = view.findViewById(R.id.tv_username_helperProfile);
+        helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
-<<<<<<< HEAD
-        helperProfileBio.setText(currentUser.getString(Constants.HELPER_BIO_FIELD));
-=======
-        helperProfileUsername = view.findViewById(R.id.tv_username_helperProfile);
-        helperProfileUsername.setText(ParseUser.getCurrentUser().getUsername());
         helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
->>>>>>> 3b83f6f0775fde7d67be2931530aa48da47cc92f
+        helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
         logOutbtn.setOnClickListener(logoutBtnListener);
         editHelperProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +99,7 @@ public class HelperProfileFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+
     }
 
     public void clearTags(){
@@ -158,4 +156,27 @@ public class HelperProfileFragment extends Fragment {
         });
     }
 
+    public void populateGridViewTags(){
+        ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
+        query.include(Constants.USER_FIELD);
+        query.include(Constants.TAG_FIELD);
+        query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
+        query.findInBackground(new FindCallback<HelperTags>() {
+            @Override
+            public void done(List<HelperTags> objects, ParseException e) {
+                if(e==null){
+                    for(int i = 0; i < objects.size(); i++){
+                        Object strTag;
+                        HelperTags helperTag = objects.get(i);
+                        strTag = ((Tag)helperTag.get("Tag")).get("Tag");
+                        allHelperTags.add(strTag.toString());
+                    }
+                    profTagsAdapter = new SelectedTagsAdapter(getContext(),allHelperTags);
+                    tagsGridView.setAdapter(profTagsAdapter);
+                }else{
+                    Log.e("HelperProfileFragment", "failure in populating tags");
+                }
+            }
+        });
+    }
 }

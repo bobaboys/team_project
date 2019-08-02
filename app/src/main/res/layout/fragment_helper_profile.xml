@@ -5,124 +5,119 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvMyBio_helper_profile"
+        android:layout_width="215dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:hint="You don't have a bio yet!"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintStart_toEndOf="@+id/ivAvatar_helper_profile"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bioLabel_helperProfileFragment"
+        app:layout_constraintVertical_bias="0.034" />
+
+    <TextView
+        android:id="@+id/tv_bioLabel_helperProfileFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="107dp"
+        android:fontFamily="casual"
+        android:text="About me:"
+        android:textColor="@color/seashell4"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/ivAvatar_helper_profile"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btnLogout_ProfileHelper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="162dp"
-        android:layout_marginLeft="162dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_width="74dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="15dp"
         android:background="@color/lavender"
         android:onClick="Logout"
         android:text="Logout"
         android:textColor="@color/mediumpurple"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ivAvatar_helper_profile"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ivAvatar_helper_profile"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="31dp"
-        android:layout_marginLeft="31dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginRight="18dp"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="TODO"
-        app:layout_constraintEnd_toStartOf="@+id/tv_bioLabel_helperProfileFragment"
+        android:layout_marginStart="24dp"
+        android:background="#00D63B3B"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHelperName_HelperProfileFragment"
+        app:layout_constraintTop_toBottomOf="@+id/tv_username_helperProfile"
         tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/tvMyTags_helper_profile"
-        android:layout_width="340dp"
-        android:layout_height="147dp"
-        android:layout_marginEnd="35dp"
-        android:layout_marginStart="35dp"
-        android:layout_marginLeft="35dp"
-        android:layout_marginTop="36dp"
-        android:hint="You haven't selected tags yet!"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_tagLabel_helperProfileFragment" />
-
-    <TextView
-        android:id="@+id/tvMyBio_helper_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="88dp"
-        android:layout_marginRight="88dp"
-        android:hint="You don't have a bio yet!"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_bioLabel_helperProfileFragment" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_Edit_HelperProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="96dp"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="@color/lightslateblue"
+        app:backgroundTint="#ECE2AD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <TextView
-        android:id="@+id/tv_bioLabel_helperProfileFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="174dp"
-        android:layout_marginRight="174dp"
-        android:layout_marginBottom="20dp"
-        android:fontFamily="casual"
-        android:text="About me:"
-        android:textColor="@color/seashell4"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/tvMyBio_helper_profile"
-        app:layout_constraintEnd_toStartOf="@+id/btnLogout_ProfileHelper"
-        app:layout_constraintStart_toEndOf="@+id/ivAvatar_helper_profile"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/tv_username_helperProfile"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="80dp"
+        android:text="Helper Name"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_tagLabel_helperProfileFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="31dp"
-        android:layout_marginLeft="31dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="263dp"
-        android:layout_marginRight="263dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="casual"
         android:text="Talk to me about:"
         android:textColor="@color/seashell4"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/tvMyTags_helper_profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivAvatar_helper_profile" />
+        app:layout_constraintBottom_toTopOf="@+id/gvTags_helperProfile"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/tvHelperName_HelperProfileFragment"
-        android:layout_width="114dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="31dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="Helper Name"
-        app:layout_constraintBottom_toTopOf="@+id/ivAvatar_helper_profile" />
+    <GridView
+        android:id="@+id/gvTags_helperProfile"
+        android:layout_width="367dp"
+        android:layout_height="385dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="24dp"
+        android:columnWidth="150dp"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:numColumns="auto_fit"
+        android:padding="10dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyBio_helper_profile">
+
+    </GridView>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.33652532" />
 
 
 </android.support.constraint.ConstraintLayout>

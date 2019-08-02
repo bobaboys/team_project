@@ -8,10 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.adapters.SelectedTagsAdapter;
 import com.example.mentalhealthapp.models.Chat;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
@@ -29,6 +31,7 @@ import com.sendbird.android.User;
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Utils.Utils;
@@ -39,13 +42,15 @@ import chatApp.CreateChatHandle;
 
 public class HelperDetailsActivity extends AppCompatActivity {
     public TextView helperBio;
-    public TextView helperTags;
+    public GridView helperTags;
     public TextView textHelperTags;
     public TextView textHelperBio;
     public TextView helperUsername;
     public Button openChat;
     public ImageView helperAvatarPic;
     public ParseUser clickedHelper;
+    public ArrayList<String> allHelperTags = new ArrayList<>();
+    public SelectedTagsAdapter profTagAdapter;
     ParseUser currentUser = ParseUser.getCurrentUser();
 
     public View.OnClickListener openChatBtnListener = new View.OnClickListener() {
@@ -116,7 +121,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
     private void assignViewsAndListeners() {
         helperUsername = findViewById(R.id.tvHelperUsername_HelperDetails);
         helperBio = findViewById(R.id.tvBio_helperdetails);
-        helperTags = findViewById(R.id.tvTags_helperdetails);
+        helperTags = findViewById(R.id.gvHelperTags_helperDetails);
         textHelperBio = findViewById(R.id.tvHelperBioText_HelperDetails);
         textHelperTags = findViewById(R.id.tvHelpersTagsText_HelperDetails);
         openChat = findViewById(R.id.btnChat_helperdetails);
@@ -132,33 +137,23 @@ public class HelperDetailsActivity extends AppCompatActivity {
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         helperAvatarPic.setImageBitmap(bm);
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
-        query.include("user");
-        query.include("Tag");
-        query.whereEqualTo("user", clickedHelper);
+        query.include(Constants.USER_FIELD);
+        query.include(Constants.TAG_FIELD);
+        query.whereEqualTo(Constants.USER_FIELD,clickedHelper);
         query.findInBackground(new FindCallback<HelperTags>() {
             @Override
             public void done(List<HelperTags> objects, ParseException e) {
-                String strListOfTags = "";
                 if(e==null){
                     for(int i = 0; i < objects.size(); i++){
+                        Object strTag;
                         HelperTags helperTag = objects.get(i);
-                        //second to last tag
-                        if(i == objects.size() - 2){
-                            strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", and ";
-                            continue;
-                        }
-                        //last tag
-                        if(i == objects.size() - 1){
-                            strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag");
-                            break;
-                        }
-                        strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", ";
-                        //TODO POPULATE WITH CARDS INSTEAD OF STR ONLY
+                        strTag = ((Tag)helperTag.get("Tag")).get("Tag");
+                        allHelperTags.add(strTag.toString());
                     }
-                    helperTags.setText(strListOfTags);
-
+                    profTagAdapter = new SelectedTagsAdapter(HelperDetailsActivity.this, allHelperTags);
+                    helperTags.setAdapter(profTagAdapter);
                 }else{
-                    Log.e("HelperDetailsActivity", "failure");
+                    Log.e("HelperProfileFragment", "failure in populating tags");
                 }
             }
         });
