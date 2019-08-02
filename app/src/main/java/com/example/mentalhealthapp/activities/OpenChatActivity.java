@@ -105,6 +105,21 @@ public class OpenChatActivity extends AppCompatActivity {
         // Back btn (top of the chat) listener
         @Override
         public void onClick(View v) {
+            if (emergency) {
+                //remove chat channel and log out anonymous user
+                ParseUser user = ParseUser.getCurrentUser();
+                user.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("Emergency User", "deleted");
+                    }
+                });
+                ParseUser.logOut();
+                Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                return;
+            }
             OpenChatActivity.super.onBackPressed();
         }
     };
@@ -173,7 +188,6 @@ public class OpenChatActivity extends AppCompatActivity {
 
     }
 
-
     public void stopRecording() {
         //stop recording
         if (mediaRecorder == null) return;
@@ -188,8 +202,6 @@ public class OpenChatActivity extends AppCompatActivity {
         sendFile();
         mediaRecorder = null;
     }
-
-
 
     private void sendFile() {
         FileMessageParams fmp = new FileMessageParams();
@@ -345,7 +357,7 @@ public class OpenChatActivity extends AppCompatActivity {
             user.deleteInBackground(new DeleteCallback() {
                 @Override
                 public void done(ParseException e) {
-                    Toast.makeText(OpenChatActivity.this,"user deleted", Toast.LENGTH_SHORT).show();;
+                    Log.d("Emergency User", "deleted");
                 }
             });
             ParseUser.logOut();

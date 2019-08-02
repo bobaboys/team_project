@@ -91,7 +91,8 @@ public class HelperDetailsActivity extends AppCompatActivity {
         chat.put("helper", ParseObject.createWithoutData("_User", clickedHelper.getObjectId()) );
         chat.put("reciever", ParseObject.createWithoutData("_User", ParseUser.getCurrentUser().getObjectId()));
         chat.put("chatUrl", groupChannel.getUrl());
-
+        chat.put(Constants.CHAT_RECEIVER_DELETED,false);
+        chat.put(Constants.CHAT_HELPER_DELETED, false);
         chat.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

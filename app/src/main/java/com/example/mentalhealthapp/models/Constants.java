@@ -24,6 +24,9 @@ public final class Constants {
     public static final String AUDIO_RECORD_FAIL_TAG= "AUDIO_RECORDING";
     public static final String PROGRESS_BAR_DOWNLOAD="PROGRESS_BAR_DOWNLOAD";
     public static final String AUDIO_PLAY_FAIL_TAG="AUDIO_PLAY_FAIL_TAG";
+    public static final String CHAT_HELPER_DELETED = "helperDeleted";
+    public static final String CHAT_RECEIVER_DELETED = "receiverDeleted";
+    public static final String OBJECT_ID = "objectId";
 
     //REQUEST CODES:
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;

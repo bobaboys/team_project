@@ -151,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         //assign on call helper
         ParseQuery<ParseUser> query2 = ParseQuery.getQuery("_User");
         query2.include(Constants.USERNAME_FIELD);
+        query2.whereEqualTo(Constants.USERNAME_FIELD, "ON_CALL");
         query2.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
