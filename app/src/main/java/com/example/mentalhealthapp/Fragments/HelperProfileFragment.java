@@ -78,7 +78,7 @@ public class HelperProfileFragment extends Fragment {
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
-        tagsGridView = view.findViewById(R.id.gvTags_helperProfile);
+        tagsGridView = view.findViewById(R.id.tvGridViewTag);
         helperProfileAvatar.setImageBitmap(bm);
         helperName = view.findViewById(R.id.tv_username_helperProfile);
         helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
@@ -94,7 +94,7 @@ public class HelperProfileFragment extends Fragment {
                 Fragment fragment = new HelperEditProfileFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.flContainer_main, fragment);
+                fragmentTransaction.replace(R.id.pager, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

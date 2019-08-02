@@ -5,7 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +34,11 @@ public class MainActivity extends AppCompatActivity {
     public BottomNavigationView bottomHelperNavView;
 
     public Fragment currentCentralFragment;
+    private  int numPages;
+    private ViewPager mPager;
+    private PagerAdapter pagerAdapter;
     final ParseUser currentUser = ParseUser.getCurrentUser();
+    boolean helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +46,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextMessage = findViewById(R.id.message);
-        final boolean helper = currentUser.getBoolean(HELPER_FIELD);
+        helper = currentUser.getBoolean(HELPER_FIELD);
+
+        numPages=helper?3:4;
         bottomHelperNavView = findViewById(R.id.nav_helper_view);
         bottomNavigationView = findViewById(R.id.nav_view);
+        mPager = (ViewPager) findViewById(R.id.pager);
+        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(pagerAdapter);
+
         if(helper){
             bottomNavigationView.setVisibility(View.GONE);
         }else{
@@ -57,11 +70,9 @@ public class MainActivity extends AppCompatActivity {
                 chatApp.setSendBirdUser(user);
                 setFragment(helper);
                 //set default
-                if(helper){
-                    bottomHelperNavView.setSelectedItemId(R.id.navigation_helper_home);
-                }else{
-                    bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-                }
+                bottomHelperNavView.setSelectedItemId(helper?
+                            R.id.navigation_helper_home
+                            : R.id.navigation_home);
             }
 
             @Override
@@ -141,10 +152,62 @@ public class MainActivity extends AppCompatActivity {
             // fragments are from different classes,
             // different fragments, must change fragment
             currentCentralFragment = f;
-            ft.replace(R.id.flContainer_main, f);
+            ft.replace(R.id.pager, f);
             // or ft.add(R.id.your_placeholder, new FooFragment());
             // Complete the changes added above
             ft.commit();
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (mPager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            super.onBackPressed();
+        } else {
+            // Otherwise, select the previous step.
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
+    }
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+                    if(helper)
+                        return new ChatOverviewListFragment();
+                    else
+                        return new RecieverSearchPageFragment();
+                case 1:
+                    return new ReflectFragment();
+                case 2:
+                    if(helper)
+                        return new HelperProfileFragment();
+                    else
+                        return new ChatOverviewListFragment();
+                case 3:
+                        return new RecieverProfileFragment();
+                default:
+                    if(helper)
+                        return new ChatOverviewListFragment();
+                    else
+                        return new RecieverSearchPageFragment();
+            }
+
+        }
+
+
+        @Override
+        public int getCount() {
+            return numPages;
         }
     }
 }

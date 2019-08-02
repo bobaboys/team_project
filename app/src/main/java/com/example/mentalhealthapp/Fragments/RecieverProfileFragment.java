@@ -79,7 +79,7 @@ public class RecieverProfileFragment extends Fragment {
                 Fragment fragment = new ReceiverEditProfileFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.flContainer_main, fragment);
+                fragmentTransaction.replace(R.id.pager, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }

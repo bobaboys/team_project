@@ -206,7 +206,7 @@ public class HelperEditProfileFragment extends Fragment {
         Fragment fragment = new HelperProfileFragment();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.flContainer_main, fragment);
+        fragmentTransaction.replace(R.id.pager, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

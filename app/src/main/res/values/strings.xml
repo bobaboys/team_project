@@ -40,4 +40,5 @@
     <string name="list_helpers_title">Select a Helper to chat:</string>
     <string name="no_helpers_as_result">Oops, No helpers avaliable. You can select Other as category and find somebody willing to help you!.</string>
     <string name="chat_list_title">Chats</string>
+    <string name="lavender">Lavender</string>
 </resources>
