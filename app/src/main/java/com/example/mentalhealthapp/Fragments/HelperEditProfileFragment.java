@@ -65,22 +65,20 @@ public class HelperEditProfileFragment extends Fragment {
     protected File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
     protected  List<Tag> tags;
-    protected  List<Tag> tagsFull;
     protected TagsAdapter tagsAdapter;
     protected MediaPlayer buttonClickSound;
+    private List<String> lastTagsSelectedString;
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
-            ParseUser user = ParseUser.getCurrentUser();
             //update parse server user with avatar photo
             if(photoFile!=null) {
-                editPhoto(user);
+                editPhoto(ParseUser.getCurrentUser());
             }
-            editBio(user);
-            editTags(user);
-            switchFragments();
+            editBio();
+            clearOldAndWriteNewTags();
         }
     };
     protected View.OnClickListener editTagsListener = new View.OnClickListener() {
@@ -130,7 +128,8 @@ public class HelperEditProfileFragment extends Fragment {
         buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         assignViewsAndListeners(view);
         setAndPopulateRvTags();
-        getAllTags();
+        getLastTagsSelected();
+
         ((MainActivity)getContext()).currentCentralFragment = this;
     }
 
@@ -155,9 +154,9 @@ public class HelperEditProfileFragment extends Fragment {
 
     }
 
-    public void editBio(ParseUser user){
-        user.put(Constants.HELPER_BIO_FIELD, editHelperBio.getText().toString());
-        user.saveInBackground(new SaveCallback() {
+    public void editBio(){
+        ParseUser.getCurrentUser().put(Constants.HELPER_BIO_FIELD, editHelperBio.getText().toString());
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if(e!=null){
@@ -167,24 +166,6 @@ public class HelperEditProfileFragment extends Fragment {
                 }
             }
         });
-    }
-
-    public void editTags(ParseUser user){
-        //save all tags on server for parse user
-        for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
-            HelperTags helperTags = new HelperTags();
-            helperTags.setHelperTags(user, tagsAdapter.selectedTags.get(i));
-            helperTags.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e!=null){
-                        Log.d(TAG, "Error while saving");
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            });
-        }
     }
 
     private void editPhoto(ParseUser user) {
@@ -202,14 +183,6 @@ public class HelperEditProfileFragment extends Fragment {
         });
     }
 
-    public void switchFragments(){
-        Fragment fragment = new HelperProfileFragment();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.flContainer_main, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
 
     public void onLaunchCamera() {
         // create Intent to take a picture and return control to the calling application
@@ -265,10 +238,6 @@ public class HelperEditProfileFragment extends Fragment {
 
     private void getAllTags() {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
-        postsQuery.setLimit(50);
-        /*We decided load all tags (and on code select which ones match with the search FOR LATER)
-         * we are concern that it could be lots of information on the database and we would need to set
-         * a limit of rows. In this case our tags are 50 tops. */
         postsQuery.findInBackground(new FindCallback<Tag>() {
             @Override
             public void done(List<Tag> objects, ParseException e) {
@@ -282,16 +251,73 @@ public class HelperEditProfileFragment extends Fragment {
             }
         });
     }
-    private void setRvWithCurrentUserTags(){
 
+    private void getLastTagsSelected(){
+        ParseQuery<HelperTags> q = new ParseQuery<>(HelperTags.class);
+        q.include(HelperTags.TAG_KEY);
+        q.whereEqualTo(HelperTags.USER_KEY, ParseUser.getCurrentUser());
+        q.findInBackground(new FindCallback<HelperTags>() {
+            @Override
+            public void done(List<HelperTags> objects, ParseException e) {
+                lastTagsSelectedString = new ArrayList<>();
+                for(HelperTags ht : objects){
+                    Tag t=(Tag)ht.getParseObject(HelperTags.TAG_KEY);
+                    String x= t.getText();
+                    lastTagsSelectedString.add(x);
+                }
+                tagsAdapter.setLastSelectedTags(lastTagsSelectedString);
+                getAllTags();
+            }
+        });
 
     }
 
-    public RecyclerView getRvTags() {
-        return rvTags;
+    public void clearOldAndWriteNewTags(){
+        ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
+        query.include("user");
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        query.findInBackground(new FindCallback<HelperTags>() {
+            @Override
+            public void done(List<HelperTags> objects, ParseException e) {
+                if(e==null){
+                    for(HelperTags object : objects){
+                        object.deleteInBackground();
+                    }
+                    writeNewTags();
+                }else{
+                    Log.e("HelperProfileFragment", "failure in clearing tags");
+                }
+            }
+        });
     }
 
-    public void setRvTags(RecyclerView rvTags) {
-        this.rvTags = rvTags;
+
+    public void writeNewTags(){
+        //save all tags on server for parse user
+        for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
+            HelperTags helperTags = new HelperTags();
+            helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.selectedTags.get(i));
+            helperTags.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e!=null){
+                        Log.d(TAG, "Error while saving");
+                        e.printStackTrace();
+                        return;
+                    }
+                    switchFragments();
+                }
+            });
+        }
+    }
+
+
+    public void switchFragments(){
+        Fragment fragment = new HelperProfileFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.flContainer_main, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

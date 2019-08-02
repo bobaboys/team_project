@@ -46,7 +46,7 @@ public class HelperProfileFragment extends Fragment {
     protected FloatingActionButton editHelperProfile;
     protected MediaPlayer buttonClickSound;
     protected GridView tagsGridView;
-    protected ArrayList<String> allHelperTags = new ArrayList<>();
+    protected ArrayList<String> allHelperTags = new ArrayList<>();;
     protected SelectedTagsAdapter profTagsAdapter;
 
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
@@ -78,7 +78,7 @@ public class HelperProfileFragment extends Fragment {
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
-        tagsGridView = view.findViewById(R.id.gvTags_helperProfile);
+        tagsGridView = view.findViewById(R.id.gv_tags_helper_prof);
         helperProfileAvatar.setImageBitmap(bm);
         helperName = view.findViewById(R.id.tv_username_helperProfile);
         helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
@@ -90,7 +90,6 @@ public class HelperProfileFragment extends Fragment {
         editHelperProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearTags();
                 Fragment fragment = new HelperEditProfileFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -102,23 +101,6 @@ public class HelperProfileFragment extends Fragment {
 
     }
 
-    public void clearTags(){
-        ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
-        query.include("user");
-        query.whereEqualTo("user", ParseUser.getCurrentUser());
-        query.findInBackground(new FindCallback<HelperTags>() {
-            @Override
-            public void done(List<HelperTags> objects, ParseException e) {
-                if(e==null){
-                    for(HelperTags object : objects){
-                        object.deleteInBackground();
-                    }
-                }else{
-                    Log.e("HelperProfileFragment", "failure in clearing tags");
-                }
-            }
-        });
-    }
 
     public void populateTags(){
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
@@ -156,7 +138,9 @@ public class HelperProfileFragment extends Fragment {
         });
     }
 
+
     public void populateGridViewTags(){
+        allHelperTags.clear();
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
         query.include(Constants.USER_FIELD);
         query.include(Constants.TAG_FIELD);

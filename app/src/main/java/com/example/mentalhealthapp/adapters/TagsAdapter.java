@@ -34,6 +34,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     protected List<Tag> tags;
     protected List<Tag> tagsFull;
 
+
+    private List<String> lastSelectedTags;
+
     public TagsAdapter(Context context, List<Tag> tags) {
         this.context = context;
         this.tags = tags;
@@ -103,7 +106,13 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             }
             notifyDataSetChanged();
         }
+
     };
+
+
+    public void setLastSelectedTags(List<String> lastSelectedTags) {
+        this.lastSelectedTags = lastSelectedTags;
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -153,7 +162,15 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
 
 
         public void bind(final Tag tag){
+            if(lastSelectedTags==null){
                 tagName.setChecked(selectedTags.contains(getSelectedTag()));
+            }else{
+                tagName.setChecked(
+                        selectedTags.contains(getSelectedTag())
+                                ||
+                                lastSelectedTags.contains(tag.getText()));
+            }
+
                 //selectedTags.get(tag.getObjectId();
                 tagName.setText(tag.getString(TAG_TABLE_FIELD));
                 //int random = Random.next SET A RANDOM COLOR FROM PALETE

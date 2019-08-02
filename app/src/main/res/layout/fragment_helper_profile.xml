@@ -88,11 +88,11 @@
         android:text="Talk to me about:"
         android:textColor="@color/seashell4"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/gvTags_helperProfile"
+        app:layout_constraintBottom_toTopOf="@+id/gv_tags_helper_prof"
         app:layout_constraintStart_toStartOf="parent" />
 
     <GridView
-        android:id="@+id/gvTags_helperProfile"
+        android:id="@+id/gv_tags_helper_prof"
         android:layout_width="367dp"
         android:layout_height="385dp"
         android:layout_marginStart="20dp"
