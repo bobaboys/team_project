@@ -1,12 +1,13 @@
 package com.example.mentalhealthapp.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,20 +17,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.activities.OpenChatActivity;
 import com.example.mentalhealthapp.models.Chat;
 import com.example.mentalhealthapp.models.CompleteChat;
+import com.example.mentalhealthapp.models.Constants;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
-import com.sendbird.android.GroupChannel;
-import com.sendbird.android.Member;
-import com.sendbird.android.SendBirdException;
 import com.sendbird.android.UserMessage;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -96,9 +97,59 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                     openChat();
                 }
             });
+            itemChat.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(final View v) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                    alert.setTitle("Warning!");
+                    alert.setMessage("You are about to delete this chat. Do you want to continue?");
+                    alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(MainActivity.HelperYes){
+                                hideChatForUser(Constants.CHAT_HELPER_DELETED);
+                            }
+                            else{
+                                hideChatForUser(Constants.CHAT_RECEIVER_DELETED);
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.show();
+                    return true;
+                }
+            });
         }
 
+        private void hideChatForUser(final String whichHelperDeleted) {
+            ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
+            query.whereEqualTo("chatUrl", channel.chat.getString("chatUrl"));
+            query.findInBackground(new FindCallback<Chat>() {
+                @Override
+                public void done(List<Chat> objects, ParseException e) {
+                    Chat currChat = objects.get(0);
+                    currChat.put(whichHelperDeleted, true);
+                    currChat.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            channels.remove(channel);
+                            notifyDataSetChanged();
+                        }
+                    });
 
+                }
+            });
+        }
+
+        //change to private for this class
+        //public methods on top
         public void openChat(){
             if(channel.chat == null) return; // there is not chatParse on the item, click does nothing. TODO toast?
             if(addresseeParse==null)addresseeParse = obtainFromParseAddressee();
@@ -106,21 +157,19 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             i.putExtra("clicked_helper", addresseeParse);
             i.putExtra("group_channel", channel.groupChannel.getUrl());//TODO
             context.startActivity(i);
-
         }
-
 
         public void bind(final CompleteChat complete ) {
 
             channel = complete;  //This Chat object is gonna be called in other methods
 
             // getting the adressee information (in parseServer) to populate the chat overview.
-            addresseeParse = obtainFromParseAddressee();
-            title.setText(addresseeParse.getUsername()); // Username comes from Parse.
+                addresseeParse = obtainFromParseAddressee();
+                title.setText(addresseeParse.getUsername()); // Username comes from Parse.
 
-            getAndBindParseProfilePhoto( addresseeParse);
-            BaseMessage  lastM = channel.groupChannel.getLastMessage();
-            bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.chat.getLong("lastChecked"));
+                getAndBindParseProfilePhoto( addresseeParse);
+                BaseMessage  lastM = channel.groupChannel.getLastMessage();
+                bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.chat.getLong("lastChecked"));
         }
 
         public ParseUser obtainFromParseAddressee() {
@@ -150,10 +199,12 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
         public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse, long lastChecked){
             if(lastM!=null){
+                boolean isMyMessage;
                 try{
                     UserMessage lastMUser = (UserMessage) lastM;
                     String senderId = lastMUser.getSender().getUserId();
-                    String authorAndMessage = senderId.equals(ParseUser.getCurrentUser().getObjectId())
+                    isMyMessage =senderId.equals(ParseUser.getCurrentUser().getObjectId());
+                    String authorAndMessage = isMyMessage
                             ? "You: " :
                             addresseeParse.getUsername()+": ";
                     authorAndMessage += lastMUser.getMessage();
@@ -162,14 +213,15 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                      // Message is an Attachment
                     FileMessage lastMFile = (FileMessage) lastM;
                     String senderId = lastMFile.getSender().getUserId();
-                    String authorAndAttachMessage = senderId.equals(ParseUser.getCurrentUser().getObjectId())
+                    isMyMessage =senderId.equals(ParseUser.getCurrentUser().getObjectId());
+                    String authorAndAttachMessage = isMyMessage
                             ? "You Sent an attachment" :
                             addresseeParse.getUsername()+" sent an attachment";
                     lastMessage.setText(authorAndAttachMessage);
                 }
                 timeStamp.setText(Utils.getTimeStamp(lastM.getCreatedAt()));
 
-                if(lastM.getCreatedAt() > lastChecked){ // THIS MESSAGE HAS NOT BEEN READED.
+                if(lastM.getCreatedAt() > lastChecked &&  ! isMyMessage){ // THIS MESSAGE HAS NOT BEEN READED.
                     timeStamp.setTextColor(context.getResources().getColor(R.color.black));
                     lastMessage.setTextColor(context.getResources().getColor(R.color.black));
                     timeStamp.setTypeface(null, Typeface.BOLD);

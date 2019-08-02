@@ -29,16 +29,15 @@ public class MainActivity extends AppCompatActivity {
     public final String HELPER_FIELD = "helper";
     public BottomNavigationView bottomNavigationView;
     public BottomNavigationView bottomHelperNavView;
-
+    public static boolean HelperYes;
     public Fragment currentCentralFragment;
     final ParseUser currentUser = ParseUser.getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TextView mTextMessage;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextMessage = findViewById(R.id.message);
+        HelperYes = currentUser.getBoolean(HELPER_FIELD);
         final boolean helper = currentUser.getBoolean(HELPER_FIELD);
         bottomHelperNavView = findViewById(R.id.nav_helper_view);
         bottomNavigationView = findViewById(R.id.nav_view);

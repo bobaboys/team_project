@@ -26,10 +26,12 @@ import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.MessagesChatAdapter;
 import com.example.mentalhealthapp.models.Chat;
 import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
@@ -107,6 +109,38 @@ public class OpenChatActivity extends AppCompatActivity {
         // Back btn (top of the chat) listener
         @Override
         public void onClick(View v) {
+            if (emergency) {
+                //remove chat channel and log out anonymous user
+                ParseUser user = ParseUser.getCurrentUser();
+                user.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Log.d("Emergency User", "deleted");
+                    }
+                });
+                ParseUser.logOut();
+                ParseQuery<Chat> q = new ParseQuery<Chat>(Chat.class);
+                q.whereEqualTo("chatUrl",groupChannel.getUrl());
+                q.findInBackground(new FindCallback<Chat>() {
+                    @Override
+                    public void done(List<Chat> objects, ParseException e) {
+                        Chat currChat = objects.get(0);
+
+                        currChat.put("lastChecked", new Date().getTime());
+                        currChat.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+
+                    }
+                });
+
+                return;
+            }
             OpenChatActivity.super.onBackPressed();
         }
     };
@@ -175,7 +209,6 @@ public class OpenChatActivity extends AppCompatActivity {
 
     }
 
-
     public void stopRecording() {
         //stop recording
         if (mediaRecorder == null) return;
@@ -190,8 +223,6 @@ public class OpenChatActivity extends AppCompatActivity {
         sendFile();
         mediaRecorder = null;
     }
-
-
 
     private void sendFile() {
         FileMessageParams fmp = new FileMessageParams();
@@ -347,7 +378,7 @@ public class OpenChatActivity extends AppCompatActivity {
             user.deleteInBackground(new DeleteCallback() {
                 @Override
                 public void done(ParseException e) {
-                    Toast.makeText(OpenChatActivity.this,"user deleted", Toast.LENGTH_SHORT).show();;
+                    Log.d("Emergency User", "deleted");
                 }
             });
             ParseUser.logOut();
@@ -359,8 +390,22 @@ public class OpenChatActivity extends AppCompatActivity {
         }else{
             ParseQuery<Chat> q = new ParseQuery<Chat>(Chat.class);
             q.whereEqualTo("chatUrl",groupChannel.getUrl());
-            //q.
-            //super.onBackPressed();
+            q.findInBackground(new FindCallback<Chat>() {
+                @Override
+                public void done(List<Chat> objects, ParseException e) {
+                    Chat currChat = objects.get(0);
+
+                    currChat.put("lastChecked", new Date().getTime());
+                    currChat.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            OpenChatActivity.super.onBackPressed();
+                        }
+                    });
+
+                }
+            });
+
         }
 
     }

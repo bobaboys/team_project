@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.ChatsListAdapter;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.models.Chat;
 import com.example.mentalhealthapp.models.CompleteChat;
+import com.example.mentalhealthapp.models.Constants;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -38,9 +40,6 @@ public class ChatOverviewListFragment  extends Fragment {
     LinearLayoutManager layoutManager;
     EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
-
-
-
 
     @Nullable
     @Override
@@ -91,7 +90,6 @@ public class ChatOverviewListFragment  extends Fragment {
             }
         };
         rvChatsList.addOnScrollListener(scrollListener);
-
     }
 
     public void getCompleteChats(int page) {
@@ -100,8 +98,13 @@ public class ChatOverviewListFragment  extends Fragment {
         query.setSkip(50*(page-1));
         query.include("helper");
         query.include("reciever");
-        boolean isHelper= ParseUser.getCurrentUser().getBoolean("helper");
-        query.whereEqualTo(isHelper?"helper":"reciever",ParseUser.getCurrentUser());
+        if(MainActivity.HelperYes){
+            query.whereEqualTo(Constants.CHAT_HELPER_DELETED, false);
+        }
+        else{
+            query.whereEqualTo(Constants.CHAT_RECEIVER_DELETED, false);
+        }
+        query.whereEqualTo(MainActivity.HelperYes?"helper":"reciever",ParseUser.getCurrentUser());
         scrollListener.resetState();
         query.findInBackground(new FindCallback<Chat>() {
             @Override
@@ -113,19 +116,19 @@ public class ChatOverviewListFragment  extends Fragment {
                 for (Chat chat : objects) {
                     final CompleteChat cc = new CompleteChat();
                     cc.chat = chat;
-                    ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
-                        @Override
-                        public void onSuccess(String TAG, GroupChannel groupChannel) {
+                        ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
+                            @Override
+                            public void onSuccess(String TAG, GroupChannel groupChannel) {
 
-                            cc.groupChannel = groupChannel;
-                            addByTimestamp(completeChats, cc);
-                        }
+                                cc.groupChannel = groupChannel;
+                                addByTimestamp(completeChats, cc);
+                            }
 
-                        @Override
-                        public void onFailure(String TAG, Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                            @Override
+                            public void onFailure(String TAG, Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
                 }
                 swipeContainer.setRefreshing(false);
             }
