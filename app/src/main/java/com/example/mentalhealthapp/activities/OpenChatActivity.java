@@ -24,9 +24,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.MessagesChatAdapter;
+import com.example.mentalhealthapp.models.Chat;
 import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -352,9 +354,15 @@ public class OpenChatActivity extends AppCompatActivity {
             Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
+            super.onBackPressed();
             return;
+        }else{
+            ParseQuery<Chat> q = new ParseQuery<Chat>(Chat.class);
+            q.whereEqualTo("chatUrl",groupChannel.getUrl());
+            //q.
+            //super.onBackPressed();
         }
-        super.onBackPressed();
+
     }
 
     private void requestPermission() {

@@ -58,7 +58,7 @@ public class ChatOverviewListFragment  extends Fragment {
             public void onRefresh() {
                 completeChats.clear();
                 chatListAdapter.notifyDataSetChanged();
-                getCompleteChats(0);
+                getCompleteChats(1);
             }
         });
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -69,10 +69,9 @@ public class ChatOverviewListFragment  extends Fragment {
 
         completeChats = new ArrayList<>();
         setRecyclerView();
-        completeChats.clear();
-        chatListAdapter.notifyDataSetChanged();
+
         scrollListener.resetState();
-        getCompleteChats(1);//TODO EXPLAIN THIS. STARTS IN 0? IN 1?
+        // The call to the parse server, list of chats is made at ONRESUME.
 
     }
 
@@ -112,7 +111,6 @@ public class ChatOverviewListFragment  extends Fragment {
                     return;
                 }
                 for (Chat chat : objects) {
-                    //TODO CALL CHANNEL and order by timestamp.
                     final CompleteChat cc = new CompleteChat();
                     cc.chat = chat;
                     ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
@@ -133,6 +131,8 @@ public class ChatOverviewListFragment  extends Fragment {
             }
         });
     }
+
+
     private void addByTimestamp(ArrayList<CompleteChat> list, CompleteChat element){
         //TODO
         element.timestampLast = getLastTimestampLong(element.groupChannel);
@@ -156,5 +156,13 @@ public class ChatOverviewListFragment  extends Fragment {
         BaseMessage lastM = gc.getLastMessage();
         if(lastM==null) return 0;
         return lastM.getCreatedAt();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        completeChats.clear();
+        chatListAdapter.notifyDataSetChanged();
+        getCompleteChats(1);
     }
 }

@@ -124,7 +124,7 @@ public class ReceiverEditProfileFragment extends Fragment {
     }
 
     public void switchFragments(){
-        Fragment fragment = new HelperProfileFragment();
+        Fragment fragment = new RecieverProfileFragment();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.flContainer_main, fragment);

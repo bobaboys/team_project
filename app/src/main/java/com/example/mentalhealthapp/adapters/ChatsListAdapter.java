@@ -2,10 +2,12 @@ package com.example.mentalhealthapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +78,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         ConstraintLayout itemChat;
         CompleteChat channel;
         ParseUser addresseeParse;
+        ImageView noReadedNotf;
 
         public ViewHolder(View view) {
             super(view);
@@ -85,6 +88,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             timeStamp = view.findViewById(R.id.tv_chat_timestamp);
             chatUserPic = view.findViewById(R.id.iv_chat_image);
             itemChat = view.findViewById(R.id.item_chat);
+            noReadedNotf = view.findViewById(R.id.iv_circle_blue);
 
             itemChat.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -116,7 +120,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
             getAndBindParseProfilePhoto( addresseeParse);
             BaseMessage  lastM = channel.groupChannel.getLastMessage();
-            bindAccordingTypeOfMessage( lastM,  addresseeParse);
+            bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.chat.getLong("lastChecked"));
         }
 
         public ParseUser obtainFromParseAddressee() {
@@ -144,7 +148,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }
         }
 
-        public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse){
+        public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse, long lastChecked){
             if(lastM!=null){
                 try{
                     UserMessage lastMUser = (UserMessage) lastM;
@@ -164,6 +168,24 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                     lastMessage.setText(authorAndAttachMessage);
                 }
                 timeStamp.setText(Utils.getTimeStamp(lastM.getCreatedAt()));
+
+                if(lastM.getCreatedAt() > lastChecked){ // THIS MESSAGE HAS NOT BEEN READED.
+                    timeStamp.setTextColor(context.getResources().getColor(R.color.black));
+                    lastMessage.setTextColor(context.getResources().getColor(R.color.black));
+                    timeStamp.setTypeface(null, Typeface.BOLD);
+                    lastMessage.setTypeface(null, Typeface.BOLD);
+                    title.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
+                    noReadedNotf.setVisibility(ConstraintLayout.VISIBLE);
+                    //timeStamp.set
+
+                }else{
+                    timeStamp.setTextColor(context.getResources().getColor(android.R.color.secondary_text_light));
+                    timeStamp.setTypeface(null, Typeface.NORMAL);
+                    lastMessage.setTypeface(null, Typeface.NORMAL);
+                    lastMessage.setTextColor(context.getResources().getColor(android.R.color.secondary_text_light));
+                    noReadedNotf.setVisibility(ConstraintLayout.GONE);
+                    title.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
+                }
             }else{//There is not messages in the conversation.
                 lastMessage.setText("");
                 timeStamp.setText("");

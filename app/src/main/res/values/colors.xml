@@ -28,7 +28,7 @@
     <color name="pastel_021">#BAFEA3</color>
     <color name="pastel_022">#FFFF99</color>
     <color name="pastel_023">#F2F4B3</color>
-
+    <color name="black">#000</color>
     <color name = "lightgray">#F1F0F0</color>
 
     <color name="white">#fff</color>
@@ -41,7 +41,7 @@
     <color name="thistle">#d8bfd8</color>
     <color name="mediumpurple">#9370db</color>
     <color name="lightslateblue">#8470ff</color>
-    <color name="plum">#dda0dd</color>
+    <color name="plum">#DDA0DD</color>
     <color name="palegoldenrod">#eee8aa</color>
     <color name="lightyellow">#FFFFE0</color>
     <color name="lemonchiffon">#FFFACD</color>
