@@ -194,34 +194,6 @@ public class ChatApp extends Application {
     }
 
 
-    public void getListOfChats(final GetlListHandle handle){
-        GroupChannelListQuery channelListQuery = GroupChannel.createMyGroupChannelListQuery();
-        channelListQuery.setIncludeEmpty(true);
-        channelListQuery.next(new GroupChannelListQuery.GroupChannelListQueryResultHandler() {
-            @Override
-            public void onResult(List<GroupChannel> list, SendBirdException e) {
-                if (e != null) {    // Error.
-                    handle.onFailure(ChatAppTag.GET_LIST_CHATS.getTag(),e);
-                    return;
-                }
-                handle.onSuccess(ChatAppTag.GET_LIST_CHATS.getTag(),list);
-            }
-        });
-    }
-
-    public void leaveChat(GroupChannel chat, final GeneralHandle handle){
-        chat.leave(new GroupChannel.GroupChannelLeaveHandler() {
-            @Override
-            public void onResult(SendBirdException e) {
-                if (e != null) {    // Error.
-                    handle.onFailure(ChatAppTag.LEAVE_CHAT.getTag(), e);
-                    return;
-                }
-                handle.onSuccess(ChatAppTag.LEAVE_CHAT.getTag());
-            }
-        });
-    }
-
 
     // block and unblock users
     public void blockUser(User user, GeneralHandle handle){
@@ -248,16 +220,6 @@ public class ChatApp extends Application {
                 }
             }
         });
-    }
-
-    //getters and setters
-    public String getAPP_ID() {
-        return APP_ID;
-    }
-
-
-    public User getSendBirdUser() {
-        return sendBirdUser;
     }
 
     public void setSendBirdUser(User sendBirdUser) {

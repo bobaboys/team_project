@@ -32,6 +32,7 @@ import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import Utils.Utils;
@@ -92,6 +93,9 @@ public class HelperDetailsActivity extends AppCompatActivity {
         chat.put("reciever", ParseObject.createWithoutData("_User", ParseUser.getCurrentUser().getObjectId()));
         chat.put("chatUrl", groupChannel.getUrl());
         chat.put(Constants.CHAT_RECEIVER_DELETED,false);
+        long time = new Date().getTime();
+        chat.put("lastChecked",time);
+        chat.put("lastCheckedHelper",time );
         chat.put(Constants.CHAT_HELPER_DELETED, false);
         chat.saveInBackground(new SaveCallback() {
             @Override

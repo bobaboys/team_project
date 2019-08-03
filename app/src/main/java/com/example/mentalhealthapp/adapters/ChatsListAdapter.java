@@ -80,16 +80,17 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         CompleteChat channel;
         ParseUser addresseeParse;
         ImageView noReadedNotf;
+        boolean isCurrentHelper;
 
         public ViewHolder(View view) {
             super(view);
-
+            isCurrentHelper = ParseUser.getCurrentUser().getBoolean("helper");
             title = view.findViewById(R.id.tv_chat_title);
             lastMessage = view.findViewById(R.id.tv_chat_lastMessage);
             timeStamp = view.findViewById(R.id.tv_chat_timestamp);
             chatUserPic = view.findViewById(R.id.iv_chat_image);
             itemChat = view.findViewById(R.id.item_chat);
-            noReadedNotf = view.findViewById(R.id.iv_circle_blue);
+            noReadedNotf = view.findViewById(R.id.iv_circle_unreaded_message);
 
             itemChat.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -169,12 +170,12 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
                 getAndBindParseProfilePhoto( addresseeParse);
                 BaseMessage  lastM = channel.groupChannel.getLastMessage();
-                bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.chat.getLong("lastChecked"));
+                bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.chat.getLong(isCurrentHelper?
+                        "lastCheckedHelper" : "lastChecked" ));
         }
 
         public ParseUser obtainFromParseAddressee() {
-            boolean currentIsHelperParse = ParseUser.getCurrentUser().getBoolean("helper");
-             return currentIsHelperParse? channel.chat.getParseUser("reciever") : channel.chat.getParseUser("helper") ;
+             return isCurrentHelper? channel.chat.getParseUser("reciever") : channel.chat.getParseUser("helper") ;
         }
 
         public void getAndBindParseProfilePhoto( ParseUser addresseeParse){

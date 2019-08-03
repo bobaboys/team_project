@@ -111,37 +111,37 @@ public class OpenChatActivity extends AppCompatActivity {
         public void onClick(View v) {
             if (emergency) {
                 //remove chat channel and log out anonymous user
-                ParseUser user = ParseUser.getCurrentUser();
-                user.deleteInBackground(new DeleteCallback() {
+                ParseUser.getCurrentUser().deleteInBackground(new DeleteCallback() {
                     @Override
                     public void done(ParseException e) {
                         Log.d("Emergency User", "deleted");
                     }
                 });
                 ParseUser.logOut();
+                OpenChatActivity.super.onBackPressed();
+            }else{
                 ParseQuery<Chat> q = new ParseQuery<Chat>(Chat.class);
                 q.whereEqualTo("chatUrl",groupChannel.getUrl());
                 q.findInBackground(new FindCallback<Chat>() {
                     @Override
                     public void done(List<Chat> objects, ParseException e) {
                         Chat currChat = objects.get(0);
-
-                        currChat.put("lastChecked", new Date().getTime());
+                        boolean isCurrentHelper = ParseUser.getCurrentUser().getBoolean("helper");
+                        currChat.put(isCurrentHelper?"lastCheckedHelper":"lastChecked", new Date().getTime());
                         currChat.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
-                                Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
+                                //Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
+                                //startActivity(intent);
+                                //finish();
+                                OpenChatActivity.super.onBackPressed();
                             }
                         });
 
                     }
                 });
-
-                return;
             }
-            OpenChatActivity.super.onBackPressed();
+
         }
     };
 

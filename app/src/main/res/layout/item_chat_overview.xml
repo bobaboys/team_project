@@ -30,7 +30,7 @@
         android:textColor="@android:color/black"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tv_chat_lastMessage"
-        app:layout_constraintEnd_toStartOf="@+id/iv_circle_blue"
+        app:layout_constraintEnd_toStartOf="@+id/iv_circle_unreaded_message"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/iv_chat_image"
         app:layout_constraintTop_toTopOf="parent" />
@@ -68,10 +68,11 @@
         app:layout_constraintTop_toTopOf="@+id/tv_chat_lastMessage" />
 
     <ImageView
-        android:id="@+id/iv_circle_blue"
+        android:id="@+id/iv_circle_unreaded_message"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_marginStart="12dp"
+        android:tint="@color/colorAccent"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_chat_title"
         app:layout_constraintStart_toEndOf="@+id/tv_chat_title"

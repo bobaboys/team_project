@@ -69,7 +69,6 @@ public class HelperBiosFragment extends Fragment {
 
     private void loadBios() {
         final ParseQuery<HelperTags> helpersTagsQ = new ParseQuery<>(HelperTags.class);
-        helpersTagsQ.setLimit(30);
         helpersTagsQ.setLimit(150);
         helpersTagsQ.include("user");
         helpersTagsQ.whereContainedIn("Tag", tags.selectedTags); // looks for helpers with these tags.
