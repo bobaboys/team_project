@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -78,9 +79,11 @@ public class Utils {
         return null;
     }
 
-    public static boolean isSDCardPresent() {
-        return Environment.getExternalStorageState()
-                .equals(Environment.MEDIA_MOUNTED);
+    public static void switchToAnotherFragment(Fragment fragment, FragmentManager fragmentManager , int layout){
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(layout, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     public static void enableDisablePlay(Context context, ImageView btn, boolean enable){
@@ -89,6 +92,14 @@ public class Utils {
                     enable ? R.color.white : R.color.pastel_009)));
     }
 
+    public static long getMillisTimeFromDateFormat(String strDate){
+        try {
+            Date date1=new SimpleDateFormat("MM/dd/yyyy").parse(strDate);
+            return date1.getTime();
+        }catch (Exception e) {
+            return 0;
+        }
+    }
 }
 
 

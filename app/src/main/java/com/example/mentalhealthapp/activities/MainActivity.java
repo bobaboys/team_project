@@ -9,11 +9,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.mentalhealthapp.Fragments.ChatOverviewListFragment;
 import com.example.mentalhealthapp.Fragments.HelperProfileFragment;
-import com.example.mentalhealthapp.Fragments.RecieverProfileFragment;
+import com.example.mentalhealthapp.Fragments.ReceiverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
 import com.example.mentalhealthapp.Fragments.ReflectFragment;
 import com.example.mentalhealthapp.R;
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new ChatOverviewListFragment();
                             break;
                         case R.id.navigation_profile:
-                            fragment = new RecieverProfileFragment();
+                            fragment = new ReceiverProfileFragment();
                             break;
                         default:
                             fragment = new RecieverSearchPageFragment();

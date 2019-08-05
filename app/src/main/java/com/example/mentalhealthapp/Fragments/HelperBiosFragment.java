@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
@@ -36,12 +37,23 @@ public class HelperBiosFragment extends Fragment {
     protected List<UserWithTags> mBios;
     protected TagsParcel tags;
     protected TextView alternateText, title;
+    protected Button back;
+
+
+    View.OnClickListener backListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            getActivity().onBackPressed();
+        }
+    };
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_helper_bios, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -51,13 +63,21 @@ public class HelperBiosFragment extends Fragment {
         Bundle bundle = getArguments();
         tags = (TagsParcel) Parcels.unwrap( bundle.getParcelable("selectedTags"));
 
+        setViewComponents(view);
+        mBios = new ArrayList<>();
+
+        ((MainActivity)getContext()).currentCentralFragment = this;
+        back.setOnClickListener(backListener);
+        setRecyclerView();
+        loadBios();
+    }
+
+
+    private void setViewComponents(View view){
         rvBios = view.findViewById(R.id.rvHelperBios);
         alternateText = view.findViewById(R.id.tv_alternate_text);
         title = view.findViewById(R.id.tv_title_bios_list);
-        mBios = new ArrayList<>();
-        ((MainActivity)getContext()).currentCentralFragment = this;
-        setRecyclerView();
-        loadBios();
+        back = view.findViewById(R.id.btn_alternate_back);
     }
 
     private void setRecyclerView() {
@@ -66,6 +86,7 @@ public class HelperBiosFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         rvBios.setLayoutManager(layoutManager);
     }
+
 
     private void loadBios() {
         final ParseQuery<HelperTags> helpersTagsQ = new ParseQuery<>(HelperTags.class);
@@ -90,11 +111,14 @@ public class HelperBiosFragment extends Fragment {
     private void visibilityLayout(boolean isEmpty){
         rvBios.setVisibility(isEmpty?
                 ConstraintLayout.GONE : ConstraintLayout.VISIBLE);
+        back.setVisibility(isEmpty?
+                ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
         alternateText.setVisibility(isEmpty?
                 ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
         title.setVisibility(isEmpty?
                 ConstraintLayout.GONE : ConstraintLayout.VISIBLE);
     }
+
 
     private void fillListOfBios(List<HelperTags> objects){
         ArrayList<UserWithTags> helpersWithAllTags= new ArrayList<>();
@@ -120,14 +144,9 @@ public class HelperBiosFragment extends Fragment {
 
 
     public int searchUser(ArrayList<UserWithTags> helpersWithAllTags, ParseUser user){
-        if (user.getObjectId() == null) {
-            for (int i = 0; i < helpersWithAllTags.size(); i++)
-                if (helpersWithAllTags.get(i).user.getObjectId()==null)
-                    return i;
-        } else {
-            for (int i = 0; i < helpersWithAllTags.size(); i++)
-                if (user.getObjectId().equals(helpersWithAllTags.get(i).user.getObjectId()))
-                    return i;
+        if(user==null)return -1;
+        for (int i = 0; i < helpersWithAllTags.size(); i++) {
+            if (user.getObjectId().equals(helpersWithAllTags.get(i).user.getObjectId())) return i;
         }
         return -1;
     }

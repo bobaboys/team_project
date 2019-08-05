@@ -34,10 +34,15 @@
     <string name="play_description">Play btn</string>
     <string name="journal_title">Thought Journal</string>
     <string name="all_entries">All my entries</string>
+    <string name="btn_emergency">IMMEDIATE HELP</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="recipient">recipient:</string>
     <string name="list_helpers_title">Select a Helper to chat:</string>
     <string name="no_helpers_as_result">Oops, No helpers avaliable. You can select Other as category and find somebody willing to help you!.</string>
     <string name="chat_list_title">Chats</string>
+    <string name="log_in">Log in</string>
+    <string name="back_bios_list_alt">   Let\'s find them!   </string>
+    <string name="select_a_date">SELECT A DATE!</string>
 </resources>
+

@@ -29,9 +29,10 @@ public class CreateEntryJournalFragment extends Fragment {
     protected EditText journalEntry;
     protected Button save;
     protected String dateOfEntry;
-    protected Boolean alreadyExists;
+    protected boolean alreadyExists;
     protected Journal existingEntry;
     protected MediaPlayer buttonClickSound;
+    protected boolean checkedIfExist;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,7 +51,8 @@ public class CreateEntryJournalFragment extends Fragment {
         Bundle bundle = getArguments();
         dateOfEntry = bundle.getString("date");
         alreadyExists = bundle.getBoolean("alreadyExists");
-        if(alreadyExists){
+        checkedIfExist = bundle.getBoolean("checkedIfExist");
+        if(alreadyExists || checkedIfExist){
             ParseUser currentUser = ParseUser.getCurrentUser();
             ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
             query.include(Constants.USER_FIELD);
@@ -61,6 +63,7 @@ public class CreateEntryJournalFragment extends Fragment {
                 @Override
                 public void done(List<Journal> objects, ParseException e) {
                     for(int i = 0; i < objects.size(); i++){
+                        alreadyExists = true;
                         existingEntry = objects.get(0);
                         journalEntry.setText(existingEntry.getJournalEntry());
                     }

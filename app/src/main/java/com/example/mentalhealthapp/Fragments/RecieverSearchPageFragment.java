@@ -37,6 +37,8 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
+import Utils.Utils;
+
 public class RecieverSearchPageFragment extends Fragment {
     public static String TAG = "RecieverSearchPageFragment";
 
@@ -46,6 +48,7 @@ public class RecieverSearchPageFragment extends Fragment {
     TagsAdapter tagsAdapter;
     android.widget.SearchView tagsSearch;
 
+
     View.OnClickListener searchButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -53,18 +56,15 @@ public class RecieverSearchPageFragment extends Fragment {
             selectedTagsParcel.selectedTags =tagsAdapter.selectedTags;
 
             Fragment fragment = new HelperBiosFragment();
-            //passing to result of list of helpers
             Bundle bundle = new Bundle();
             bundle.putParcelable("selectedTags", Parcels.wrap(selectedTagsParcel));
             fragment.setArguments(bundle);
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.flContainer_main, fragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-
+            Utils.switchToAnotherFragment(fragment,
+                    getActivity().getSupportFragmentManager(),
+                    R.id.flContainer_main);
         }
     };
+
 
     android.widget.SearchView.OnQueryTextListener searchViewListener = new android.widget.SearchView.OnQueryTextListener() {
         @Override
@@ -79,11 +79,13 @@ public class RecieverSearchPageFragment extends Fragment {
         }
     };
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_reciever_searchpage, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -95,13 +97,18 @@ public class RecieverSearchPageFragment extends Fragment {
         searchForHelpers.setOnClickListener(searchButtonListener);
         setRecyclerView();
         getAllTags();
+        setSearchView(view);
+        hideKeyboardFrom(getContext(),view);
+    }
+
+    private void setSearchView(View view){
         tagsSearch = view.findViewById(R.id.searchView_tags);
         tagsSearch.setOnQueryTextListener(searchViewListener);
         tagsSearch.setImeOptions(EditorInfo.IME_ACTION_DONE);
         tagsSearch.onActionViewExpanded();
         tagsSearch.setQueryHint("Search for issues you want help with");
-        hideKeyboardFrom(getContext(),view);
     }
+
 
     private void setRecyclerView() {
         tagsAdapter = new TagsAdapter(this.getContext(), tags);
@@ -109,6 +116,8 @@ public class RecieverSearchPageFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         rvTags.setLayoutManager(layoutManager);
     }
+
+
     private void getAllTags() {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
         postsQuery.setLimit(150);
@@ -130,6 +139,8 @@ public class RecieverSearchPageFragment extends Fragment {
             }
         });
     }
+
+
     public static void hideKeyboardFrom(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);

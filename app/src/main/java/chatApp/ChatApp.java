@@ -84,64 +84,6 @@ public class ChatApp extends Application {
         });
     }
 
-    public void onMessageReceived(BaseChannel channel, BaseMessage message){
-
-    }
-
-    public void disconnectFromServer(final GeneralHandle handle){
-        SendBird.disconnect(new SendBird.DisconnectHandler() {
-            @Override
-            public void onDisconnected() {
-                handle.onSuccess(ChatAppTag.DISCONNECT_FROM_SERVER.getTag());
-            }
-        });
-    }
-
-    public void changeProfileInformation(String nickname, String profileUrl, final GeneralHandle handle){
-        SendBird.updateCurrentUserInfo(nickname, profileUrl, new SendBird.UserInfoUpdateHandler() {
-            @Override
-            public void onUpdated(SendBirdException e) {
-                if (e != null) {    // Error.
-                    handle.onFailure(ChatAppTag.CHANGE_PROFILE_INFORMATION.getTag(),e);
-                    return;
-                }
-                handle.onSuccess(ChatAppTag.CHANGE_PROFILE_INFORMATION.getTag());
-            }
-        });
-    }
-
-    public void changeProfileInformation(String nickname, File photoFile, final GeneralHandle handle){
-        SendBird.updateCurrentUserInfoWithProfileImage(nickname, photoFile, new SendBird.UserInfoUpdateHandler() {
-            @Override
-            public void onUpdated(SendBirdException e) {
-                if (e != null) {    // Error.
-                    handle.onFailure(ChatAppTag.CHANGE_PROFILE_INFORMATION.getTag(),e);
-                    return;
-                }
-                handle.onSuccess(ChatAppTag.CHANGE_PROFILE_INFORMATION.getTag());
-            }
-        });
-    }
-
-
-    public void getListOfUsersById(List<String> userIds, final GetlListHandle handle){
-        //Check notes on head of class.
-
-        ApplicationUserListQuery applicationUserListQueryByIds = SendBird.createApplicationUserListQuery();
-        applicationUserListQueryByIds.setUserIdsFilter(userIds);
-        applicationUserListQueryByIds.next(new UserListQuery.UserListQueryResultHandler() {
-            @Override
-            public void onResult(List<User> list, SendBirdException e) {
-                if (e != null) {    // Error.
-                    handle.onFailure(ChatAppTag.GET_LIST_OF_USERS_BY_ID.getTag(),e);
-                    return;
-                }
-                handle.onSuccess(ChatAppTag.GET_LIST_OF_USERS_BY_ID.getTag(),list);
-            }
-        });
-    }
-
-
 
     //Chats
     public static void createChat(ParseUser userCreator, ParseUser userHelper, boolean isEmergency, final CreateChatHandle handle){

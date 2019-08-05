@@ -41,13 +41,13 @@ public class HelperProfileFragment extends Fragment {
     protected Button logOutbtn;
     protected TextView helperProfileBio;
     protected ImageView helperProfileAvatar;
-    protected TextView helperProfileTags;
     protected TextView helperName;
     protected FloatingActionButton editHelperProfile;
     protected MediaPlayer buttonClickSound;
     protected GridView tagsGridView;
     protected ArrayList<String> allHelperTags = new ArrayList<>();;
     protected SelectedTagsAdapter profTagsAdapter;
+
 
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
         @Override
@@ -59,11 +59,23 @@ public class HelperProfileFragment extends Fragment {
         }
     };
 
+
+    protected  View.OnClickListener editListener =new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Utils.switchToAnotherFragment(new HelperEditProfileFragment(),
+                    getActivity().getSupportFragmentManager() ,
+                    R.id.flContainer_main);
+        }
+    };
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_helper_profile, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -73,69 +85,25 @@ public class HelperProfileFragment extends Fragment {
         populateGridViewTags();
     }
 
+
     private void assignViewsAndListeners(View view) {
         helperProfileBio =view.findViewById(R.id.tvMyBio_helper_profile);
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
-        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
-        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         tagsGridView = view.findViewById(R.id.gv_tags_helper_prof);
-        helperProfileAvatar.setImageBitmap(bm);
         helperName = view.findViewById(R.id.tv_username_helperProfile);
-        helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
+
+        Bitmap bm = Utils.convertFileToBitmap(
+                ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD));
+        helperProfileAvatar.setImageBitmap(bm);
+
+        helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
         helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
         helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
+
         logOutbtn.setOnClickListener(logoutBtnListener);
-        editHelperProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment = new HelperEditProfileFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.flContainer_main, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
-
-    }
-
-
-    public void populateTags(){
-        ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
-        query.include(Constants.USER_FIELD);
-        query.include(Constants.TAG_FIELD);
-        query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
-        query.findInBackground(new FindCallback<HelperTags>() {
-            @Override
-            public void done(List<HelperTags> objects, ParseException e) {
-                String strListOfTags = "";
-                if(e==null){
-                        for(int i = 0; i < objects.size(); i++){
-                            HelperTags helperTag = objects.get(i);
-                            //second to last tag
-                            if(i == objects.size() - 2){
-                                strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", and ";
-                                continue;
-                            }
-                            //last tag
-                            if(i == objects.size() - 1){
-                                strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag");
-                                break;
-                            }
-                            strListOfTags += ((Tag)helperTag.get("Tag")).get("Tag")+ ", ";
-                            //TODO POPULATE WITH CARDS INSTEAD OF STR ONLY
-                        }
-
-
-                    helperProfileTags.setText(strListOfTags);
-
-                }else{
-                    Log.e("HelperProfileFragment", "failure in populating tags");
-                }
-            }
-        });
+        editHelperProfile.setOnClickListener(editListener);
     }
 
 

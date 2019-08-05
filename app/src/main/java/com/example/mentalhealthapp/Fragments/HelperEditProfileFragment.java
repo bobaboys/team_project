@@ -69,6 +69,7 @@ public class HelperEditProfileFragment extends Fragment {
     protected MediaPlayer buttonClickSound;
     private List<String> lastTagsSelectedString;
 
+
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -81,6 +82,7 @@ public class HelperEditProfileFragment extends Fragment {
             clearOldAndWriteNewTags();
         }
     };
+
     protected View.OnClickListener editTagsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -89,6 +91,7 @@ public class HelperEditProfileFragment extends Fragment {
             editTags.setVisibility(ConstraintLayout.GONE);
         }
     };
+
 
     protected View.OnTouchListener  touchListener = new View.OnTouchListener(){
         @Override
@@ -99,6 +102,7 @@ public class HelperEditProfileFragment extends Fragment {
         }
     };
 
+
     protected View.OnClickListener takePicListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -106,6 +110,7 @@ public class HelperEditProfileFragment extends Fragment {
             onLaunchCamera();
         }
     };
+
 
     protected View.OnClickListener choosePicListener = new View.OnClickListener() {
         @Override
@@ -116,11 +121,13 @@ public class HelperEditProfileFragment extends Fragment {
         }
     };
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_helper_edit_profile, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -133,26 +140,29 @@ public class HelperEditProfileFragment extends Fragment {
         ((MainActivity)getContext()).currentCentralFragment = this;
     }
 
+
     private void assignViewsAndListeners(View view) {
         rvTags = view.findViewById(R.id.rvTags_HelperEditProfile);
         editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
-        editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
-        editHelperBio.setOnTouchListener(touchListener);
-
         editTags = view.findViewById(R.id.edit_tags);
-        editTags.setOnClickListener(editTagsListener);
         saveChanges = view.findViewById(R.id.btnSaveChange_Reciever_edit_profile);
-        saveChanges.setOnClickListener(saveChangesListener);
         avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);
+        choosePic = view.findViewById(R.id.btnChoosePic_helpereditprofile);
+        takePic = view.findViewById(R.id.btnTakePic_helpereditprofile);
+
+        editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
+
+        editHelperBio.setOnTouchListener(touchListener);
+        editTags.setOnClickListener(editTagsListener);
+        saveChanges.setOnClickListener(saveChangesListener);
+        takePic.setOnClickListener(takePicListener);
+        choosePic.setOnClickListener(choosePicListener);
+
         ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
         Bitmap bm = Utils.convertFileToBitmap(avatarFile);
         avatarPic.setImageBitmap(bm);
-        takePic = view.findViewById(R.id.btnTakePic_helpereditprofile);
-        takePic.setOnClickListener(takePicListener);
-        choosePic = view.findViewById(R.id.btnChoosePic_helpereditprofile);
-        choosePic.setOnClickListener(choosePicListener);
-
     }
+
 
     public void editBio(){
         ParseUser.getCurrentUser().put(Constants.HELPER_BIO_FIELD, editHelperBio.getText().toString());
@@ -167,6 +177,7 @@ public class HelperEditProfileFragment extends Fragment {
             }
         });
     }
+
 
     private void editPhoto(ParseUser user) {
         ParseFile parseFile = new ParseFile(photoFile);
@@ -189,7 +200,7 @@ public class HelperEditProfileFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference to access to future access
         photoFile = getPhotoFileUri(photoFileName);
-        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.example.mentalhealth", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
@@ -204,9 +215,9 @@ public class HelperEditProfileFragment extends Fragment {
             Log.d(TAG, "failed to create directory");
         }
         // Return the file target for the photo based on filename
-        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
-        return file;
+        return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -228,6 +239,7 @@ public class HelperEditProfileFragment extends Fragment {
         }
     }
 
+
     private void setAndPopulateRvTags() {
         tags = new ArrayList<>();
         tagsAdapter = new TagsAdapter(getContext(), tags);
@@ -235,6 +247,7 @@ public class HelperEditProfileFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvTags.setLayoutManager(layoutManager);
     }
+
 
     private void getAllTags() {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
@@ -251,6 +264,7 @@ public class HelperEditProfileFragment extends Fragment {
             }
         });
     }
+
 
     private void getLastTagsSelected(){
         ParseQuery<HelperTags> q = new ParseQuery<>(HelperTags.class);
@@ -271,6 +285,7 @@ public class HelperEditProfileFragment extends Fragment {
         });
 
     }
+
 
     public void clearOldAndWriteNewTags(){
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
@@ -305,19 +320,11 @@ public class HelperEditProfileFragment extends Fragment {
                         e.printStackTrace();
                         return;
                     }
-                    switchFragments();
+                    Utils.switchToAnotherFragment(new HelperEditProfileFragment(),
+                            getActivity().getSupportFragmentManager(),
+                            R.id.flContainer_main);
                 }
             });
         }
-    }
-
-
-    public void switchFragments(){
-        Fragment fragment = new HelperProfileFragment();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.flContainer_main, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 }

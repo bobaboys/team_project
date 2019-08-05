@@ -25,23 +25,18 @@ import android.widget.Toast;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
 import com.example.mentalhealthapp.models.Constants;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import Utils.Utils;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ReceiverEditProfileFragment extends Fragment {
-    protected EditText editHelperBio;
     protected Button saveChanges;
     protected Button takePic;
     protected Button choosePic;
@@ -52,34 +47,33 @@ public class ReceiverEditProfileFragment extends Fragment {
     protected String AVATAR_FIELD = "avatar";
     protected File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
-    protected ParseUser currUser;
+
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ParseUser user = ParseUser.getCurrentUser();
-            //update parse server user with avatar photo
-            if(photoFile!=null) {
-                editPhoto(user);
-            }
-            switchFragments();
+            if(photoFile!=null) editPhoto(ParseUser.getCurrentUser());
+            Utils.switchToAnotherFragment(new ReceiverProfileFragment(),
+                    getActivity().getSupportFragmentManager(),
+                    R.id.flContainer_main);
         }
     };
 
+
     protected View.OnClickListener takePicListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
-            onLaunchCamera();
-        }
+        public void onClick(View v) { onLaunchCamera();}
     };
+
 
     protected View.OnClickListener choosePicListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getContext(), AvatarImagesActivity.class);
-            startActivityForResult(intent, CHOOSE_AVATAR_REQUEST);
+            startActivityForResult(new Intent(getContext(), AvatarImagesActivity.class),
+                    CHOOSE_AVATAR_REQUEST);
         }
     };
+
 
     @Nullable
     @Override
@@ -87,12 +81,13 @@ public class ReceiverEditProfileFragment extends Fragment {
         return inflater.inflate(R.layout.fragement_reciever_edit_profile, container, false);
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         assignViewsAndListeners(view);
-        currUser = ParseUser.getCurrentUser();
     }
+
 
     private void assignViewsAndListeners(View view) {
         saveChanges = view.findViewById(R.id.btnSaveChange_reciever_edit_profile);
@@ -105,12 +100,11 @@ public class ReceiverEditProfileFragment extends Fragment {
         takePic.setOnClickListener(takePicListener);
         choosePic = view.findViewById(R.id.btnChoosePic_reciever_edit_profile);
         choosePic.setOnClickListener(choosePicListener);
-
     }
 
+
     private void editPhoto(ParseUser user) {
-        ParseFile parseFile = new ParseFile(photoFile);
-        user.put(AVATAR_FIELD, parseFile);
+        user.put(AVATAR_FIELD, new ParseFile(photoFile));
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -123,14 +117,6 @@ public class ReceiverEditProfileFragment extends Fragment {
         });
     }
 
-    public void switchFragments(){
-        Fragment fragment = new RecieverProfileFragment();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.flContainer_main, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
 
     public void onLaunchCamera() {
         // create Intent to take a picture and return control to the calling application
@@ -144,6 +130,7 @@ public class ReceiverEditProfileFragment extends Fragment {
         }
     }
 
+
     private File getPhotoFileUri(String fileName) {
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
@@ -155,6 +142,7 @@ public class ReceiverEditProfileFragment extends Fragment {
         File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
         return file;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -170,7 +158,7 @@ public class ReceiverEditProfileFragment extends Fragment {
         }
         if(requestCode == CHOOSE_AVATAR_REQUEST && resultCode == RESULT_OK){
             //get pic from parse user and set image view
-            ParseFile avatarFile = currUser.getParseFile(AVATAR_FIELD);
+            ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(AVATAR_FIELD);
             Bitmap bm = Utils.convertFileToBitmap(avatarFile);
             avatarPic.setImageBitmap(bm);
         }

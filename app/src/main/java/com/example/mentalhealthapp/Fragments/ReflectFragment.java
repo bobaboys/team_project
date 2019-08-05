@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import Utils.Utils;
+
 public class ReflectFragment extends Fragment {
 
     protected TextView journalDate;
@@ -37,6 +39,58 @@ public class ReflectFragment extends Fragment {
     public final String CREATE_KEY = "Create Entry";
     public final String EDIT_KEY = "View Entry";
     protected MediaPlayer buttonClickSound;
+    private boolean entryExist, checkedIfExist;
+
+    public void setEntryExist(boolean entryExist) {
+        this.entryExist = entryExist;
+    }
+
+
+    private CalendarView.OnDateChangeListener daySelectedListener= new CalendarView.OnDateChangeListener() {
+        @Override
+        public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+            String dZero=dayOfMonth<10?"0":"";
+            String mZero=month < 9?"0":"";
+            date = mZero + (month + 1) + "/"
+                    +dZero+ dayOfMonth + "/" + year;
+            journalDate.setText(date);
+            alreadyExists();
+        }
+    };
+
+
+    private View.OnClickListener allEntriesListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            buttonClickSound.start();
+            Fragment fragment = new JournalFragment();
+            Utils.switchToAnotherFragment(fragment,
+                    getActivity().getSupportFragmentManager(),
+                    R.id.flContainer_main);
+        }
+    };
+
+
+    private View.OnClickListener createEntryListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if(!checkedIfExist) alreadyExists();
+
+            buttonClickSound.start();
+            Fragment fragment = new CreateEntryJournalFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("date", date);
+            bundle.putBoolean("checkedIfExist", checkedIfExist);
+            bundle.putBoolean("alreadyExists", entryExist);
+
+            fragment.setArguments(bundle);
+            Utils.switchToAnotherFragment(fragment,
+                    getActivity().getSupportFragmentManager(),
+                    R.id.flContainer_main);
+
+        }
+    };
+
 
     @Nullable
     @Override
@@ -44,70 +98,39 @@ public class ReflectFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
-        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
-        journalDate = view.findViewById(R.id.myDate);
-        calendarView = view.findViewById(R.id.calendarView);
-        createEntry = view.findViewById(R.id.btn_createEntry);
-        allEntries = view.findViewById(R.id.btnAllEntries_Journal);
+        entryExist = false;
+        checkedIfExist = false;
+        setViewComponents(view);
         date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
-
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                if(month + 1 < 10){
-                    date = "0" + (month + 1) + "/" + dayOfMonth + "/" + year;
-                }else{
-                    date = (month + 1) + "/" + dayOfMonth + "/" + year;
-                }
-                journalDate.setText(date);
-                alreadyExists();
-            }
-        });
-
-        allEntries.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                buttonClickSound.start();
-                Fragment fragment = new JournalFragment();
-                switchToAnotherFragment(fragment);
-            }
-        });
-
-        createEntry.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                buttonClickSound.start();
-                Fragment fragment = new CreateEntryJournalFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("date", date);
-                if(createEntry.getText().equals(CREATE_KEY)){
-                    bundle.putBoolean("alreadyExists", false);
-                }else{
-                    bundle.putBoolean("alreadyExists", true);
-                }
-                fragment.setArguments(bundle);
-                switchToAnotherFragment(fragment);
-            }
-        });
+        setListeners();
     }
 
+    private void setListeners(){
+        calendarView.setOnDateChangeListener(daySelectedListener);
+        allEntries.setOnClickListener(allEntriesListener);
+        createEntry.setOnClickListener(createEntryListener);
+    }
+
+
     private void alreadyExists(){
-        ParseUser currentUser = ParseUser.getCurrentUser();
         ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
         query.include(Constants.USER_FIELD);
-        query.whereEqualTo(Constants.USER_FIELD, currentUser);
+        query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
+
         query.findInBackground(new FindCallback<Journal>() {
             @Override
             public void done(List<Journal> objects, ParseException e) {
                 if(e == null){
                     createEntry.setText(CREATE_KEY);
+                    ReflectFragment.this.setEntryExist(false);
                     for(int i = 0; i < objects.size(); i++){
                         if(ReflectFragment.this.date.equals(objects.get(i).getDate())){
                             createEntry.setText(EDIT_KEY);
+                            ReflectFragment.this.setEntryExist(true);
                             break;
                         }
                     }
@@ -117,13 +140,15 @@ public class ReflectFragment extends Fragment {
                 }
             }
         });
+        checkedIfExist = true;
     }
 
-    private void switchToAnotherFragment(Fragment fragment){
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.flContainer_main, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+
+    private void setViewComponents(View view){
+        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
+        journalDate = view.findViewById(R.id.myDate);
+        calendarView = view.findViewById(R.id.calendarView);
+        createEntry = view.findViewById(R.id.btn_createEntry);
+        allEntries = view.findViewById(R.id.btnAllEntries_Journal);
     }
 }
