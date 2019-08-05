@@ -34,45 +34,6 @@ public class CreateEntryJournalFragment extends Fragment {
     protected MediaPlayer buttonClickSound;
     protected boolean checkedIfExist;
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_receiver_createjournal, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
-        date = view.findViewById(R.id.tv_date_createJournal);
-        journalEntry = view.findViewById(R.id.et_addEntry_createJournal);
-        save = view.findViewById(R.id.btn_saveEntry_createJournal);
-        existingEntry = new Journal();
-
-        Bundle bundle = getArguments();
-        dateOfEntry = bundle.getString("date");
-        alreadyExists = bundle.getBoolean("alreadyExists");
-        checkedIfExist = bundle.getBoolean("checkedIfExist");
-        if(alreadyExists || checkedIfExist){
-            ParseUser currentUser = ParseUser.getCurrentUser();
-            ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
-            query.include(Constants.USER_FIELD);
-            query.include("date");
-            query.whereEqualTo(Constants.USER_FIELD, currentUser);
-            query.whereEqualTo("date", dateOfEntry);
-            query.findInBackground(new FindCallback<Journal>() {
-                @Override
-                public void done(List<Journal> objects, ParseException e) {
-                    for(int i = 0; i < objects.size(); i++){
-                        alreadyExists = true;
-                        existingEntry = objects.get(0);
-                        journalEntry.setText(existingEntry.getJournalEntry());
-                    }
-                }
-            });
-        }
-        date.setText(dateOfEntry);
-        save.setOnClickListener(saveNewEntryListener);
-    }
 
     protected View.OnClickListener saveNewEntryListener = new View.OnClickListener() {
         @Override
@@ -93,24 +54,79 @@ public class CreateEntryJournalFragment extends Fragment {
                 });
             }else{
                 //save the new journal entry to the parse server
-                Journal journal = new Journal();
-                journal.setJournalUser(ParseUser.getCurrentUser());
-                journal.setDate(dateOfEntry);
-                journal.setJournalEntry(journalEntry.getText().toString());
-                journal.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e!=null){
-                            Log.d("New journal entry", "Error while saving");
-                            e.printStackTrace();
-                            return;
-                        }
-                        (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
-                    }
-                });
+                createJournalNote();
             }
 
             //todo go back.
         }
     };
+
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_receiver_createjournal, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        existingEntry = new Journal();
+
+        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
+        setViewComponents(view);
+        getBundleArguments();
+
+        if(alreadyExists || checkedIfExist) getOldTextEntry();
+        date.setText(dateOfEntry);
+        save.setOnClickListener(saveNewEntryListener);
+    }
+    private  void setViewComponents(View view){
+        date = view.findViewById(R.id.tv_date_createJournal);
+        journalEntry = view.findViewById(R.id.et_addEntry_createJournal);
+        save = view.findViewById(R.id.btn_saveEntry_createJournal);
+    }
+
+
+    private void getBundleArguments(){
+        Bundle bundle = getArguments();
+        dateOfEntry = bundle.getString("date");
+        alreadyExists = bundle.getBoolean("alreadyExists");
+        checkedIfExist = bundle.getBoolean("checkedIfExist");
+    }
+
+
+    private void getOldTextEntry(){
+        ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
+        query.include(Constants.USER_FIELD);
+        query.include("date");
+        query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
+        query.whereEqualTo("date", dateOfEntry);
+        query.findInBackground(new FindCallback<Journal>() {
+            @Override
+            public void done(List<Journal> objects, ParseException e) {
+                alreadyExists = objects.size()!=0;
+                if(objects.size()==0)return;
+                journalEntry.setText( objects.get(0).getJournalEntry());
+            }
+        });
+    }
+
+
+    private void createJournalNote(){
+        Journal journal = new Journal();
+        journal.setJournalUser(ParseUser.getCurrentUser());
+        journal.setDate(dateOfEntry);
+        journal.setJournalEntry(journalEntry.getText().toString());
+        journal.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e!=null){
+                    Log.d("New journal entry", "Error while saving");
+                    e.printStackTrace();
+                    return;
+                }
+                (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
+            }
+        });
+    }
 }

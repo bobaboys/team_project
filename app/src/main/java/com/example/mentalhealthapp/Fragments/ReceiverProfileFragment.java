@@ -68,9 +68,7 @@ public class ReceiverProfileFragment extends Fragment {
         setListeners();
 
         buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
-        Bitmap bm = Utils.convertFileToBitmap(
-                ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD));
-        recProfileAvatar.setImageBitmap(bm);
+        Utils.setProfileImage(recProfileAvatar);
         username.setText(ParseUser.getCurrentUser().getUsername());
     }
 

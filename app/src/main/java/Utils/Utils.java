@@ -28,6 +28,7 @@ import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -99,6 +100,12 @@ public class Utils {
         }catch (Exception e) {
             return 0;
         }
+    }
+
+    public static void setProfileImage(ImageView imageView){
+        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
+        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+        imageView.setImageBitmap(bm);
     }
 }
 

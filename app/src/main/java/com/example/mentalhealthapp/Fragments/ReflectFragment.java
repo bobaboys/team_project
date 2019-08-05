@@ -46,6 +46,18 @@ public class ReflectFragment extends Fragment {
     }
 
 
+    FindCallback<Journal> checkIfEntryExist = new FindCallback<Journal>() {
+        public void done(List<Journal> objects, ParseException e) {
+            if(e == null){
+                setIfEntryExist(objects);
+            }else{
+                //something went wrong
+                Log.e("populating journal", "failure");
+            }
+        }
+    };
+
+
     private CalendarView.OnDateChangeListener daySelectedListener= new CalendarView.OnDateChangeListener() {
         @Override
         public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
@@ -54,7 +66,7 @@ public class ReflectFragment extends Fragment {
             date = mZero + (month + 1) + "/"
                     +dZero+ dayOfMonth + "/" + year;
             journalDate.setText(date);
-            alreadyExists();
+            getAllEntriesFromServer( checkIfEntryExist);
         }
     };
 
@@ -74,7 +86,7 @@ public class ReflectFragment extends Fragment {
     private View.OnClickListener createEntryListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if(!checkedIfExist) alreadyExists();
+            if(!checkedIfExist) getAllEntriesFromServer( checkIfEntryExist);
 
             buttonClickSound.start();
             Fragment fragment = new CreateEntryJournalFragment();
@@ -115,32 +127,26 @@ public class ReflectFragment extends Fragment {
         createEntry.setOnClickListener(createEntryListener);
     }
 
-
-    private void alreadyExists(){
+    private void getAllEntriesFromServer(FindCallback<Journal> findCallback) {
         ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
         query.include(Constants.USER_FIELD);
         query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
 
-        query.findInBackground(new FindCallback<Journal>() {
-            @Override
-            public void done(List<Journal> objects, ParseException e) {
-                if(e == null){
-                    createEntry.setText(CREATE_KEY);
-                    ReflectFragment.this.setEntryExist(false);
-                    for(int i = 0; i < objects.size(); i++){
-                        if(ReflectFragment.this.date.equals(objects.get(i).getDate())){
-                            createEntry.setText(EDIT_KEY);
-                            ReflectFragment.this.setEntryExist(true);
-                            break;
-                        }
-                    }
-                }else{
-                    //something went wrong
-                    Log.e("populating journal", "failure");
-                }
-            }
-        });
+        query.findInBackground(findCallback);
         checkedIfExist = true;
+    }
+
+
+    private void setIfEntryExist(List<Journal> objects) {
+        createEntry.setText(CREATE_KEY);
+        ReflectFragment.this.setEntryExist(false);
+        for(int i = 0; i < objects.size(); i++){
+            if(ReflectFragment.this.date.equals(objects.get(i).getDate())){
+                createEntry.setText(EDIT_KEY);
+                setEntryExist(true);
+                break;
+            }
+        }
     }
 
 

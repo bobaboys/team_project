@@ -85,20 +85,23 @@ public class ReceiverEditProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        assignViewsAndListeners(view);
+        setViewComponents(view);
+        setListeners();
+        Utils.setProfileImage(avatarPic);
     }
 
 
-    private void assignViewsAndListeners(View view) {
+    private void setViewComponents(View view){
         saveChanges = view.findViewById(R.id.btnSaveChange_reciever_edit_profile);
-        saveChanges.setOnClickListener(saveChangesListener);
-        avatarPic = view.findViewById(R.id.ivAvatar_reciever_edit_profile);
-        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
-        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
-        avatarPic.setImageBitmap(bm);
         takePic = view.findViewById(R.id.btnTakePic_reciever_edit_profiile);
-        takePic.setOnClickListener(takePicListener);
+        avatarPic = view.findViewById(R.id.ivAvatar_reciever_edit_profile);
         choosePic = view.findViewById(R.id.btnChoosePic_reciever_edit_profile);
+    }
+
+
+    private void setListeners(){
+        saveChanges.setOnClickListener(saveChangesListener);
+        takePic.setOnClickListener(takePicListener);
         choosePic.setOnClickListener(choosePicListener);
     }
 

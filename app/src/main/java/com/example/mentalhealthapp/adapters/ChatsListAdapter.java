@@ -43,7 +43,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     Context context;
 
     public ChatsListAdapter(Context context, List<CompleteChat> channels) {
-
         this.context = context;
         this.channels = channels;
     }
@@ -66,9 +65,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
     @Override
     public int getItemCount() {
-        if (channels == null) {
-            return 0;
-        }
+        if (channels == null) return 0;
         return channels.size();
     }
 
@@ -82,52 +79,64 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         ImageView noReadedNotf;
         boolean isCurrentHelper;
 
+
+        View.OnLongClickListener eraseChatListener = new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(final View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle("Warning!");
+                alert.setMessage("You are about to delete this chat. Do you want to continue?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(MainActivity.HelperYes){
+                            hideChatForUser(Constants.CHAT_HELPER_DELETED);
+                        }
+                        else{
+                            hideChatForUser(Constants.CHAT_RECEIVER_DELETED);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
+                return true;
+            }
+        };
+
+
+        View.OnClickListener openChatListener =new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openChat();
+            }
+        };
+
+
         public ViewHolder(View view) {
             super(view);
             isCurrentHelper = ParseUser.getCurrentUser().getBoolean("helper");
+            setComponents(view);
+            itemChat.setOnClickListener(openChatListener);
+            itemChat.setOnLongClickListener(eraseChatListener);
+        }
+
+
+        private void setComponents(View view){
             title = view.findViewById(R.id.tv_chat_title);
             lastMessage = view.findViewById(R.id.tv_chat_lastMessage);
             timeStamp = view.findViewById(R.id.tv_chat_timestamp);
             chatUserPic = view.findViewById(R.id.iv_chat_image);
             itemChat = view.findViewById(R.id.item_chat);
             noReadedNotf = view.findViewById(R.id.iv_circle_unreaded_message);
-
-            itemChat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openChat();
-                }
-            });
-            itemChat.setOnLongClickListener(new View.OnLongClickListener(){
-                @Override
-                public boolean onLongClick(final View v) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                    alert.setTitle("Warning!");
-                    alert.setMessage("You are about to delete this chat. Do you want to continue?");
-                    alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if(MainActivity.HelperYes){
-                                hideChatForUser(Constants.CHAT_HELPER_DELETED);
-                            }
-                            else{
-                                hideChatForUser(Constants.CHAT_RECEIVER_DELETED);
-                            }
-                            dialog.dismiss();
-                        }
-                    });
-                    alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alert.show();
-                    return true;
-                }
-            });
         }
+
 
         private void hideChatForUser(final String whichHelperDeleted) {
             ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
@@ -149,6 +158,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             });
         }
 
+
         //change to private for this class
         //public methods on top
         public void openChat(){
@@ -159,6 +169,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             i.putExtra("group_channel", channel.groupChannel.getUrl());//TODO
             context.startActivity(i);
         }
+
 
         public void bind(final CompleteChat complete ) {
 
@@ -174,22 +185,20 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                         "lastCheckedHelper" : "lastChecked" ));
         }
 
+
         public ParseUser obtainFromParseAddressee() {
              return isCurrentHelper? channel.chat.getParseUser("reciever") : channel.chat.getParseUser("helper") ;
         }
 
+
         public void getAndBindParseProfilePhoto( ParseUser addresseeParse){
-
             if(addresseeParse==null)return;
-
             try {
-                int radius = 120; // corner radius, higher value = more rounded
-                int margin = 10; // crop margin, set to 0 for corners with no crop
                 //get pic from parse user and set image view
                 ParseFile avatarPic = addresseeParse.getParseFile("avatar");
                 Glide.with(context)
                         .load(avatarPic.getFile())
-                        .bitmapTransform(new RoundedCornersTransformation(context, radius, margin))
+                        .bitmapTransform(new RoundedCornersTransformation(context, 120, 10))
                         .into(chatUserPic);
             }catch (ParseException e){
                 e.printStackTrace();
@@ -202,47 +211,61 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             if(lastM!=null){
                 boolean isMyMessage;
                 try{
-                    UserMessage lastMUser = (UserMessage) lastM;
-                    String senderId = lastMUser.getSender().getUserId();
-                    isMyMessage =senderId.equals(ParseUser.getCurrentUser().getObjectId());
-                    String authorAndMessage = isMyMessage
-                            ? "You: " :
-                            addresseeParse.getUsername()+": ";
-                    authorAndMessage += lastMUser.getMessage();
-                    lastMessage.setText(authorAndMessage);
+                    isMyMessage=setTextUserMessage(lastM);
                 }catch (ClassCastException e){
-                     // Message is an Attachment
-                    FileMessage lastMFile = (FileMessage) lastM;
-                    String senderId = lastMFile.getSender().getUserId();
-                    isMyMessage =senderId.equals(ParseUser.getCurrentUser().getObjectId());
-                    String authorAndAttachMessage = isMyMessage
-                            ? "You Sent an attachment" :
-                            addresseeParse.getUsername()+" sent an attachment";
-                    lastMessage.setText(authorAndAttachMessage);
+                    isMyMessage=setTextFileMessage(lastM);
                 }
                 timeStamp.setText(Utils.getTimeStamp(lastM.getCreatedAt()));
 
-                if(lastM.getCreatedAt() > lastChecked &&  ! isMyMessage){ // THIS MESSAGE HAS NOT BEEN READED.
-                    timeStamp.setTextColor(context.getResources().getColor(R.color.black));
-                    lastMessage.setTextColor(context.getResources().getColor(R.color.black));
-                    timeStamp.setTypeface(null, Typeface.BOLD);
-                    lastMessage.setTypeface(null, Typeface.BOLD);
-                    title.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
-                    noReadedNotf.setVisibility(ConstraintLayout.VISIBLE);
-                    //timeStamp.set
+                if(lastM.getCreatedAt() > lastChecked &&  ! isMyMessage) bindMessageNotRead();
+                else bindMessageRead();
 
-                }else{
-                    timeStamp.setTextColor(context.getResources().getColor(android.R.color.secondary_text_light));
-                    timeStamp.setTypeface(null, Typeface.NORMAL);
-                    lastMessage.setTypeface(null, Typeface.NORMAL);
-                    lastMessage.setTextColor(context.getResources().getColor(android.R.color.secondary_text_light));
-                    noReadedNotf.setVisibility(ConstraintLayout.GONE);
-                    title.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
-                }
             }else{//There is not messages in the conversation.
                 lastMessage.setText("");
                 timeStamp.setText("");
             }
+        }
+
+        private boolean setTextUserMessage(BaseMessage lastM){
+            UserMessage lastMUser = (UserMessage) lastM;
+            boolean isMyMessage =lastMUser.getSender().getUserId().equals(ParseUser.getCurrentUser().getObjectId());
+            String authorAndMessage = isMyMessage
+                    ? "You: " :
+                    addresseeParse.getUsername()+": ";
+            authorAndMessage += lastMUser.getMessage();
+            lastMessage.setText(authorAndMessage);
+            return  isMyMessage;
+        }
+
+        private boolean setTextFileMessage(BaseMessage lastM){
+            // Message is an Attachment
+            FileMessage lastMFile = (FileMessage) lastM;
+            boolean isMyMessage =lastMFile.getSender().getUserId().equals(ParseUser.getCurrentUser().getObjectId());
+            String authorAndAttachMessage = isMyMessage
+                    ? "You Sent an attachment" :
+                    addresseeParse.getUsername()+" sent an attachment";
+            lastMessage.setText(authorAndAttachMessage);
+            return  isMyMessage;
+        }
+
+
+        private void bindMessageNotRead(){
+            timeStamp.setTextColor(context.getResources().getColor(R.color.black));
+            lastMessage.setTextColor(context.getResources().getColor(R.color.black));
+            timeStamp.setTypeface(null, Typeface.BOLD);
+            lastMessage.setTypeface(null, Typeface.BOLD);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
+            noReadedNotf.setVisibility(ConstraintLayout.VISIBLE);
+        }
+
+
+        private void bindMessageRead(){
+            timeStamp.setTextColor(context.getResources().getColor(android.R.color.secondary_text_light));
+            timeStamp.setTypeface(null, Typeface.NORMAL);
+            lastMessage.setTypeface(null, Typeface.NORMAL);
+            lastMessage.setTextColor(context.getResources().getColor(android.R.color.secondary_text_light));
+            noReadedNotf.setVisibility(ConstraintLayout.GONE);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
         }
     }
 }

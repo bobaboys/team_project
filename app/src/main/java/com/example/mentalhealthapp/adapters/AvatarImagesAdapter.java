@@ -31,7 +31,7 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
 
 
     Activity mActivity;
-    List<Integer> avatarImages = new ArrayList<>();
+    List<Integer> avatarImages;
     RecyclerView rvAvatarPics;
     String CLICKED_AVATAR_KEY = "clicked_avatar";
     String AVATAR_FIELD = "avatar";
@@ -84,6 +84,17 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
             avatarPic.setOnClickListener(this);
         }
 
+
+        public void createIntent(boolean extra, int avatar){
+            Intent resultData = new Intent();
+            if(extra) {
+                resultData.putExtra(CLICKED_AVATAR_KEY, avatar);
+            }
+            mActivity.setResult(Activity.RESULT_OK, resultData);
+            mActivity.finish();
+        }
+
+
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
@@ -91,7 +102,7 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
                 Integer avatar = avatarImages.get(position);
                 //for editing: saving avatar image to parse server under current user avatar image file field
                 if(ParseUser.getCurrentUser()!=null) {
-                    Bitmap avatarBitmap = (Bitmap) BitmapFactory.decodeResource(mActivity.getResources(), avatar);
+                    Bitmap avatarBitmap =  BitmapFactory.decodeResource(mActivity.getResources(), avatar);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     avatarBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] picData = stream.toByteArray();
@@ -108,17 +119,10 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
                             }
                         }
                     });
-                    Intent resultData = new Intent();
-                    mActivity.setResult(Activity.RESULT_OK, resultData);
-                    mActivity.finish();
+                    createIntent(false, 0);
                 }
                 //for sign up: send avatar id back to sign up intent
-                else{
-                    Intent resultData = new Intent();
-                    resultData.putExtra(CLICKED_AVATAR_KEY,avatar);
-                    mActivity.setResult(Activity.RESULT_OK, resultData);
-                    mActivity.finish();
-                }
+                else{ createIntent(true,avatar); }
 
             }
         }

@@ -70,6 +70,24 @@ public class HelperProfileFragment extends Fragment {
     };
 
 
+    protected  FindCallback<HelperTags> getTagsCallback = new FindCallback<HelperTags>() {
+        @Override
+        public void done(List<HelperTags> objects, ParseException e) {
+            if(e==null){
+                for(int i = 0; i < objects.size(); i++){
+                    Object strTag;
+                    HelperTags helperTag = objects.get(i);
+                    strTag = ((Tag)helperTag.get("Tag")).get("Tag");
+                    allHelperTags.add(strTag.toString());
+                }
+                profTagsAdapter = new SelectedTagsAdapter(getContext(),allHelperTags);
+                tagsGridView.setAdapter(profTagsAdapter);
+            }else{
+                Log.e("HelperProfileFragment", "failure in populating tags");
+            }
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,54 +99,44 @@ public class HelperProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
-        assignViewsAndListeners(view);
-        populateGridViewTags();
+        assignViews( view);
+        Utils.setProfileImage(helperProfileAvatar);
+        setListeners();
+        setContentOnViews();
+        allHelperTags.clear();
+        queryHelperTags(getTagsCallback);
+
     }
 
 
-    private void assignViewsAndListeners(View view) {
+    private void setListeners(){
+        logOutbtn.setOnClickListener(logoutBtnListener);
+        editHelperProfile.setOnClickListener(editListener);
+    }
+
+
+    private void assignViews(View view){
         helperProfileBio =view.findViewById(R.id.tvMyBio_helper_profile);
         helperProfileAvatar = view.findViewById(R.id.ivAvatar_helper_profile);
         tagsGridView = view.findViewById(R.id.gv_tags_helper_prof);
         helperName = view.findViewById(R.id.tv_username_helperProfile);
         logOutbtn = view.findViewById(R.id.btnLogout_ProfileHelper);
         editHelperProfile = view.findViewById(R.id.fab_Edit_HelperProfile);
-
-        Bitmap bm = Utils.convertFileToBitmap(
-                ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD));
-        helperProfileAvatar.setImageBitmap(bm);
-
-        helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
-        helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
-        helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
-
-        logOutbtn.setOnClickListener(logoutBtnListener);
-        editHelperProfile.setOnClickListener(editListener);
     }
 
 
-    public void populateGridViewTags(){
-        allHelperTags.clear();
+    private void setContentOnViews(){
+        helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
+        helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
+        helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
+    }
+
+
+    private void queryHelperTags(FindCallback<HelperTags> findCallback){
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
         query.include(Constants.USER_FIELD);
         query.include(Constants.TAG_FIELD);
         query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
-        query.findInBackground(new FindCallback<HelperTags>() {
-            @Override
-            public void done(List<HelperTags> objects, ParseException e) {
-                if(e==null){
-                    for(int i = 0; i < objects.size(); i++){
-                        Object strTag;
-                        HelperTags helperTag = objects.get(i);
-                        strTag = ((Tag)helperTag.get("Tag")).get("Tag");
-                        allHelperTags.add(strTag.toString());
-                    }
-                    profTagsAdapter = new SelectedTagsAdapter(getContext(),allHelperTags);
-                    tagsGridView.setAdapter(profTagsAdapter);
-                }else{
-                    Log.e("HelperProfileFragment", "failure in populating tags");
-                }
-            }
-        });
+        query.findInBackground(findCallback);
     }
 }

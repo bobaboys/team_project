@@ -51,8 +51,7 @@ public class JournalFragment extends Fragment {
     private void setRecyclerView() {
         journalAdapter = new JournalAdapter(this.getContext(), entries, this);
         recyclerView.setAdapter(journalAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
     }
 
 

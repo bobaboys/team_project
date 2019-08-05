@@ -80,6 +80,7 @@ public class HelperBiosFragment extends Fragment {
         back = view.findViewById(R.id.btn_alternate_back);
     }
 
+
     private void setRecyclerView() {
         biosAdapter = new HelperBiosAdapter(this.getContext(), mBios);
         rvBios.setAdapter(biosAdapter);

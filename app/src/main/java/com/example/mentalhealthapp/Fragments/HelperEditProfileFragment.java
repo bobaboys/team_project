@@ -79,7 +79,7 @@ public class HelperEditProfileFragment extends Fragment {
                 editPhoto(ParseUser.getCurrentUser());
             }
             editBio();
-            clearOldAndWriteNewTags();
+            updateTags();
         }
     };
 
@@ -142,6 +142,14 @@ public class HelperEditProfileFragment extends Fragment {
 
 
     private void assignViewsAndListeners(View view) {
+        setViewComponents(view);
+        setListeners();
+        editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
+        Utils.setProfileImage(avatarPic);
+    }
+
+
+    private void setViewComponents(View view){
         rvTags = view.findViewById(R.id.rvTags_HelperEditProfile);
         editHelperBio = view.findViewById(R.id.et_EditBio_HelperEditProfile);
         editTags = view.findViewById(R.id.edit_tags);
@@ -149,20 +157,16 @@ public class HelperEditProfileFragment extends Fragment {
         avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);
         choosePic = view.findViewById(R.id.btnChoosePic_helpereditprofile);
         takePic = view.findViewById(R.id.btnTakePic_helpereditprofile);
+    }
 
-        editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
 
+    private void setListeners(){
         editHelperBio.setOnTouchListener(touchListener);
         editTags.setOnClickListener(editTagsListener);
         saveChanges.setOnClickListener(saveChangesListener);
         takePic.setOnClickListener(takePicListener);
         choosePic.setOnClickListener(choosePicListener);
-
-        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
-        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
-        avatarPic.setImageBitmap(bm);
     }
-
 
     public void editBio(){
         ParseUser.getCurrentUser().put(Constants.HELPER_BIO_FIELD, editHelperBio.getText().toString());
@@ -244,8 +248,7 @@ public class HelperEditProfileFragment extends Fragment {
         tags = new ArrayList<>();
         tagsAdapter = new TagsAdapter(getContext(), tags);
         rvTags.setAdapter(tagsAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        rvTags.setLayoutManager(layoutManager);
+        rvTags.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
 
@@ -287,7 +290,7 @@ public class HelperEditProfileFragment extends Fragment {
     }
 
 
-    public void clearOldAndWriteNewTags(){
+    public void updateTags(){
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
         query.include("user");
         query.whereEqualTo("user", ParseUser.getCurrentUser());
