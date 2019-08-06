@@ -60,26 +60,26 @@ public class OpenChatActivity extends AppCompatActivity {
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
-    EditText chatMessage;
-    Button sendBtn;
-    ParseUser chatRecipientUser;
-    RecyclerView rv_chatBubbles;
-    MessagesChatAdapter chatAdapter;
-    ArrayList<BaseMessage> messages;
-    GroupChannel groupChannel;
-    String groupChannelStr;
-    Boolean emergency;
-    TextView senderName;
-    ImageView profilePic, appLogo, back;
-    ImageButton record;
-    MediaRecorder mediaRecorder;
-    String mFileName;
-    boolean mStartRecording;
-    String audioId;
+    private EditText chatMessage;
+    private Button sendBtn;
+    private ParseUser chatRecipientUser;
+    private RecyclerView rv_chatBubbles;
+    private MessagesChatAdapter chatAdapter;
+    private ArrayList<BaseMessage> messages;
+    private GroupChannel groupChannel;
+    private String groupChannelStr;
+    private Boolean emergency;
+    private TextView senderName;
+    private  ImageView profilePic, appLogo, back;
+    private ImageButton record;
+    private MediaRecorder mediaRecorder;
+    private String mFileName;
+    private boolean mStartRecording;
+    private String audioId;
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
     private String[] permissions = {Manifest.permission.RECORD_AUDIO};
-    protected MediaPlayer buttonClickSound;
+    private  MediaPlayer buttonClickSound;
 
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
         //Send text msg btn Listener

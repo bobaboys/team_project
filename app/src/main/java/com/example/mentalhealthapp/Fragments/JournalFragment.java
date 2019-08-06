@@ -26,9 +26,9 @@ import Utils.Utils;
 
 public class JournalFragment extends Fragment {
 
-    ArrayList<Journal> entries;
-    RecyclerView recyclerView;
-    JournalAdapter journalAdapter;
+    private ArrayList<Journal> entries;
+    private RecyclerView recyclerView;
+    private JournalAdapter journalAdapter;
 
     FindCallback<Journal> populateJournalByTime = new FindCallback<Journal>() {
         @Override

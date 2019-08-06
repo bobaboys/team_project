@@ -34,11 +34,11 @@ import chatApp.CreateChatHandle;
 public class ChatOverviewListFragment  extends Fragment {
 
     public static int LIMIT_QUERY = 25;
-    ArrayList<CompleteChat> completeChats;
-    RecyclerView rvChatsList;
-    ChatsListAdapter chatListAdapter;
-    LinearLayoutManager layoutManager;
-    EndlessRecyclerViewScrollListener scrollListener;
+    private ArrayList<CompleteChat> completeChats;
+    private RecyclerView rvChatsList;
+    private ChatsListAdapter chatListAdapter;
+    private LinearLayoutManager layoutManager;
+    private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
 
 
@@ -69,12 +69,12 @@ public class ChatOverviewListFragment  extends Fragment {
 
     private  void addNewCompleteChat(Chat chat){
         final CompleteChat cc = new CompleteChat();
-        cc.chat = chat;
+        cc.setChat(chat);
         ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
             @Override
             public void onSuccess(String TAG, GroupChannel groupChannel) {
 
-                cc.groupChannel = groupChannel;
+                cc.setGroupChannel(groupChannel);
                 addByTimestamp(completeChats, cc);
             }
 
@@ -148,11 +148,11 @@ public class ChatOverviewListFragment  extends Fragment {
 
     private void addByTimestamp(ArrayList<CompleteChat> completeChats, CompleteChat chat){
         //TODO
-        chat.timestampLast = getLastTimestampLong(chat.groupChannel);
+        chat.setTimestampLast( getLastTimestampLong(chat.getGroupChannel()));
         int addAt=completeChats.size(); // default case, add to the tail. (or head if empty)
 
         for(int i=0;i<completeChats.size();i++){
-            if(chat.timestampLast>completeChats.get(i).timestampLast){// bigger --> newer
+            if(chat.getTimestampLast()>completeChats.get(i).getTimestampLast()){// bigger --> newer
                 addAt = i;
                 break;
             }

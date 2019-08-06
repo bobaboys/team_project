@@ -26,14 +26,14 @@ import com.parse.SaveCallback;
 import java.util.List;
 
 public class CreateEntryJournalFragment extends Fragment {
-    protected TextView date;
-    protected EditText journalEntry;
-    protected Button save;
-    protected String dateOfEntry;
-    protected boolean alreadyExists;
-    protected Journal existingEntry;
-    protected MediaPlayer buttonClickSound;
-    protected boolean checkedIfExist;
+    private  TextView date;
+    private  EditText journalEntry;
+    private  Button save;
+    private  String dateOfEntry;
+    private  boolean alreadyExists;
+    private  Journal existingEntry;
+    private  MediaPlayer buttonClickSound;
+    private  boolean checkedIfExist;
 
 
     private SaveCallback onBackPressed = new SaveCallback() {

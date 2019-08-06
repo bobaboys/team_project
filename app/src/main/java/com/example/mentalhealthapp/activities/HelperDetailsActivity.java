@@ -42,18 +42,18 @@ import chatApp.CreateChatHandle;
 
 
 public class HelperDetailsActivity extends AppCompatActivity {
-    public TextView helperBio;
-    public GridView helperTags;
-    public TextView textHelperTags;
-    public TextView textHelperBio;
-    public TextView helperUsername;
-    public Button openChat;
-    public ImageView helperAvatarPic;
-    public ParseUser clickedHelper;
-    private GroupChannel groupChannel;
-    public ArrayList<String> allHelperTags = new ArrayList<>();
-    public SelectedTagsAdapter profTagAdapter;
-    protected MediaPlayer buttonClickSound;
+    private  TextView helperBio;
+    private  GridView helperTags;
+    private  TextView textHelperTags;
+    private  TextView textHelperBio;
+    private  TextView helperUsername;
+    private  Button openChat;
+    private  ImageView helperAvatarPic;
+    private  ParseUser clickedHelper;
+    private  GroupChannel groupChannel;
+    private  ArrayList<String> allHelperTags = new ArrayList<>();
+    private  SelectedTagsAdapter profTagAdapter;
+    private  MediaPlayer buttonClickSound;
 
 
     public void setGroupChannel(GroupChannel groupChannel) {

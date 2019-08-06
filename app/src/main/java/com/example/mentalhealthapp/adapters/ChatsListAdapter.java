@@ -39,8 +39,8 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.ViewHolder>  {
 
-    List<CompleteChat> channels;
-    Context context;
+    private List<CompleteChat> channels;
+    private Context context;
 
     public ChatsListAdapter(Context context, List<CompleteChat> channels) {
         this.context = context;
@@ -71,13 +71,13 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title, lastMessage, timeStamp;
-        ImageView chatUserPic;
-        ConstraintLayout itemChat;
-        CompleteChat channel;
-        ParseUser addresseeParse;
-        ImageView noReadedNotf;
-        boolean isCurrentHelper;
+        private TextView title, lastMessage, timeStamp;
+        private ImageView chatUserPic;
+        private ConstraintLayout itemChat;
+        private CompleteChat channel;
+        private ParseUser addresseeParse;
+        private ImageView noReadedNotf;
+        private boolean isCurrentHelper;
 
 
         View.OnLongClickListener eraseChatListener = new View.OnLongClickListener(){
@@ -136,7 +136,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
         private void hideChatForUser(final String whichHelperDeleted) {
             ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
-            query.whereEqualTo("chatUrl", channel.chat.getString("chatUrl"));
+            query.whereEqualTo("chatUrl", channel.getChat().getString("chatUrl"));
             query.findInBackground(new FindCallback<Chat>() {
                 @Override
                 public void done(List<Chat> objects, ParseException e) {
@@ -158,11 +158,11 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         //change to private for this class
         //public methods on top
         public void openChat(){
-            if(channel.chat == null) return; // there is not chatParse on the item, click does nothing. TODO toast?
+            if(channel.getChat() == null) return; // there is not chatParse on the item, click does nothing. TODO toast?
             if(addresseeParse==null)addresseeParse = obtainFromParseAddressee();
             Intent i = new Intent(context, OpenChatActivity.class);
             i.putExtra("clicked_helper", addresseeParse);
-            i.putExtra("group_channel", channel.groupChannel.getUrl());//TODO
+            i.putExtra("group_channel", channel.getGroupChannel().getUrl());//TODO
             context.startActivity(i);
         }
 
@@ -176,14 +176,14 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                 title.setText(addresseeParse.getUsername()); // Username comes from Parse.
 
                 getAndBindParseProfilePhoto( addresseeParse);
-                BaseMessage  lastM = channel.groupChannel.getLastMessage();
-                bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.chat.getLong(isCurrentHelper?
+                BaseMessage  lastM = channel.getGroupChannel().getLastMessage();
+                bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.getChat().getLong(isCurrentHelper?
                         "lastCheckedHelper" : "lastChecked" ));
         }
 
 
         public ParseUser obtainFromParseAddressee() {
-             return isCurrentHelper? channel.chat.getParseUser("reciever") : channel.chat.getParseUser("helper") ;
+             return isCurrentHelper? channel.getChat().getParseUser("reciever") : channel.getChat().getParseUser("helper") ;
         }
 
 

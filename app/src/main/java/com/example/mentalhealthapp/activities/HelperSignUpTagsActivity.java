@@ -30,12 +30,12 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
     protected static final String TAG = "tag: ";
 
 
-    Button submit;
-    RecyclerView rvTags;
-    TagsAdapter tagsAdapter;
-    List<Tag> tags;
-    List<Tag> tagsFull;
-    protected MediaPlayer buttonClickSound;
+    private Button submit;
+    private RecyclerView rvTags;
+    private TagsAdapter tagsAdapter;
+    private List<Tag> tags;
+    private List<Tag> tagsFull;
+    private  MediaPlayer buttonClickSound;
 
     View.OnClickListener submitListener = new View.OnClickListener() {
         @Override
@@ -44,9 +44,9 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
             final Animation animation = AnimationUtils.loadAnimation(HelperSignUpTagsActivity.this, R.anim.bounce);
             submit.startAnimation(animation);
             //save all tags on server for parse user
-            for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
+            for(int i = 0; i < tagsAdapter.getSelectedTags().size(); i++){
                 HelperTags helperTags = new HelperTags();
-                helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.selectedTags.get(i));
+                helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.getSelectedTags().get(i));
                 helperTags.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {

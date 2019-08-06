@@ -13,9 +13,9 @@ import java.util.List;
 
 public class AvatarImagesActivity extends AppCompatActivity {
 
-    RecyclerView rvAvatarImages;
-    List<Integer> avatarPicsList;
-    AvatarImagesAdapter avAdapter;
+    private RecyclerView rvAvatarImages;
+    private List<Integer> avatarPicsList;
+    private AvatarImagesAdapter avAdapter;
 
 
     @Override

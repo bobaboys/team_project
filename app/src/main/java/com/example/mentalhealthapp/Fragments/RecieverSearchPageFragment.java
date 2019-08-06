@@ -38,11 +38,11 @@ import Utils.Utils;
 public class RecieverSearchPageFragment extends Fragment {
     public static String TAG = "RecieverSearchPageFragment";
 
-    FloatingActionButton searchForHelpers;
-    List<Tag> tags;
-    RecyclerView rvTags;
-    TagsAdapter tagsAdapter;
-    android.widget.SearchView tagsSearch;
+    private FloatingActionButton searchForHelpers;
+    private List<Tag> tags;
+    private RecyclerView rvTags;
+    private TagsAdapter tagsAdapter;
+    private android.widget.SearchView tagsSearch;
     private MediaPlayer buttonClickSound;
 
     FindCallback<Tag> addAllTagsToAdapterCallback = new FindCallback<Tag>() {
@@ -67,7 +67,7 @@ public class RecieverSearchPageFragment extends Fragment {
             final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
             searchForHelpers.startAnimation(animation);
             TagsParcel selectedTagsParcel= new TagsParcel();
-            selectedTagsParcel.selectedTags =tagsAdapter.selectedTags;
+            selectedTagsParcel.selectedTags =tagsAdapter.getSelectedTags();
 
             Fragment fragment = new HelperBiosFragment();
             Bundle bundle = new Bundle();
