@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.TagsAdapter;
 import com.example.mentalhealthapp.models.Tag;
 import com.example.mentalhealthapp.models.TagsParcel;
@@ -73,9 +74,7 @@ public class RecieverSearchPageFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable("selectedTags", Parcels.wrap(selectedTagsParcel));
             fragment.setArguments(bundle);
-            Utils.switchToAnotherFragment(fragment,
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(fragment);
         }
     };
 

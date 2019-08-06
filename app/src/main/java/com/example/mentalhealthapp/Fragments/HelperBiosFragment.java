@@ -80,7 +80,6 @@ public class HelperBiosFragment extends Fragment {
         setViewComponents(view);
         mBios = new ArrayList<>();
 
-        ((MainActivity)getContext()).setCurrentCentralFragment(this);
         back.setOnClickListener(backListener);
         setRecyclerView();
         queryHelpersAccordingTags(loadBios);

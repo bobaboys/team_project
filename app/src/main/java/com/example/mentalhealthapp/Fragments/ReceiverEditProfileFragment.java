@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -56,9 +57,7 @@ public class ReceiverEditProfileFragment extends Fragment {
             final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
             saveChanges.startAnimation(animation);
             if(photoFile!=null) editPhoto(ParseUser.getCurrentUser());
-            Utils.switchToAnotherFragment(new ReceiverProfileFragment(),
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(new ReceiverProfileFragment());
         }
     };
 

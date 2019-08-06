@@ -139,8 +139,11 @@ public class ChatOverviewListFragment  extends Fragment {
         query.setSkip(50*(page-1));
         query.include("helper");
         query.include("reciever");
-        query.whereEqualTo(MainActivity.HelperYes ? Constants.CHAT_HELPER_DELETED : Constants.CHAT_RECEIVER_DELETED, false);
-        query.whereEqualTo(MainActivity.HelperYes?"helper":"reciever",ParseUser.getCurrentUser());
+        boolean isHelper =ParseUser.getCurrentUser().getBoolean("helper");
+        query.whereEqualTo(isHelper ?
+                Constants.CHAT_HELPER_DELETED : Constants.CHAT_RECEIVER_DELETED, false);
+        query.whereEqualTo(isHelper ?
+                "helper":"reciever",ParseUser.getCurrentUser());
         scrollListener.resetState();
         query.findInBackground(findCallback);
     }

@@ -5,7 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,22 +25,43 @@ import com.sendbird.android.User;
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
 
+
+
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     public final String HELPER_FIELD = "helper";
-    private  BottomNavigationView bottomNavigationView;
-    private  BottomNavigationView bottomHelperNavView;
-    public static boolean HelperYes;
-    private  Fragment currentCentralFragment;
 
-
-    public Fragment getCurrentCentralFragment() {
-        return currentCentralFragment;
+    public ViewPager getmPager() {
+        return mPager;
     }
 
-    public void setCurrentCentralFragment(Fragment currentCentralFragment) {
-        this.currentCentralFragment = currentCentralFragment;
+    private ViewPager mPager;
+    private PagerAdapter pagerAdapter;
+
+    private static int NUM_PAGES;
+    private  BottomNavigationView bottomNavigationView;
+    private  BottomNavigationView bottomHelperNavView;
+
+
+    public  boolean HelperYes;
+
+    public Fragment[] getFragments() {
+        return fragments;
+    }
+
+    public void setFragments(Fragment[] fragments) {
+        this.fragments = fragments;
+    }
+
+    private Fragment[] fragments;
+
+    public void setCurrentFragment(Fragment f){
+        int page = mPager.getCurrentItem();
+        for(int i=0;i<fragments.length;i++) {
+            fragments[i] = i==page ? f : null;
+        }
+        mPager.setCurrentItem(page);
     }
 
     @Override
@@ -45,9 +69,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         HelperYes = ParseUser.getCurrentUser().getBoolean(HELPER_FIELD);
+        NUM_PAGES = HelperYes ? 3:4;
+        fragments = new  Fragment[NUM_PAGES];
         final boolean helper = ParseUser.getCurrentUser().getBoolean(HELPER_FIELD);
         bottomHelperNavView = findViewById(R.id.nav_helper_view);
         bottomNavigationView = findViewById(R.id.nav_view);
+
+        // Instantiate a ViewPager and a PagerAdapter.
+        mPager = (ViewPager) findViewById(R.id.pager);
+        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(pagerAdapter);
+
         if(helper){
             bottomNavigationView.setVisibility(View.GONE);
         }else{
@@ -79,78 +111,116 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setFragment(final boolean helper){
-        if(helper){
             bottomHelperNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment fragment;
+                    int page;
                     switch (item.getItemId()) {
                         case R.id.navigation_helper_home:
-                            fragment = new ChatOverviewListFragment();
+                            page=0;
                             break;
                         case R.id.navigation_helper_reflect:
-                            fragment = new ReflectFragment();
+                            page=1;
                             break;
                         case R.id.navigation_helper_profile:
-                            fragment = new HelperProfileFragment();
+                            page=2;
                             break;
                         default:
-                            fragment = new ChatOverviewListFragment();
+                            page=0;
                             break;
                     }
-                    FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    replaceFragment(fragment);
-                    fragmentTransaction.commit();
+                    mPager.setCurrentItem(page);
                     return true;
                 }
             });
-        }else{
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment fragment;
+                    int page;
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
-                            fragment = new RecieverSearchPageFragment();
+                            page=0;
                             break;
                         case R.id.navigation_reflect:
-                            fragment = new ReflectFragment();
+                            page=1;
                             break;
                         case R.id.navigation_chat:
-                            fragment = new ChatOverviewListFragment();
+                            page=2;
                             break;
                         case R.id.navigation_profile:
-                            fragment = new ReceiverProfileFragment();
+                            page=3;
                             break;
                         default:
-                            fragment = new RecieverSearchPageFragment();
+                            page=0;
                             break;
                     }
 
-                    FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    replaceFragment(fragment);
-                    fragmentTransaction.commit();
+                    mPager.setCurrentItem(page);
+
                     return true;
                 }
             });
-        }
     }
 
 
-    public void replaceFragment(Fragment f){
-        // Begin the transaction
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        // Replace the contents of the container with the new fragment
-        if(currentCentralFragment == null || ! currentCentralFragment.getClass().equals(f.getClass())){
-            // fragments are from different classes,
-            // different fragments, must change fragment
-            currentCentralFragment = f;
-            ft.replace(R.id.flContainer_main, f);
-            // or ft.add(R.id.your_placeholder, new FooFragment());
-            // Complete the changes added above
-            ft.commit();
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            if(HelperYes) {
+                if(fragments[position]==null){
+                    switch (position){
+                        case 0:
+                            fragments[position]= new ChatOverviewListFragment();
+                            break;
+                        case 1:
+                            fragments[position]= new ReflectFragment();
+                            break;
+                        case 2:
+                            fragments[position]= new HelperProfileFragment();
+                            break;
+
+                        default:
+                            fragments[position]= new ChatOverviewListFragment();
+                            break;
+                    }
+
+                }
+            }else{
+                if(fragments[position]==null){
+                    switch (position){
+                        case 0:
+                            fragments[position]=  new RecieverSearchPageFragment();
+                            break;
+                        case 1:
+                            fragments[position]=  new ReflectFragment();
+                            break;
+                        case 2:
+                            fragments[position]= new ChatOverviewListFragment();
+                            break;
+                        case 3:
+                            fragments[position]= new ReceiverProfileFragment();
+                            break;
+
+                        default:
+                            fragments[position]= new RecieverSearchPageFragment();
+                            break;
+
+                    }
+
+                }
+
+            }
+            return fragments[position];
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
         }
     }
 }

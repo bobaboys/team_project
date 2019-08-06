@@ -94,9 +94,7 @@ public class HelperEditProfileFragment extends Fragment {
                     object.deleteInBackground();
                 }
                 writeNewTags();
-                Utils.switchToAnotherFragment(new HelperEditProfileFragment(),
-                        getActivity().getSupportFragmentManager(),
-                        R.id.flContainer_main);
+                ((MainActivity)getActivity()).setCurrentFragment(new HelperEditProfileFragment());
             }else{
                 Log.e("HelperProfileFragment", "failure in clearing tags");
             }
@@ -202,7 +200,6 @@ public class HelperEditProfileFragment extends Fragment {
         assignViewsAndListeners(view);
         setAndPopulateRvTags();
         queryTagsOfUser(obtainTagsOfHelperCallback);
-        ((MainActivity)getContext()).setCurrentCentralFragment(this);
     }
 
 

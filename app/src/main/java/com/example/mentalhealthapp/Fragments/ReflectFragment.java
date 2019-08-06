@@ -16,6 +16,7 @@ import android.widget.CalendarView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.Journal;
 import com.parse.FindCallback;
@@ -78,9 +79,7 @@ public class ReflectFragment extends Fragment {
             final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
             allEntries.startAnimation(animation);
             Fragment fragment = new JournalFragment();
-            Utils.switchToAnotherFragment(fragment,
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(fragment);
         }
     };
 
@@ -99,9 +98,7 @@ public class ReflectFragment extends Fragment {
             bundle.putBoolean("alreadyExists", entryExist);
 
             fragment.setArguments(bundle);
-            Utils.switchToAnotherFragment(fragment,
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(fragment);
 
         }
     };

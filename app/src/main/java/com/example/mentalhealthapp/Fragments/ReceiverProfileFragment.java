@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.LoginActivity;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.parse.ParseUser;
 
 import Utils.Utils;
@@ -49,9 +50,7 @@ public class ReceiverProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
-            Utils.switchToAnotherFragment(new ReceiverEditProfileFragment(),
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(new ReceiverEditProfileFragment());
         }
     };
 

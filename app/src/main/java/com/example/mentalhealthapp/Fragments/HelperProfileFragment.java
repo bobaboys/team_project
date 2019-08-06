@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.LoginActivity;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.SelectedTagsAdapter;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
@@ -63,9 +64,7 @@ public class HelperProfileFragment extends Fragment {
     protected  View.OnClickListener editListener =new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Utils.switchToAnotherFragment(new HelperEditProfileFragment(),
-                    getActivity().getSupportFragmentManager() ,
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(new HelperEditProfileFragment());
         }
     };
 
