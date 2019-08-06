@@ -46,16 +46,6 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         this.messages = messages;
     }
 
-    public void clear() {
-        messages.clear();
-        notifyDataSetChanged();
-    }
-
-    // Add a list of items -- change to type used
-    public void addAll(List<BaseMessage> list) {
-        messages.addAll(list);
-        notifyDataSetChanged();
-    }
 
     @NonNull
     @Override
@@ -141,31 +131,17 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         LinearLayout myMessageLayout, yourMessageLayout, yourAudioLayout, myAudioLayout;
         FileMessage fileMessage;
         UserMessage userMessage;
-        boolean start, isMyMessage;
+        boolean isMyMessage;
         private MediaPlayer   player = null;
 
 
         View.OnClickListener audioListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPlay();
+                playOrDownload();
             }
         };
 
-        private void onPlay() {
-            if (start) {
-                playOrDownload();
-            } else {
-                stopPlaying();
-            }
-            start = !start;
-        }
-
-        private void stopPlaying() {
-            player.release();
-            Log.d("Play", "Stopped");
-            player = null;
-        }
 
         private void playOrDownload() {
 
@@ -173,9 +149,9 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
                 //GET FILE FROM INTERNET.
                 String audioId = fileMessage.getSender().getUserId().toLowerCase();
                 audioId += fileMessage.getMessageId()+".3gp";
-                String pathDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath() ;
+                String pathDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() ;
                 String absFilePath =pathDownload+audioId;
-
+                //NO CHECO SI DIRECTORIO EXISTE. ojo
                 File outputFile = new File(absFilePath);
                 player = new MediaPlayer();
 
@@ -190,27 +166,25 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
                 Log.e(Constants.AUDIO_RECORD_FAIL_TAG, "prepare() failed");
             }
         }
+
+
         MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                //  TODO
-                Log.e("Play Task:","Correctly reproduced");
                 Utils.enableDisablePlay(context,isMyMessage?playMine:playYou, true);
             }
         };
 
-        public void play(String absFilePath) throws IOException{//TODO GET NO SE QUE GET HAHAHA
+        public void play(String absFilePath) throws IOException{
             player.setDataSource(absFilePath);
             player.prepare();
             player.start();
-            Utils.enableDisablePlay(context,isMyMessage?playMine:playYou, false);
             player.setOnCompletionListener(completionListener);
 
         }
 
         public ViewHolder(View view) {
             super(view);
-            start = true;
             myMessageLayout = view.findViewById(R.id.ly_my_msg);
             yourMessageLayout = view.findViewById(R.id.ly_sender_msg);
             yourAudioLayout = view.findViewById(R.id.ly_your_audio);

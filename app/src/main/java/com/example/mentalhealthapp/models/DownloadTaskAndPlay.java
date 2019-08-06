@@ -5,7 +5,9 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,7 +29,7 @@ public class DownloadTaskAndPlay {
     private ImageView playButton;
     private String downloadUrl = "", downloadFileName = "";
     private String pathDownload;
-    private  MediaPlayer player;
+    private MediaPlayer player;
 
     public DownloadTaskAndPlay(Context context, ImageView btnPlay, String downloadUrl, String pathDownload, String dFileName, MediaPlayer player) {
         this.context = context;
@@ -58,14 +60,15 @@ public class DownloadTaskAndPlay {
         @Override
         protected void onPostExecute(Void result) {
             try {
-                Utils.enableDisablePlay(context,playButton, true);
                 if (outputFile != null) {
-                    play(outputFile.getAbsolutePath());
+                    play(outputFile.getPath());
                     //buttonText.setText(R.string.downloadCompleted);//If Download completed then change button text
                 } else {
                     Log.e(TAG,"Error downloading audio");
+                    Utils.enableDisablePlay(context,playButton, true);
 
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -133,8 +136,6 @@ public class DownloadTaskAndPlay {
                 fos.close();
                 is.close();
 
-
-
             } catch (Exception e) {
 
                 //Read exception if something went wrong
@@ -146,9 +147,9 @@ public class DownloadTaskAndPlay {
             return null;
         }
     }
-    public void play( String SOMETHINGCANTREMEMBERWHAT) throws IOException {//TODO GET NO SE QUE GET HAHAHA
+    public void play( String absFilePath) throws IOException {//TODO GET NO SE QUE GET HAHAHA
         player = new MediaPlayer();
-        player.setDataSource(SOMETHINGCANTREMEMBERWHAT);
+        player.setDataSource( absFilePath);
         player.prepare();
         player.start();
         player.setOnCompletionListener(completionListener);

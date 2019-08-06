@@ -90,7 +90,7 @@ public class Utils {
     public static void enableDisablePlay(Context context, ImageView btn, boolean enable){
         btn.setEnabled(enable);
         btn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(
-                    enable ? R.color.white : R.color.pastel_009)));
+                    enable ? R.color.white : R.color.colorAccent)));
     }
 
     public static long milisFromDateSrt(String strDate){
