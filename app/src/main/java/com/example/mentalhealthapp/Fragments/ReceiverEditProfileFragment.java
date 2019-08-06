@@ -3,6 +3,7 @@ package com.example.mentalhealthapp.Fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,21 +11,19 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
-import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -47,11 +46,15 @@ public class ReceiverEditProfileFragment extends Fragment {
     protected String AVATAR_FIELD = "avatar";
     protected File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
+    private MediaPlayer buttonClickSound;
 
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            saveChanges.startAnimation(animation);
             if(photoFile!=null) editPhoto(ParseUser.getCurrentUser());
             Utils.switchToAnotherFragment(new ReceiverProfileFragment(),
                     getActivity().getSupportFragmentManager(),
@@ -62,13 +65,21 @@ public class ReceiverEditProfileFragment extends Fragment {
 
     protected View.OnClickListener takePicListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) { onLaunchCamera();}
+        public void onClick(View v) {
+            buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            takePic.startAnimation(animation);
+            onLaunchCamera();
+        }
     };
 
 
     protected View.OnClickListener choosePicListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            choosePic.startAnimation(animation);
             startActivityForResult(new Intent(getContext(), AvatarImagesActivity.class),
                     CHOOSE_AVATAR_REQUEST);
         }
@@ -85,6 +96,8 @@ public class ReceiverEditProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        buttonClickSound = MediaPlayer.create(getContext(),
+                R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         setViewComponents(view);
         setListeners();
         Utils.setProfileImage(avatarPic);

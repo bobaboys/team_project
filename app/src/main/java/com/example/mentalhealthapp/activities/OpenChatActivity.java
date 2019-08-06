@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -78,12 +79,13 @@ public class OpenChatActivity extends AppCompatActivity {
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
     private String[] permissions = {Manifest.permission.RECORD_AUDIO};
+    protected MediaPlayer buttonClickSound;
 
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
         //Send text msg btn Listener
         @Override
         public void onClick(View v) {
-
+            buttonClickSound.start();
             final String chatMessageString = chatMessage.getText().toString();
             chatMessage.setText("");
             //find correct chat from group channel string
@@ -243,7 +245,7 @@ public class OpenChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         setContentView(R.layout.activity_open_chat);
         emergency = false;
         mStartRecording = true;

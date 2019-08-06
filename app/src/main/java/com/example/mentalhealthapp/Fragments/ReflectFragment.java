@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
@@ -75,6 +75,8 @@ public class ReflectFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            allEntries.startAnimation(animation);
             Fragment fragment = new JournalFragment();
             Utils.switchToAnotherFragment(fragment,
                     getActivity().getSupportFragmentManager(),
@@ -87,7 +89,8 @@ public class ReflectFragment extends Fragment {
         @Override
         public void onClick(View v) {
             if(!checkedIfExist) getAllEntriesFromServer( checkIfEntryExist);
-
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            createEntry.startAnimation(animation);
             buttonClickSound.start();
             Fragment fragment = new CreateEntryJournalFragment();
             Bundle bundle = new Bundle();

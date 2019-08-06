@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import com.example.mentalhealthapp.R;
@@ -39,6 +41,8 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(HelperSignUpTagsActivity.this, R.anim.bounce);
+            submit.startAnimation(animation);
             //save all tags on server for parse user
             for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
                 HelperTags helperTags = new HelperTags();

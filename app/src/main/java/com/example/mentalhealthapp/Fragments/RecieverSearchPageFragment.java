@@ -2,28 +2,24 @@ package com.example.mentalhealthapp.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import com.example.mentalhealthapp.Fragments.HelperBiosFragment;
-import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.TagsAdapter;
 import com.example.mentalhealthapp.models.Tag;
@@ -47,6 +43,7 @@ public class RecieverSearchPageFragment extends Fragment {
     RecyclerView rvTags;
     TagsAdapter tagsAdapter;
     android.widget.SearchView tagsSearch;
+    private MediaPlayer buttonClickSound;
 
     FindCallback<Tag> addAllTagsToAdapterCallback = new FindCallback<Tag>() {
         @Override
@@ -66,6 +63,9 @@ public class RecieverSearchPageFragment extends Fragment {
     View.OnClickListener searchButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            searchForHelpers.startAnimation(animation);
             TagsParcel selectedTagsParcel= new TagsParcel();
             selectedTagsParcel.selectedTags =tagsAdapter.selectedTags;
 
@@ -105,6 +105,8 @@ public class RecieverSearchPageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         super.onViewCreated(view, savedInstanceState);
+        buttonClickSound = MediaPlayer.create(getContext(),
+                R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         rvTags = view.findViewById(R.id.rvTagsSearch);
         searchForHelpers = view.findViewById(R.id.fb_search_for_helpers);
         tags = new ArrayList<>();

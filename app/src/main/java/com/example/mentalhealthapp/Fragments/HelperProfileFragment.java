@@ -1,19 +1,18 @@
 package com.example.mentalhealthapp.Fragments;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -27,7 +26,6 @@ import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.Tag;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -53,6 +51,8 @@ public class HelperProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            logOutbtn.startAnimation(animation);
             ParseUser.logOut();
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);

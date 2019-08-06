@@ -3,15 +3,19 @@ package com.example.mentalhealthapp.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.SelectedTagsAdapter;
 import com.example.mentalhealthapp.models.Chat;
@@ -20,16 +24,12 @@ import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.Tag;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.User;
-
-import org.parceler.Parcels;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +53,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
     private GroupChannel groupChannel;
     public ArrayList<String> allHelperTags = new ArrayList<>();
     public SelectedTagsAdapter profTagAdapter;
+    protected MediaPlayer buttonClickSound;
 
 
     public void setGroupChannel(GroupChannel groupChannel) {
@@ -120,6 +121,9 @@ public class HelperDetailsActivity extends AppCompatActivity {
     public View.OnClickListener openChatBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(HelperDetailsActivity.this, R.anim.bounce);
+            openChat.startAnimation(animation);
             ChatApp.createChat(ParseUser.getCurrentUser(), clickedHelper, false, new CreateChatHandle() {
                 @Override
                 public void onSuccess(String TAG, final GroupChannel groupChannel) {
@@ -161,6 +165,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         groupChannel = null;
         setContentView(R.layout.activity_helper_details);
 

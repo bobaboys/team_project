@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -72,6 +74,8 @@ public class HelperEditProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            saveChanges.startAnimation(animation);
             //update parse server user with avatar photo
             if(photoFile!=null) {
                 editPhoto(ParseUser.getCurrentUser());
@@ -103,13 +107,15 @@ public class HelperEditProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            editTags.startAnimation(animation);
             rvTags.setVisibility(ConstraintLayout.VISIBLE);
             editTags.setVisibility(ConstraintLayout.GONE);
         }
     };
 
 
-    protected View.OnTouchListener  touchListener = new View.OnTouchListener(){
+    protected View.OnTouchListener touchListener = new View.OnTouchListener(){
         @Override
         public boolean onTouch(View v, MotionEvent event){
             rvTags.setVisibility(ConstraintLayout.GONE);
@@ -123,6 +129,8 @@ public class HelperEditProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            takePic.startAnimation(animation);
             onLaunchCamera();
         }
     };
@@ -132,6 +140,8 @@ public class HelperEditProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+            choosePic.startAnimation(animation);
             Intent intent = new Intent(getContext(), AvatarImagesActivity.class);
             startActivityForResult(intent, CHOOSE_AVATAR_REQUEST);
         }

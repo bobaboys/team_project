@@ -12,6 +12,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -103,6 +105,8 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(SignUpActivity.this, R.anim.bounce);
+            takeAvatarPic.startAnimation(animation);
             onLaunchCamera();
         }
     };
@@ -112,6 +116,8 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(SignUpActivity.this, R.anim.bounce);
+            chooseAvatar.startAnimation(animation);
             Intent intent = new Intent(SignUpActivity.this, AvatarImagesActivity.class);
             startActivityForResult(intent, CHOOSE_AVATAR_REQUEST);
         }
@@ -122,6 +128,8 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(SignUpActivity.this, R.anim.bounce);
+            signup.startAnimation(animation);
             username = usernameInput.getText().toString();
             password = passwordInput.getText().toString();
             email = emailInput.getText().toString();

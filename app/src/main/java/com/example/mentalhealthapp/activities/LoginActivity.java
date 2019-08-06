@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -46,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.bounce);
+            loginBtn.startAnimation(animation);
             final String username = usernameInput.getText().toString();
             final String password = passwordInput.getText().toString();
             login(username, password, currentUser);
@@ -56,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.bounce);
+            signUpBtn.startAnimation(animation);
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
         }
@@ -65,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
+            final Animation animation = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.bounce);
+            emergencyBtn.startAnimation(animation);
             //assigns need help, on call, and starts chat
             assignOnCallNeedHelp();
         }
