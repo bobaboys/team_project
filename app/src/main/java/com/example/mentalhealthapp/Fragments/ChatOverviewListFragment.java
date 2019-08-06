@@ -41,25 +41,64 @@ public class ChatOverviewListFragment  extends Fragment {
     EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
 
+
+    SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            completeChats.clear();
+            chatListAdapter.notifyDataSetChanged();
+            queryParseChats(1, querySBChats);
+        }
+    };
+
+
+    FindCallback<Chat> querySBChats = new FindCallback<Chat>() {
+        @Override
+        public void done(List<Chat> objects, ParseException e) {
+            if (e != null) {
+                e.printStackTrace();
+                return;
+            }
+            for (Chat chat : objects) {
+                addNewCompleteChat(chat);
+            }
+            swipeContainer.setRefreshing(false);
+        }
+    };
+
+
+    private  void addNewCompleteChat(Chat chat){
+        final CompleteChat cc = new CompleteChat();
+        cc.chat = chat;
+        ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
+            @Override
+            public void onSuccess(String TAG, GroupChannel groupChannel) {
+
+                cc.groupChannel = groupChannel;
+                addByTimestamp(completeChats, cc);
+            }
+
+            @Override
+            public void onFailure(String TAG, Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_chat_list, container, false);
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvChatsList = view.findViewById(R.id.rvChatsList);
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                completeChats.clear();
-                chatListAdapter.notifyDataSetChanged();
-                getCompleteChats(1);
-            }
-        });
+        swipeContainer.setOnRefreshListener(refreshListener);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -74,6 +113,7 @@ public class ChatOverviewListFragment  extends Fragment {
 
     }
 
+
     private void setRecyclerView() {
         chatListAdapter = new ChatsListAdapter(this.getContext(), completeChats);
         rvChatsList.setAdapter(chatListAdapter);
@@ -83,7 +123,7 @@ public class ChatOverviewListFragment  extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if(totalItemsCount>=LIMIT_QUERY){
-                    getCompleteChats(page);
+                    queryParseChats(page, querySBChats);
                 }
                 // If initially there was not enough items to fill the view  ( page 1)
                 // there is not necesary call again the infinite scroll page. ( WE GOT LAST PAGE )
@@ -92,64 +132,33 @@ public class ChatOverviewListFragment  extends Fragment {
         rvChatsList.addOnScrollListener(scrollListener);
     }
 
-    public void getCompleteChats(int page) {
+
+    public void queryParseChats(int page, FindCallback<Chat> findCallback) {
         ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
         query.setLimit(LIMIT_QUERY);
         query.setSkip(50*(page-1));
         query.include("helper");
         query.include("reciever");
-        if(MainActivity.HelperYes){
-            query.whereEqualTo(Constants.CHAT_HELPER_DELETED, false);
-        }
-        else{
-            query.whereEqualTo(Constants.CHAT_RECEIVER_DELETED, false);
-        }
+        query.whereEqualTo(MainActivity.HelperYes ? Constants.CHAT_HELPER_DELETED : Constants.CHAT_RECEIVER_DELETED, false);
         query.whereEqualTo(MainActivity.HelperYes?"helper":"reciever",ParseUser.getCurrentUser());
         scrollListener.resetState();
-        query.findInBackground(new FindCallback<Chat>() {
-            @Override
-            public void done(List<Chat> objects, ParseException e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-                for (Chat chat : objects) {
-                    final CompleteChat cc = new CompleteChat();
-                    cc.chat = chat;
-                        ChatApp.getChat(chat.getString("chatUrl"), new CreateChatHandle() {
-                            @Override
-                            public void onSuccess(String TAG, GroupChannel groupChannel) {
-
-                                cc.groupChannel = groupChannel;
-                                addByTimestamp(completeChats, cc);
-                            }
-
-                            @Override
-                            public void onFailure(String TAG, Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                }
-                swipeContainer.setRefreshing(false);
-            }
-        });
+        query.findInBackground(findCallback);
     }
 
 
-    private void addByTimestamp(ArrayList<CompleteChat> list, CompleteChat element){
+    private void addByTimestamp(ArrayList<CompleteChat> completeChats, CompleteChat chat){
         //TODO
-        element.timestampLast = getLastTimestampLong(element.groupChannel);
-        int index=list.size(); // default case, add to the tail. (or head if empty)
+        chat.timestampLast = getLastTimestampLong(chat.groupChannel);
+        int addAt=completeChats.size(); // default case, add to the tail. (or head if empty)
 
-        for(int i=0;i<list.size();i++){
-            if(element.timestampLast>list.get(i).timestampLast){// bigger --> newer
-                index = i;
+        for(int i=0;i<completeChats.size();i++){
+            if(chat.timestampLast>completeChats.get(i).timestampLast){// bigger --> newer
+                addAt = i;
                 break;
             }
         }
-
-        list.add(index,element);
-        chatListAdapter.notifyItemInserted(index);
+        completeChats.add(addAt,chat);
+        chatListAdapter.notifyItemInserted(addAt);
         rvChatsList.scrollToPosition(0);
 
     }
@@ -161,11 +170,12 @@ public class ChatOverviewListFragment  extends Fragment {
         return lastM.getCreatedAt();
     }
 
+
     @Override
     public void onResume(){
         super.onResume();
         completeChats.clear();
         chatListAdapter.notifyDataSetChanged();
-        getCompleteChats(1);
+        queryParseChats(1, querySBChats);
     }
 }

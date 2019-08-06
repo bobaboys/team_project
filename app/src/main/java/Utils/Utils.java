@@ -93,7 +93,7 @@ public class Utils {
                     enable ? R.color.white : R.color.pastel_009)));
     }
 
-    public static long getMillisTimeFromDateFormat(String strDate){
+    public static long milisFromDateSrt(String strDate){
         try {
             Date date1=new SimpleDateFormat("MM/dd/yyyy").parse(strDate);
             return date1.getTime();

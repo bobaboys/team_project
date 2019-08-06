@@ -48,6 +48,20 @@ public class HelperBiosFragment extends Fragment {
     };
 
 
+    FindCallback<HelperTags> loadBios= new FindCallback<HelperTags>() {
+        @Override
+        public void done(List<HelperTags> objects, ParseException e) {
+            if(e!=null){
+                Log.e("Helper Bio Activity", "error with bio");
+                e.printStackTrace();
+                return;
+            }
+            visibilityLayout(objects.size()==0);
+            if(objects.size()!=0) fillListOfBios(objects);
+        }
+    };
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,7 +83,7 @@ public class HelperBiosFragment extends Fragment {
         ((MainActivity)getContext()).currentCentralFragment = this;
         back.setOnClickListener(backListener);
         setRecyclerView();
-        loadBios();
+        queryHelpersAccordingTags(loadBios);
     }
 
 
@@ -84,28 +98,16 @@ public class HelperBiosFragment extends Fragment {
     private void setRecyclerView() {
         biosAdapter = new HelperBiosAdapter(this.getContext(), mBios);
         rvBios.setAdapter(biosAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
-        rvBios.setLayoutManager(layoutManager);
+        rvBios.setLayoutManager( new LinearLayoutManager(this.getContext()));
     }
 
 
-    private void loadBios() {
+    private void queryHelpersAccordingTags(FindCallback<HelperTags> findCallback) {
         final ParseQuery<HelperTags> helpersTagsQ = new ParseQuery<>(HelperTags.class);
         helpersTagsQ.setLimit(150);
         helpersTagsQ.include("user");
         helpersTagsQ.whereContainedIn("Tag", tags.selectedTags); // looks for helpers with these tags.
-        helpersTagsQ.findInBackground(new FindCallback<HelperTags>() {
-            @Override
-            public void done(List<HelperTags> objects, ParseException e) {
-                if(e!=null){
-                    Log.e("Helper Bio Activity", "error with bio");
-                    e.printStackTrace();
-                    return;
-                }
-                visibilityLayout(objects.size()==0);
-                if(objects.size()!=0) fillListOfBios(objects);
-            }
-        });
+        helpersTagsQ.findInBackground(findCallback);
     }
 
 
@@ -121,28 +123,30 @@ public class HelperBiosFragment extends Fragment {
     }
 
 
-    private void fillListOfBios(List<HelperTags> objects){
+    private void fillListOfBios(List<HelperTags> helperTagsList){
         ArrayList<UserWithTags> helpersWithAllTags= new ArrayList<>();
-        for(int i = 0; i < objects.size(); i++){
-            HelperTags helper = objects.get(i);
-            int j=searchUser(helpersWithAllTags,helper.getUser());
+        for(int i = 0; i < helperTagsList.size(); i++){
+            int j=searchUser(helpersWithAllTags,helperTagsList.get(i).getUser());
             if(j==-1){//User not found on list.
-                // Make new UserWT and add first tag
-                UserWithTags uwt = new UserWithTags();
-                uwt.user = helper.getUser();
-                uwt.tags.add(helper.getTag());
-                //Add new user with tags to arraylist
-                helpersWithAllTags.add(uwt);
+                helpersWithAllTags.add(
+                        createUserWithAllTags(helperTagsList.get(i)));
 
             }else{
                 // user was found, add tag to it.
-                helpersWithAllTags.get(j).tags.add(helper.getTag());
+                helpersWithAllTags.get(j).tags.add(helperTagsList.get(i).getTag());
             }
         }
         biosAdapter.addAll(helpersWithAllTags);
         biosAdapter.notifyDataSetChanged();
     }
 
+
+    private UserWithTags createUserWithAllTags(HelperTags helperTag){
+        UserWithTags uwt = new UserWithTags();
+        uwt.user = helperTag.getUser();
+        uwt.tags.add(helperTag.getTag());
+        return uwt;
+    }
 
     public int searchUser(ArrayList<UserWithTags> helpersWithAllTags, ParseUser user){
         if(user==null)return -1;

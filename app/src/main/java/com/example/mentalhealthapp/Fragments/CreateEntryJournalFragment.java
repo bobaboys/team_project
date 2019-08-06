@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,29 +34,39 @@ public class CreateEntryJournalFragment extends Fragment {
     protected boolean checkedIfExist;
 
 
+    private SaveCallback onBackPressed = new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+            if(e!=null){
+                e.printStackTrace();
+                return;
+            }
+            (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
+        }
+    };
+
+
+    private FindCallback<Journal>  getOldTextEntry = new FindCallback<Journal>() {
+        @Override
+        public void done(List<Journal> objects, ParseException e) {
+            alreadyExists = objects.size()!=0;
+            if(objects.size()==0)return;
+            journalEntry.setText( objects.get(0).getJournalEntry());
+        }
+    };
+
+
     protected View.OnClickListener saveNewEntryListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
             if(alreadyExists){
                 existingEntry.setJournalEntry(journalEntry.getText().toString());
-                existingEntry.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e!=null){
-                            Log.d("Existing journal entry", "Error while saving");
-                            e.printStackTrace();
-                            return;
-                        }
-                        (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
-                    }
-                });
+                existingEntry.saveInBackground(onBackPressed);
             }else{
                 //save the new journal entry to the parse server
-                createJournalNote();
+                createOnDatabaseJournalEntry(onBackPressed);
             }
-
-            //todo go back.
         }
     };
 
@@ -66,6 +75,7 @@ public class CreateEntryJournalFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_receiver_createjournal, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -76,10 +86,12 @@ public class CreateEntryJournalFragment extends Fragment {
         setViewComponents(view);
         getBundleArguments();
 
-        if(alreadyExists || checkedIfExist) getOldTextEntry();
+        if(alreadyExists || checkedIfExist) queryEntriesByUserDate(getOldTextEntry);
         date.setText(dateOfEntry);
         save.setOnClickListener(saveNewEntryListener);
     }
+
+
     private  void setViewComponents(View view){
         date = view.findViewById(R.id.tv_date_createJournal);
         journalEntry = view.findViewById(R.id.et_addEntry_createJournal);
@@ -95,38 +107,21 @@ public class CreateEntryJournalFragment extends Fragment {
     }
 
 
-    private void getOldTextEntry(){
+    private void queryEntriesByUserDate(FindCallback<Journal> findCallback){
         ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
         query.include(Constants.USER_FIELD);
         query.include("date");
         query.whereEqualTo(Constants.USER_FIELD, ParseUser.getCurrentUser());
         query.whereEqualTo("date", dateOfEntry);
-        query.findInBackground(new FindCallback<Journal>() {
-            @Override
-            public void done(List<Journal> objects, ParseException e) {
-                alreadyExists = objects.size()!=0;
-                if(objects.size()==0)return;
-                journalEntry.setText( objects.get(0).getJournalEntry());
-            }
-        });
+        query.findInBackground(findCallback);
     }
 
 
-    private void createJournalNote(){
+    private void createOnDatabaseJournalEntry(SaveCallback saveCallback){
         Journal journal = new Journal();
         journal.setJournalUser(ParseUser.getCurrentUser());
         journal.setDate(dateOfEntry);
         journal.setJournalEntry(journalEntry.getText().toString());
-        journal.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e!=null){
-                    Log.d("New journal entry", "Error while saving");
-                    e.printStackTrace();
-                    return;
-                }
-                (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
-            }
-        });
+        journal.saveInBackground(saveCallback);
     }
 }

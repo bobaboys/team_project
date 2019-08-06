@@ -12,8 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -79,7 +77,25 @@ public class HelperEditProfileFragment extends Fragment {
                 editPhoto(ParseUser.getCurrentUser());
             }
             editBio();
-            updateTags();
+            queryTagsOfUser(updateOnServerTags);
+        }
+    };
+
+
+    private FindCallback updateOnServerTags =  new FindCallback<HelperTags>() {
+        @Override
+        public void done(List<HelperTags> objects, ParseException e) {
+            if(e==null){
+                for(HelperTags object : objects){
+                    object.deleteInBackground();
+                }
+                writeNewTags();
+                Utils.switchToAnotherFragment(new HelperEditProfileFragment(),
+                        getActivity().getSupportFragmentManager(),
+                        R.id.flContainer_main);
+            }else{
+                Log.e("HelperProfileFragment", "failure in clearing tags");
+            }
         }
     };
 
@@ -122,6 +138,46 @@ public class HelperEditProfileFragment extends Fragment {
     };
 
 
+    private FindCallback<Tag> addTagsToAdapterCallback = new FindCallback<Tag>() {
+        @Override
+        public void done(List<Tag> objects, ParseException e) {
+            if (e != null) {
+                Log.e(TAG, "Error loading tags from parse server");
+                e.printStackTrace();
+                return;
+            }
+            tags.addAll(objects);
+            tagsAdapter.notifyDataSetChanged();
+        }
+    };
+
+
+    private SaveCallback saveCallback = new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+            if(e!=null){
+                Log.d(TAG, "Error while saving");
+                e.printStackTrace();
+                return;
+            }
+        }
+    };
+
+    private FindCallback<HelperTags> obtainTagsOfHelperCallback =  new FindCallback<HelperTags>() {
+        @Override
+        public void done(List<HelperTags> objects, ParseException e) {
+            lastTagsSelectedString = new ArrayList<>();
+            for(HelperTags ht : objects){
+                Tag t=(Tag)ht.getParseObject(HelperTags.TAG_KEY);
+                String x= t.getText();
+                lastTagsSelectedString.add(x);
+            }
+            tagsAdapter.setLastSelectedTags(lastTagsSelectedString);
+            queryAllTags(addTagsToAdapterCallback);
+        }
+    };
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -135,8 +191,7 @@ public class HelperEditProfileFragment extends Fragment {
         buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         assignViewsAndListeners(view);
         setAndPopulateRvTags();
-        getLastTagsSelected();
-
+        queryTagsOfUser(obtainTagsOfHelperCallback);
         ((MainActivity)getContext()).currentCentralFragment = this;
     }
 
@@ -168,34 +223,17 @@ public class HelperEditProfileFragment extends Fragment {
         choosePic.setOnClickListener(choosePicListener);
     }
 
+
     public void editBio(){
         ParseUser.getCurrentUser().put(Constants.HELPER_BIO_FIELD, editHelperBio.getText().toString());
-        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e!=null){
-                    Log.d(TAG, "Error while saving");
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        });
+        ParseUser.getCurrentUser().saveInBackground(saveCallback);
     }
 
 
     private void editPhoto(ParseUser user) {
         ParseFile parseFile = new ParseFile(photoFile);
         user.put(AVATAR_FIELD, parseFile);
-        user.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e!=null){
-                    Log.d(TAG, "Error while saving");
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        });
+        user.saveInBackground(saveCallback);
     }
 
 
@@ -252,61 +290,18 @@ public class HelperEditProfileFragment extends Fragment {
     }
 
 
-    private void getAllTags() {
+    private void queryAllTags(FindCallback<Tag> findCallback) {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
-        postsQuery.findInBackground(new FindCallback<Tag>() {
-            @Override
-            public void done(List<Tag> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error loading tags from parse server");
-                    e.printStackTrace();
-                    return;
-                }
-                tags.addAll(objects);
-                tagsAdapter.notifyDataSetChanged();
-            }
-        });
+        postsQuery.findInBackground(findCallback);
     }
 
 
-    private void getLastTagsSelected(){
+    private void queryTagsOfUser(FindCallback<HelperTags> findCallback){
         ParseQuery<HelperTags> q = new ParseQuery<>(HelperTags.class);
         q.include(HelperTags.TAG_KEY);
         q.whereEqualTo(HelperTags.USER_KEY, ParseUser.getCurrentUser());
-        q.findInBackground(new FindCallback<HelperTags>() {
-            @Override
-            public void done(List<HelperTags> objects, ParseException e) {
-                lastTagsSelectedString = new ArrayList<>();
-                for(HelperTags ht : objects){
-                    Tag t=(Tag)ht.getParseObject(HelperTags.TAG_KEY);
-                    String x= t.getText();
-                    lastTagsSelectedString.add(x);
-                }
-                tagsAdapter.setLastSelectedTags(lastTagsSelectedString);
-                getAllTags();
-            }
-        });
+        q.findInBackground(findCallback);
 
-    }
-
-
-    public void updateTags(){
-        ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
-        query.include("user");
-        query.whereEqualTo("user", ParseUser.getCurrentUser());
-        query.findInBackground(new FindCallback<HelperTags>() {
-            @Override
-            public void done(List<HelperTags> objects, ParseException e) {
-                if(e==null){
-                    for(HelperTags object : objects){
-                        object.deleteInBackground();
-                    }
-                    writeNewTags();
-                }else{
-                    Log.e("HelperProfileFragment", "failure in clearing tags");
-                }
-            }
-        });
     }
 
 
@@ -315,19 +310,7 @@ public class HelperEditProfileFragment extends Fragment {
         for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
             HelperTags helperTags = new HelperTags();
             helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.selectedTags.get(i));
-            helperTags.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e!=null){
-                        Log.d(TAG, "Error while saving");
-                        e.printStackTrace();
-                        return;
-                    }
-                    Utils.switchToAnotherFragment(new HelperEditProfileFragment(),
-                            getActivity().getSupportFragmentManager(),
-                            R.id.flContainer_main);
-                }
-            });
+            helperTags.saveInBackground(saveCallback);
         }
     }
 }

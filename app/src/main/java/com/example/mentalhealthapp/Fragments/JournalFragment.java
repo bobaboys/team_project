@@ -30,6 +30,19 @@ public class JournalFragment extends Fragment {
     RecyclerView recyclerView;
     JournalAdapter journalAdapter;
 
+    FindCallback<Journal> populateJournalByTime = new FindCallback<Journal>() {
+        @Override
+        public void done(List<Journal> objects, ParseException e) {
+            if(e!=null){
+                e.printStackTrace();
+                return;
+            }
+            for(Journal journal : objects){
+                addByTimestamp(entries, journal);
+            }
+            journalAdapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,7 +56,7 @@ public class JournalFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rv_journal);
         entries = new ArrayList<>();
         setRecyclerView();
-        populateJournal();
+        queryJournalEntries(populateJournalByTime);
 
     }
 
@@ -55,42 +68,28 @@ public class JournalFragment extends Fragment {
     }
 
 
-    private void populateJournal(){
+    private void queryJournalEntries(FindCallback<Journal> findCallback){
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseQuery<Journal> query = ParseQuery.getQuery(Journal.class);
         query.include(Constants.USER_FIELD);
         query.whereEqualTo(Constants.USER_FIELD, currentUser);
-        query.findInBackground(new FindCallback<Journal>() {
-            @Override
-            public void done(List<Journal> objects, ParseException e) {
-                //Todo get objects and add to adapter.
-
-                if(e!=null){
-                    e.printStackTrace();
-                    return;
-                }
-                for(Journal j : objects){
-                    addByTimestamp(entries, j);
-                }
-                journalAdapter.notifyDataSetChanged();
-            }
-        });
+        query.findInBackground(findCallback);
     }
 
 
-    private void addByTimestamp(ArrayList<Journal> list, Journal j){
+    private void addByTimestamp(ArrayList<Journal> entries, Journal journal){
         //TODO
-        int index=list.size(); // default case, add to the tail. (or head if empty)
+        int addAt=entries.size(); // default case, add to the tail. (or head if empty)
 
-        for(int i=0;i<list.size();i++){
-            if(Utils.getMillisTimeFromDateFormat(j.getDate())  >
-                    Utils.getMillisTimeFromDateFormat(list.get(i).getDate())){// bigger --> newer
-                index = i;
+        for(int i=0;i<entries.size();i++){
+            if(Utils.milisFromDateSrt(journal.getDate())  >
+                    Utils.milisFromDateSrt(entries.get(i).getDate())){// bigger --> newer
+                addAt = i;
                 break;
             }
         }
-        list.add(index,j);
-        journalAdapter.notifyItemInserted(index);
+        entries.add(addAt,journal);
+        journalAdapter.notifyItemInserted(addAt);
         recyclerView.scrollToPosition(0);
     }
 }

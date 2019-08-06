@@ -38,15 +38,15 @@ import Utils.Utils;
 
 public class HelperProfileFragment extends Fragment {
 
-    protected Button logOutbtn;
-    protected TextView helperProfileBio;
-    protected ImageView helperProfileAvatar;
-    protected TextView helperName;
-    protected FloatingActionButton editHelperProfile;
-    protected MediaPlayer buttonClickSound;
-    protected GridView tagsGridView;
-    protected ArrayList<String> allHelperTags = new ArrayList<>();;
-    protected SelectedTagsAdapter profTagsAdapter;
+    private Button logOutbtn;
+    private TextView helperProfileBio;
+    private ImageView helperProfileAvatar;
+    private TextView helperName;
+    private FloatingActionButton editHelperProfile;
+    private MediaPlayer buttonClickSound;
+    private GridView tagsGridView;
+    private ArrayList<String> allHelperTags = new ArrayList<>();;
+    private SelectedTagsAdapter profTagsAdapter;
 
 
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
@@ -73,20 +73,25 @@ public class HelperProfileFragment extends Fragment {
     protected  FindCallback<HelperTags> getTagsCallback = new FindCallback<HelperTags>() {
         @Override
         public void done(List<HelperTags> objects, ParseException e) {
-            if(e==null){
-                for(int i = 0; i < objects.size(); i++){
-                    Object strTag;
-                    HelperTags helperTag = objects.get(i);
-                    strTag = ((Tag)helperTag.get("Tag")).get("Tag");
-                    allHelperTags.add(strTag.toString());
-                }
-                profTagsAdapter = new SelectedTagsAdapter(getContext(),allHelperTags);
-                tagsGridView.setAdapter(profTagsAdapter);
-            }else{
+            if(e!=null) {
                 Log.e("HelperProfileFragment", "failure in populating tags");
+                return;
             }
+            addAllTagsToHelper(objects);
+            profTagsAdapter = new SelectedTagsAdapter(getContext(),allHelperTags);
+            tagsGridView.setAdapter(profTagsAdapter);
         }
     };
+
+
+    private void addAllTagsToHelper(List<HelperTags>  helperTags){
+        for(int i = 0; i < helperTags.size(); i++){
+            Object strTag;
+            strTag=((Tag)helperTags.get(i).get("Tag")).get("Tag");
+            allHelperTags.add(strTag.toString());
+        }
+    }
+
 
     @Nullable
     @Override
@@ -98,7 +103,8 @@ public class HelperProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        buttonClickSound = MediaPlayer.create(getContext(), R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
+        buttonClickSound = MediaPlayer.create(getContext(),
+                R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         assignViews( view);
         Utils.setProfileImage(helperProfileAvatar);
         setListeners();

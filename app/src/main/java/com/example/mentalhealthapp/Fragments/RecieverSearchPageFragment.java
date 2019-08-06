@@ -48,6 +48,20 @@ public class RecieverSearchPageFragment extends Fragment {
     TagsAdapter tagsAdapter;
     android.widget.SearchView tagsSearch;
 
+    FindCallback<Tag> addAllTagsToAdapterCallback = new FindCallback<Tag>() {
+        @Override
+        public void done(List<Tag> objects, ParseException e) {
+            if (e != null) {
+                Log.e(TAG, "Error loading tags from parse server");
+                e.printStackTrace();
+                return;
+            }
+            tags.addAll(objects);
+            tagsAdapter.setTagsListFull();
+            tagsAdapter.notifyDataSetChanged();
+        }
+    };
+
 
     View.OnClickListener searchButtonListener = new View.OnClickListener() {
         @Override
@@ -96,10 +110,11 @@ public class RecieverSearchPageFragment extends Fragment {
         tags = new ArrayList<>();
         searchForHelpers.setOnClickListener(searchButtonListener);
         setRecyclerView();
-        getAllTags();
+        queryAllTags(addAllTagsToAdapterCallback);
         setSearchView(view);
         hideKeyboardFrom(getContext(),view);
     }
+
 
     private void setSearchView(View view){
         tagsSearch = view.findViewById(R.id.searchView_tags);
@@ -118,26 +133,14 @@ public class RecieverSearchPageFragment extends Fragment {
     }
 
 
-    private void getAllTags() {
+    private void queryAllTags(FindCallback<Tag> findCallback) {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
         postsQuery.setLimit(150);
         postsQuery.addDescendingOrder("Category");
         /*We decided load all tags (and on code select which ones match with the search FOR LATER)
          * we are concern that it could be lots of information on the database and we would need to set
-         * a limit of rows. In this case our tags are 50 tops. */
-        postsQuery.findInBackground(new FindCallback<Tag>() {
-            @Override
-            public void done(List<Tag> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error loading tags from parse server");
-                    e.printStackTrace();
-                    return;
-                }
-                tags.addAll(objects);
-                tagsAdapter.setTagsListFull();
-                tagsAdapter.notifyDataSetChanged();
-            }
-        });
+         * a limit of rows. In this case our tags are 150 tops. */
+        postsQuery.findInBackground(findCallback);
     }
 
 

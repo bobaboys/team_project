@@ -50,6 +50,54 @@ public class SignUpActivity extends AppCompatActivity {
     private ImageButton takeAvatarPic;
     private Button chooseAvatar;
     private ParseFile parseFile;
+    private  ParseUser user;
+    private String username, password , email;
+    Boolean helper;
+
+
+    private SaveCallback saveProfilePicCallback=new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+            if(e!=null){
+                Log.d(TAG, "Error while saving");
+                e.printStackTrace();
+                return;
+            }
+        }
+    };
+
+
+    private SignUpCallback signUpCallback =new SignUpCallback() {
+        @Override
+        public void done(ParseException e) {
+            if(e == null){
+                Log.d("SignUpActivity", "Sign up successful");
+                //adding photo to parse user
+                user.put(AVATAR_FIELD, parseFile);
+                user.saveInBackground(saveProfilePicCallback);
+                Intent intent = new Intent(SignUpActivity.this,
+                            helper? HelperSignUpBioActivity.class:
+                                    MainActivity.class);
+                startActivity(intent);
+
+            }else{
+                switch(e.getCode()){
+                    case ParseException.USERNAME_TAKEN:{
+                        Toast.makeText(SignUpActivity.this, "Username is already taken", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case ParseException.EMAIL_TAKEN:{
+                        Toast.makeText(SignUpActivity.this, "Email is already taken", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
+                checkEmailValid(email);
+                Log.e("SignUpActivity", "Sign up failure", e);
+                e.printStackTrace();
+            }
+        }
+    };
+
 
     private final View.OnClickListener takeAvatarPicListener = new View.OnClickListener() {
         @Override
@@ -58,6 +106,7 @@ public class SignUpActivity extends AppCompatActivity {
             onLaunchCamera();
         }
     };
+
 
     private View.OnClickListener chooseAvatarListener = new View.OnClickListener() {
         @Override
@@ -68,22 +117,23 @@ public class SignUpActivity extends AppCompatActivity {
         }
     };
 
+
     private final View.OnClickListener signUpBtnListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
-            String username = usernameInput.getText().toString();
-            String password = passwordInput.getText().toString();
-            String email = emailInput.getText().toString();
-            Boolean helper = radioGroup.getCheckedRadioButtonId() == R.id.radioBtnHelper_signup;
+            username = usernameInput.getText().toString();
+            password = passwordInput.getText().toString();
+            email = emailInput.getText().toString();
+            helper = radioGroup.getCheckedRadioButtonId() == R.id.radioBtnHelper_signup;
             if(parseFile==null){
                 Toast.makeText(SignUpActivity.this,"Please choose a profile picture!", Toast.LENGTH_SHORT).show();
                 return;
-
             }
             signUp(username, password, email, helper, parseFile);
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
         Toast.makeText(this, "Your username will be public! Choose accordingly", Toast.LENGTH_SHORT).show();
     }
 
+
     public void checkEmailValid(final String email){
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if(!email.matches(emailPattern)){
@@ -101,60 +152,16 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
+
     public void signUp(final String username, String password, final String email, final Boolean helper, final ParseFile parseFile){
-        final ParseUser user = new ParseUser();
+        user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
         user.put(HELPER_FIELD, helper);
-
-        user.signUpInBackground(new SignUpCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e == null){
-                    Log.d("SignUpActivity", "Sign up successful");
-
-                    //adding photo to parse user
-                    user.put(AVATAR_FIELD, parseFile);
-                    user.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if(e!=null){
-                                Log.d(TAG, "Error while saving");
-                                e.printStackTrace();
-                                return;
-                            }
-                        }
-                    });
-
-                    Intent intent;
-                    if(helper){
-                        intent = new Intent(SignUpActivity.this, HelperSignUpBioActivity.class);
-                        startActivity(intent);
-                    }else{
-                        intent = new Intent(SignUpActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-
-                }else{
-
-                    switch(e.getCode()){
-                        case ParseException.USERNAME_TAKEN:{
-                            Toast.makeText(SignUpActivity.this, "Username is already taken", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                        case ParseException.EMAIL_TAKEN:{
-                            Toast.makeText(SignUpActivity.this, "Email is already taken", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                    }
-                    checkEmailValid(email);
-                    Log.e("SignUpActivity", "Sign up failure", e);
-                    e.printStackTrace();
-                }
-            }
-        });
+        user.signUpInBackground(signUpCallback);
     }
+
 
     private void AssignViewsAndListeners() {
         usernameInput = findViewById(R.id.etUsername_signup);
@@ -172,6 +179,8 @@ public class SignUpActivity extends AppCompatActivity {
         avatarPic.setImageResource(R.drawable.blank_profile_picture);
 
     }
+
+
     public void onLaunchCamera() {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -183,6 +192,7 @@ public class SignUpActivity extends AppCompatActivity {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
     }
+
 
     private File getPhotoFileUri(String fileName) {
         File mediaStorageDir = new File(this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);

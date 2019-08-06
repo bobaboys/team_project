@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import Utils.Utils;
+
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable {
     public ArrayList<Tag> selectedTags;
     public final String TAG_TABLE_FIELD = "Tag";
@@ -43,16 +45,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         selectedTags = new ArrayList<>();
     }
 
-    public void clear() {
-        tags.clear();
-        notifyDataSetChanged();
-    }
-
-    // Add a list of items -- change to type used
-        public void addAll(List<Tag> list) {
-        tags.addAll(list);
-        notifyDataSetChanged();
-    }
 
     @NonNull
     @Override
@@ -114,50 +106,55 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         this.lastSelectedTags = lastSelectedTags;
     }
 
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         CheckBox tagName;
         CardView cardTag;
         ImageView description;
+        View view;
+
+
+        View.OnClickListener openDescriptionFragment = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Tag selectedTag = getSelectedTag();
+
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                Fragment resultFragment = new TagDetailsFragment();
+                //passing to result of list of helpers
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("tag", selectedTag);
+                resultFragment.setArguments(bundle);
+                Utils.switchToAnotherFragment(resultFragment, activity.getSupportFragmentManager(), R.id.flContainer_main);
+            }
+        };
+
+
+        CompoundButton.OnCheckedChangeListener setStateCheckBoxItem = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Tag selectedTag = getSelectedTag();
+                if(isChecked){
+                    selectedTags.add(selectedTag);
+                }else{
+                    selectedTags.remove(selectedTag);
+                }
+            }
+        };
+
 
         public ViewHolder(final View view) {
             super(view);
+            this.view=view;
             tagName = itemView.findViewById(R.id.cb_tag_select);
             cardTag = itemView.findViewById(R.id.card_tag);
             description = itemView.findViewById(R.id.ic_tag_description);
 
-            tagName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Tag selectedTag = getSelectedTag();
-                    if(isChecked){
-                            selectedTags.add(selectedTag);
-                    }else{
-                            selectedTags.remove(selectedTag);
-                    }
-                }
-            });
+            tagName.setOnCheckedChangeListener(setStateCheckBoxItem);
             // Listener of Tag details icon. opens a new fragment,
             // with the tag name, description and link with more info
-            description.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Tag selectedTag = getSelectedTag();
-
-                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                    Fragment resultFragment = new TagDetailsFragment();
-                    //passing to result of list of helpers
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("tag",selectedTag);
-                    resultFragment.setArguments(bundle);
-
-                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.flContainer_main, resultFragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                }
-            });
+            description.setOnClickListener(openDescriptionFragment);
         }
 
 
@@ -165,25 +162,17 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             if(lastSelectedTags==null){
                 tagName.setChecked(selectedTags.contains(getSelectedTag()));
             }else{
-                tagName.setChecked(
-                        selectedTags.contains(getSelectedTag())
-                                ||
-                                lastSelectedTags.contains(tag.getText()));
+                tagName.setChecked(selectedTags.contains(getSelectedTag())
+                        || lastSelectedTags.contains(tag.getText()));
             }
-
-                //selectedTags.get(tag.getObjectId();
-                tagName.setText(tag.getString(TAG_TABLE_FIELD));
-                //int random = Random.next SET A RANDOM COLOR FROM PALETE
-                //cardTag.setCardBackgroundColor(R.color.);
-                //TODO
-
+            tagName.setText(tag.getString(TAG_TABLE_FIELD));
         }
+
 
         public Tag getSelectedTag(){
             int i = getAdapterPosition();
             return tags.get(i);
         }
-
     }
 }
 

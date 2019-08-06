@@ -50,31 +50,82 @@ public class HelperDetailsActivity extends AppCompatActivity {
     public Button openChat;
     public ImageView helperAvatarPic;
     public ParseUser clickedHelper;
+    private GroupChannel groupChannel;
     public ArrayList<String> allHelperTags = new ArrayList<>();
     public SelectedTagsAdapter profTagAdapter;
-    ParseUser currentUser = ParseUser.getCurrentUser();
+
+
+    public void setGroupChannel(GroupChannel groupChannel) {
+        this.groupChannel = groupChannel;
+    }
+
+
+    private ConnectionHandle connectToServerCallback= new  ConnectionHandle(){
+        @Override
+        public void onSuccess(String TAG, User user){
+            //call new intent to start chat
+            Log.d(TAG, "Connection successful with user: " + user);
+        }
+        @Override
+        public void onFailure(String TAG, Exception e){
+            Log.e(TAG,"Chat connection failed");
+            e.printStackTrace();
+            Toast.makeText(HelperDetailsActivity.this, "Chat failed!", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private FindCallback<HelperTags>getHelperDetailsCallback = new FindCallback<HelperTags>() {
+        @Override
+        public void done(List<HelperTags> objects, ParseException e) {
+            if(e==null){
+                for(int i = 0; i < objects.size(); i++){
+                    Object strTag;
+                    HelperTags helperTag = objects.get(i);
+                    strTag = ((Tag)helperTag.get("Tag")).get("Tag");
+                    allHelperTags.add(strTag.toString());
+                }
+                profTagAdapter = new SelectedTagsAdapter(HelperDetailsActivity.this, allHelperTags);
+                helperTags.setAdapter(profTagAdapter);
+            }else{
+                Log.e("HelperProfileFragment", "failure in populating tags");
+            }
+        }
+    };
+
+    private FindCallback<Chat> optionalCreateChatParse= new FindCallback<Chat>() {
+        @Override
+        public void done(List<Chat> objects, ParseException e) {
+            if(objects.size() == 0){// no rows, create new one.
+                createChatParse();
+            }else {// there is a row with the same info. skip create a new one.
+                openChatFragment();
+            }
+        }
+    };
+
+
+    private SaveCallback saveChatParseCallback= new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+            if(e==null){
+                Log.d("USERS", clickedHelper.getUsername());
+                openChatFragment();
+            }else{
+                e.printStackTrace();
+            }
+        }
+    };
+
 
     public View.OnClickListener openChatBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
-
-            ChatApp.createChat(currentUser, clickedHelper, false, new CreateChatHandle() {
+            ChatApp.createChat(ParseUser.getCurrentUser(), clickedHelper, false, new CreateChatHandle() {
                 @Override
                 public void onSuccess(String TAG, final GroupChannel groupChannel) {
                     // Check if row already exist
-                    ParseQuery<Chat> query  = new ParseQuery<Chat>(Chat.class);
-                    query.whereEqualTo("chatUrl",groupChannel.getUrl());
-                    query.findInBackground(new FindCallback<Chat>() {
-                        @Override
-                        public void done(List<Chat> objects, ParseException e) {
-                            if(objects.size() == 0){// no rows, create new one.
-                                createChatParse(groupChannel);
-                            }else {// there is a row with the same info. skip create a new one.
-                                openChatFragment(groupChannel);
-                            }
-                        }
-                    });
+                    HelperDetailsActivity.this.setGroupChannel(groupChannel);
+                    queryParseChats( optionalCreateChatParse);
                 }
 
                 @Override
@@ -87,33 +138,30 @@ public class HelperDetailsActivity extends AppCompatActivity {
         }
     };
 
-    public void createChatParse(final GroupChannel groupChannel){
+
+    private void queryParseChats(FindCallback<Chat> findCallback){
+        ParseQuery<Chat> query  = new ParseQuery<Chat>(Chat.class);
+        query.whereEqualTo("chatUrl",groupChannel.getUrl());
+        query.findInBackground(findCallback);
+    }
+
+    public void createChatParse(){
         Chat chat =  new Chat();
+        long time = new Date().getTime();
         chat.put("helper", ParseObject.createWithoutData("_User", clickedHelper.getObjectId()) );
         chat.put("reciever", ParseObject.createWithoutData("_User", ParseUser.getCurrentUser().getObjectId()));
         chat.put("chatUrl", groupChannel.getUrl());
         chat.put(Constants.CHAT_RECEIVER_DELETED,false);
-        long time = new Date().getTime();
         chat.put("lastChecked",time);
         chat.put("lastCheckedHelper",time );
         chat.put(Constants.CHAT_HELPER_DELETED, false);
-        chat.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e==null){
-                    Log.d("USERS", clickedHelper.getUsername());
-                    openChatFragment(groupChannel);
-                }else{
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        });
+        chat.saveInBackground(saveChatParseCallback);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        groupChannel = null;
         setContentView(R.layout.activity_helper_details);
 
         assignViewsAndListeners();
@@ -138,58 +186,34 @@ public class HelperDetailsActivity extends AppCompatActivity {
         clickedHelper = (ParseUser) getIntent().getParcelableExtra("clicked_bio");
         helperBio.setText(clickedHelper.getString(Constants.HELPER_BIO_FIELD));
         helperUsername.setText(clickedHelper.getString(Constants.NAME_FIELD));
-        ParseFile avatarFile = clickedHelper.getParseFile(Constants.AVATAR_FIELD);
-        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+        Bitmap bm = Utils.convertFileToBitmap(clickedHelper.getParseFile(Constants.AVATAR_FIELD));
         helperAvatarPic.setImageBitmap(bm);
+        queryHelperTags(getHelperDetailsCallback);
+    }
+
+
+    private void queryHelperTags(FindCallback<HelperTags> findCallback){
         ParseQuery<HelperTags> query = ParseQuery.getQuery(HelperTags.class);
         query.include(Constants.USER_FIELD);
         query.include(Constants.TAG_FIELD);
         query.whereEqualTo(Constants.USER_FIELD,clickedHelper);
-        query.findInBackground(new FindCallback<HelperTags>() {
-            @Override
-            public void done(List<HelperTags> objects, ParseException e) {
-                if(e==null){
-                    for(int i = 0; i < objects.size(); i++){
-                        Object strTag;
-                        HelperTags helperTag = objects.get(i);
-                        strTag = ((Tag)helperTag.get("Tag")).get("Tag");
-                        allHelperTags.add(strTag.toString());
-                    }
-                    profTagAdapter = new SelectedTagsAdapter(HelperDetailsActivity.this, allHelperTags);
-                    helperTags.setAdapter(profTagAdapter);
-                }else{
-                    Log.e("HelperProfileFragment", "failure in populating tags");
-                }
-            }
-        });
+        query.findInBackground(findCallback);
     }
+
 
     private void connectUserToChat() {
         //connects logged in or new user to chat server
-        String currUserObjID = currentUser.getObjectId();
+        String currUserObjID = ParseUser.getCurrentUser().getObjectId();
         final ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
-        chatApp.connectToServer(currUserObjID, new  ConnectionHandle(){
-            @Override
-            public void onSuccess(String TAG, User user){
-                //call new intent to start chat
-                Log.d(TAG, "Connection successful with user: " + user);
-            }
-            @Override
-            public void onFailure(String TAG, Exception e){
-                Log.e(TAG,"Chat connection failed");
-                e.printStackTrace();
-                Toast.makeText(HelperDetailsActivity.this, "Chat failed!", Toast.LENGTH_LONG).show();
-            }
-        });
+        chatApp.connectToServer(currUserObjID, connectToServerCallback);
     }
 
-    public void openChatFragment(GroupChannel groupChannel){
+
+    public void openChatFragment(){
         Intent intent = new Intent(HelperDetailsActivity.this, OpenChatActivity.class);
         intent.putExtra("clicked_helper",clickedHelper);
-        //pass current group channel url to next activity
-        String groupChannelUrl = groupChannel.getUrl();
-        intent.putExtra("group_channel", groupChannelUrl);
+        intent.putExtra("group_channel", groupChannel.getUrl());
         startActivity(intent);
         Log.d("OPEN CHAT:", "chat open successful");
     }

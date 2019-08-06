@@ -30,35 +30,45 @@ public class HelperSignUpBioActivity extends AppCompatActivity {
         public void onClick(View v) {
             buttonClickSound.start();
             String bioInput = HelperBioInput.getText().toString();
+            String nameInput = NameInput.getText().toString();
             if(bioInput == null){
                 Toast.makeText(HelperSignUpBioActivity.this, "Please enter a bio!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String nameInput = NameInput.getText().toString();
             if(nameInput == null){
                 Toast.makeText(HelperSignUpBioActivity.this, "Please enter a name!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            ParseUser user = ParseUser.getCurrentUser();
-            user.put(NAME_FIELD,nameInput);
-            user.put(HELPER_BIO_FIELD,bioInput);
-            user.saveInBackground();
+            saveBioInBackground(nameInput, bioInput);
             Intent intent = new Intent(HelperSignUpBioActivity.this, HelperSignUpTagsActivity.class);
             startActivity(intent);
         }
     };
+
+
+    private void saveBioInBackground(String nameInput, String bioInput){
+        ParseUser user = ParseUser.getCurrentUser();
+        user.put(NAME_FIELD,nameInput);
+        user.put(HELPER_BIO_FIELD,bioInput);
+        user.saveInBackground();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helper_sign_up_bio);
         buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
+        setViewComponents();
+        Submit.setOnClickListener(submitBtnListener);
+    }
 
+
+    private void setViewComponents(){
         HelperBioPrompt = findViewById(R.id.tvBioPrompt_helperSignUpBios);
         HelperBioInput = findViewById(R.id.tvBioText_HelperSignUpBio);
         NamePrompt = findViewById(R.id.tvYourName_helperSignUpBio);
         NameInput= findViewById(R.id.etYourName_helperSignUpBio);
         Submit = findViewById(R.id.btnSubmit_HelperSignUpBios);
-        Submit.setOnClickListener(submitBtnListener);
     }
 }

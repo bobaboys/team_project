@@ -35,13 +35,30 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
     RecyclerView rvAvatarPics;
     String CLICKED_AVATAR_KEY = "clicked_avatar";
     String AVATAR_FIELD = "avatar";
+    private ViewHolder viewHolder;
     public final String TAG = "Helper Profile Edit:";
 
 
-    public AvatarImagesAdapter(Activity context, List<Integer> avatarPics){
-        mActivity = context;
-        avatarImages = avatarPics;
-    }
+    SaveCallback saveCallback =new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+            if (e != null) {
+                Log.d(TAG, "Error while saving");
+                e.printStackTrace();
+                return;
+            }
+        }
+    };
+
+
+    SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            viewHolder.avatarPic.setImageBitmap(resource);
+        }
+    };
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -51,16 +68,9 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+        this.viewHolder = viewHolder;
         Integer avatar = avatarImages.get(i);
         viewHolder.rootView.setTag(avatar);
-
-        SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                viewHolder.avatarPic.setImageBitmap(resource);
-            }
-        };
-
         viewHolder.avatarPic.setTag(target);
         Glide.with(mActivity).load(avatar).asBitmap().centerCrop().into(target);
     }
@@ -68,6 +78,12 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
     @Override
     public int getItemCount() {
         return avatarImages.size();
+    }
+
+
+    public AvatarImagesAdapter(Activity context, List<Integer> avatarPics){
+        mActivity = context;
+        avatarImages = avatarPics;
     }
 
 
@@ -87,9 +103,8 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
 
         public void createIntent(boolean extra, int avatar){
             Intent resultData = new Intent();
-            if(extra) {
+            if(extra)
                 resultData.putExtra(CLICKED_AVATAR_KEY, avatar);
-            }
             mActivity.setResult(Activity.RESULT_OK, resultData);
             mActivity.finish();
         }
@@ -100,31 +115,23 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Integer avatar = avatarImages.get(position);
-                //for editing: saving avatar image to parse server under current user avatar image file field
-                if(ParseUser.getCurrentUser()!=null) {
-                    Bitmap avatarBitmap =  BitmapFactory.decodeResource(mActivity.getResources(), avatar);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    avatarBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] picData = stream.toByteArray();
-
-                    ParseFile imageFile = new ParseFile("image.png", picData);
-                    ParseUser.getCurrentUser().put(AVATAR_FIELD, imageFile);
-                    ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.d(TAG, "Error while saving");
-                                e.printStackTrace();
-                                return;
-                            }
-                        }
-                    });
-                    createIntent(false, 0);
+                if(ParseUser.getCurrentUser()==null) {//for sign up: send avatar id back to sign up intent
+                    createIntent(true, avatar);
+                    return;
                 }
-                //for sign up: send avatar id back to sign up intent
-                else{ createIntent(true,avatar); }
-
+                //for editing: saving avatar image to parse server under current user avatar image file field
+                ParseUser.getCurrentUser().put(AVATAR_FIELD, obtainAvatarFromRes(avatar));
+                ParseUser.getCurrentUser().saveInBackground(saveCallback);
+                createIntent(false, 0);
             }
+        }
+
+        private ParseFile obtainAvatarFromRes(int avatar) {
+            Bitmap avatarBitmap = BitmapFactory.decodeResource(mActivity.getResources(), avatar);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            avatarBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] picData = stream.toByteArray();
+            return  new ParseFile("image.png", picData);
         }
 
     }

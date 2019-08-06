@@ -90,12 +90,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(MainActivity.HelperYes){
-                            hideChatForUser(Constants.CHAT_HELPER_DELETED);
-                        }
-                        else{
-                            hideChatForUser(Constants.CHAT_RECEIVER_DELETED);
-                        }
+                        hideChatForUser(MainActivity.HelperYes ?
+                                    Constants.CHAT_HELPER_DELETED :Constants.CHAT_RECEIVER_DELETED);
                         dialog.dismiss();
                     }
                 });
@@ -207,24 +203,24 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }
         }
 
+
         public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse, long lastChecked){
-            if(lastM!=null){
-                boolean isMyMessage;
-                try{
-                    isMyMessage=setTextUserMessage(lastM);
-                }catch (ClassCastException e){
-                    isMyMessage=setTextFileMessage(lastM);
-                }
-                timeStamp.setText(Utils.getTimeStamp(lastM.getCreatedAt()));
-
-                if(lastM.getCreatedAt() > lastChecked &&  ! isMyMessage) bindMessageNotRead();
-                else bindMessageRead();
-
-            }else{//There is not messages in the conversation.
+            if(lastM==null) {
                 lastMessage.setText("");
                 timeStamp.setText("");
+                return;
             }
+            boolean isMyMessage;
+            try{
+                isMyMessage=setTextUserMessage(lastM);
+            }catch (ClassCastException e){
+                isMyMessage=setTextFileMessage(lastM);
+            }
+            timeStamp.setText(Utils.getTimeStamp(lastM.getCreatedAt()));
+            if(lastM.getCreatedAt() > lastChecked &&  ! isMyMessage) bindMessageNotRead();
+            else bindMessageRead();
         }
+
 
         private boolean setTextUserMessage(BaseMessage lastM){
             UserMessage lastMUser = (UserMessage) lastM;
@@ -236,6 +232,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             lastMessage.setText(authorAndMessage);
             return  isMyMessage;
         }
+
 
         private boolean setTextFileMessage(BaseMessage lastM){
             // Message is an Attachment
