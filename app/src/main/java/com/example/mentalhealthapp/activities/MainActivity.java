@@ -93,11 +93,13 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(String TAG, User user) {
                 ChatApp chatApp = ChatApp.getInstance();
                 chatApp.setSendBirdUser(user);
-                setFragment(helper);
+
                 //set default
                 if(helper){
+                    setFragmentHelper();
                     bottomHelperNavView.setSelectedItemId(R.id.navigation_helper_home);
                 }else{
+                    setFragmentReceiver();
                     bottomNavigationView.setSelectedItemId(R.id.navigation_home);
                 }
             }
@@ -110,29 +112,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void setFragment(final boolean helper){
-            bottomHelperNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    int page;
-                    switch (item.getItemId()) {
-                        case R.id.navigation_helper_home:
-                            page=0;
-                            break;
-                        case R.id.navigation_helper_reflect:
-                            page=1;
-                            break;
-                        case R.id.navigation_helper_profile:
-                            page=2;
-                            break;
-                        default:
-                            page=0;
-                            break;
-                    }
-                    mPager.setCurrentItem(page);
-                    return true;
+    public void setFragmentHelper() {
+        bottomHelperNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int page;
+                switch (item.getItemId()) {
+                    case R.id.navigation_helper_home:
+                        page = 0;
+                        break;
+                    case R.id.navigation_helper_reflect:
+                        page = 1;
+                        break;
+                    case R.id.navigation_helper_profile:
+                        page = 2;
+                        break;
+                    default:
+                        page = 0;
+                        break;
                 }
-            });
+                mPager.setCurrentItem(page);
+                return true;
+            }
+        });
+    }
+
+
+    public void setFragmentReceiver(){
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -172,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
             if(HelperYes) {
-                if(fragments[position]==null){
                     switch (position){
                         case 0:
                             fragments[position]= new ChatOverviewListFragment();
@@ -188,30 +193,26 @@ public class MainActivity extends AppCompatActivity {
                             fragments[position]= new ChatOverviewListFragment();
                             break;
                     }
-
-                }
-            }else{
                 if(fragments[position]==null){
-                    switch (position){
+                    switch (position) {
                         case 0:
-                            fragments[position]=  new RecieverSearchPageFragment();
+                            fragments[position] = new RecieverSearchPageFragment();
                             break;
                         case 1:
-                            fragments[position]=  new ReflectFragment();
+                            fragments[position] = new ReflectFragment();
                             break;
                         case 2:
-                            fragments[position]= new ChatOverviewListFragment();
+                            fragments[position] = new ChatOverviewListFragment();
                             break;
                         case 3:
-                            fragments[position]= new ReceiverProfileFragment();
+                            fragments[position] = new ReceiverProfileFragment();
                             break;
 
                         default:
-                            fragments[position]= new RecieverSearchPageFragment();
+                            fragments[position] = new RecieverSearchPageFragment();
                             break;
 
                     }
-
                 }
 
             }
