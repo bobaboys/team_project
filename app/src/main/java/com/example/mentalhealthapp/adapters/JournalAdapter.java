@@ -1,10 +1,12 @@
 package com.example.mentalhealthapp.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +51,7 @@ public class JournalAdapter  extends RecyclerView.Adapter<JournalAdapter.ViewHol
         return entries.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         TextView date, content;
         ConstraintLayout itemEntry;
@@ -61,6 +63,7 @@ public class JournalAdapter  extends RecyclerView.Adapter<JournalAdapter.ViewHol
             content = view.findViewById(R.id.tv_entry_content);
             itemEntry = view.findViewById(R.id.cl_entry);
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
         }
 
 
@@ -69,6 +72,30 @@ public class JournalAdapter  extends RecyclerView.Adapter<JournalAdapter.ViewHol
             editThisEntry();
         }
 
+        @Override
+        public boolean onLongClick(View view) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Warning!");
+            alert.setMessage("You are about to delete this journal entry. Do you want to continue?");
+            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    entries.remove(entry);
+                    entry.deleteInBackground();
+                    notifyDataSetChanged();
+                    dialog.dismiss();
+                }
+            });
+            alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            alert.show();
+            return true;
+        }
 
         private void editThisEntry(){
             //TODO intent to other fragment, check null cases.
