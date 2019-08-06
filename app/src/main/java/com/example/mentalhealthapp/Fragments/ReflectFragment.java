@@ -31,14 +31,14 @@ import Utils.Utils;
 
 public class ReflectFragment extends Fragment {
 
-    protected TextView journalDate;
-    protected CalendarView calendarView;
-    protected Button createEntry;
-    protected Button allEntries;
-    protected String date;
+    private  TextView journalDate;
+    private  CalendarView calendarView;
+    private  Button createEntry;
+    private  Button allEntries;
+    private  String date;
     public final String CREATE_KEY = "Create Entry";
     public final String EDIT_KEY = "View Entry";
-    protected MediaPlayer buttonClickSound;
+    private  MediaPlayer buttonClickSound;
     private boolean entryExist, checkedIfExist;
 
     public void setEntryExist(boolean entryExist) {

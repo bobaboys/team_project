@@ -51,22 +51,22 @@ import static android.app.Activity.RESULT_OK;
 
 public class HelperEditProfileFragment extends Fragment {
 
-    protected EditText editHelperBio;
-    protected Button saveChanges;
-    protected Button takePic;
-    protected Button choosePic;
-    protected Button editTags;
-    protected ImageView avatarPic;
-    protected RecyclerView rvTags;
-    public final String TAG = "Helper Profile Edit:";
+    private  EditText editHelperBio;
+    private  Button saveChanges;
+    private  Button takePic;
+    private  Button choosePic;
+    private  Button editTags;
+    private  ImageView avatarPic;
+    private  RecyclerView rvTags;
+    private  final String TAG = "Helper Profile Edit:";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public String photoFileName = "photo.jpg";
-    protected String AVATAR_FIELD = "avatar";
-    protected File photoFile;
+    private  String photoFileName = "photo.jpg";
+    private  String AVATAR_FIELD = "avatar";
+    private  File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
-    protected  List<Tag> tags;
-    protected TagsAdapter tagsAdapter;
-    protected MediaPlayer buttonClickSound;
+    private   List<Tag> tags;
+    private  TagsAdapter tagsAdapter;
+    private  MediaPlayer buttonClickSound;
     private List<String> lastTagsSelectedString;
 
 
@@ -202,7 +202,7 @@ public class HelperEditProfileFragment extends Fragment {
         assignViewsAndListeners(view);
         setAndPopulateRvTags();
         queryTagsOfUser(obtainTagsOfHelperCallback);
-        ((MainActivity)getContext()).currentCentralFragment = this;
+        ((MainActivity)getContext()).setCurrentCentralFragment(this);
     }
 
 
@@ -317,9 +317,9 @@ public class HelperEditProfileFragment extends Fragment {
 
     public void writeNewTags(){
         //save all tags on server for parse user
-        for(int i = 0; i < tagsAdapter.selectedTags.size(); i++){
+        for(int i = 0; i < tagsAdapter.getSelectedTags().size(); i++){
             HelperTags helperTags = new HelperTags();
-            helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.selectedTags.get(i));
+            helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.getSelectedTags().get(i));
             helperTags.saveInBackground(saveCallback);
         }
     }

@@ -53,7 +53,6 @@ public class DownloadTaskAndPlay {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //TODO CHANGE COLOR IMAGEVIEW PLAY BTN. BLOCK MAYBE?
             Utils.enableDisablePlay(context,playButton, false);
         }
 

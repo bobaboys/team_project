@@ -37,8 +37,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapter.ViewHolder> {
     private Context context;
     private List<BaseMessage> messages;
-    RecyclerView rvOpenChat;
-    boolean isMyMessage, isTextMessage;
+    private boolean isMyMessage, isTextMessage;
     private ParseUser addressee;
 
     public MessagesChatAdapter(Context context, List<BaseMessage> messages) {
@@ -125,13 +124,13 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView body, name, myBody;
-        public ImageView profileSender, playYou, playMine;
-        public SeekBar sbYour, sbMine;
-        LinearLayout myMessageLayout, yourMessageLayout, yourAudioLayout, myAudioLayout;
-        FileMessage fileMessage;
-        UserMessage userMessage;
-        boolean isMyMessage;
+        private  TextView body, name, myBody;
+        private  ImageView profileSender, playYou, playMine;
+        private  SeekBar sbYour, sbMine;
+        private LinearLayout myMessageLayout, yourMessageLayout, yourAudioLayout, myAudioLayout;
+        private FileMessage fileMessage;
+        private UserMessage userMessage;
+        private boolean isMyMessage;
         private MediaPlayer   player = null;
 
 
@@ -189,8 +188,6 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
             yourMessageLayout = view.findViewById(R.id.ly_sender_msg);
             yourAudioLayout = view.findViewById(R.id.ly_your_audio);
             myAudioLayout = view.findViewById(R.id.ly_my_audio);
-
-            rvOpenChat = itemView.findViewById(R.id.rv_open_chat);
 
             name = view.findViewById(R.id.tv_author_message);
             profileSender = view.findViewById(R.id.iv_profile_pic_message);

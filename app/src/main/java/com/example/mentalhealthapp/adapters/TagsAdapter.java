@@ -30,11 +30,11 @@ import java.util.List;
 import Utils.Utils;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable {
-    public ArrayList<Tag> selectedTags;
-    public final String TAG_TABLE_FIELD = "Tag";
+    private  ArrayList<Tag> selectedTags;
+    private  final String TAG_TABLE_FIELD = "Tag";
     private Context context;
-    protected List<Tag> tags;
-    protected List<Tag> tagsFull;
+    private  List<Tag> tags;
+    private  List<Tag> tagsFull;
 
 
     private List<String> lastSelectedTags;
@@ -106,13 +106,23 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         this.lastSelectedTags = lastSelectedTags;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public ArrayList<Tag> getSelectedTags() {
+        return selectedTags;
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        CheckBox tagName;
-        CardView cardTag;
-        ImageView description;
-        View view;
+        private CheckBox tagName;
+        private ImageView description;
+        private View view;
 
 
         View.OnClickListener openDescriptionFragment = new View.OnClickListener() {
@@ -148,7 +158,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             super(view);
             this.view=view;
             tagName = itemView.findViewById(R.id.cb_tag_select);
-            cardTag = itemView.findViewById(R.id.card_tag);
             description = itemView.findViewById(R.id.ic_tag_description);
 
             tagName.setOnCheckedChangeListener(setStateCheckBoxItem);

@@ -29,14 +29,14 @@ import java.util.List;
 
 public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapter.ViewHolder> {
 
-
-    Activity mActivity;
-    List<Integer> avatarImages;
-    RecyclerView rvAvatarPics;
-    String CLICKED_AVATAR_KEY = "clicked_avatar";
-    String AVATAR_FIELD = "avatar";
-    private ViewHolder viewHolder;
+    public final String CLICKED_AVATAR_KEY = "clicked_avatar";
+    public final  String AVATAR_FIELD = "avatar";
     public final String TAG = "Helper Profile Edit:";
+
+    private Activity mActivity;
+    private List<Integer> avatarImages;
+    private ViewHolder viewHolder;
+
 
 
     SaveCallback saveCallback =new SaveCallback() {
@@ -89,14 +89,13 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView avatarPic;
-        View rootView;
+        private ImageView avatarPic;
+        private View rootView;
 
         public ViewHolder(View view) {
             super(view);
             rootView = view;
             avatarPic = view.findViewById(R.id.ivAvatarPic_itemAvatarPic);
-            rvAvatarPics = view.findViewById(R.id.rvAvatarImages_AvatarImages);
             avatarPic.setOnClickListener(this);
         }
 

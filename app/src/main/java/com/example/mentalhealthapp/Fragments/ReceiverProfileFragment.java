@@ -24,11 +24,11 @@ import Utils.Utils;
 
 public class ReceiverProfileFragment extends Fragment {
 
-    protected Button btnLogOut;
-    protected ImageView recProfileAvatar;
-    protected FloatingActionButton editRecieverProfile;
-    protected TextView username;
-    protected MediaPlayer buttonClickSound;
+    private  Button btnLogOut;
+    private  ImageView recProfileAvatar;
+    private  FloatingActionButton editRecieverProfile;
+    private  TextView username;
+    private  MediaPlayer buttonClickSound;
 
     public final String TAG = "Reciever Profiile:";
 

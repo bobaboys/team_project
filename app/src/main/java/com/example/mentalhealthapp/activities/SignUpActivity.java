@@ -38,14 +38,14 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText emailInput;
     private RadioGroup radioGroup;
     private Button signup;
-    protected File photoFile;
+    private  File photoFile;
     public final String TAG = "Sign Up Activity:";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public String photoFileName = "photo.jpg";
+    private  String photoFileName = "photo.jpg";
     private final String HELPER_FIELD = "helper";
     private final String AVATAR_FIELD = "avatar";
-    String CLICKED_AVATAR_KEY = "clicked_avatar";
-    protected MediaPlayer buttonClickSound;
+    private String CLICKED_AVATAR_KEY = "clicked_avatar";
+    private  MediaPlayer buttonClickSound;
 
     static final int CHOOSE_AVATAR_REQUEST = 333;
     private ImageView avatarPic;
@@ -54,7 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
     private ParseFile parseFile;
     private  ParseUser user;
     private String username, password , email;
-    Boolean helper;
+    private Boolean helper;
 
 
     private SaveCallback saveProfilePicCallback=new SaveCallback() {

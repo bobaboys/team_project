@@ -28,9 +28,9 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
 
     public final String HELPER_BIO_KEY = "helperBio";
     public final String USERNAME_KEY = "username";
+
     private Context context;
     private List<UserWithTags> bios;
-    RecyclerView rvPosts;
 
     public HelperBiosAdapter(Context context, List<UserWithTags> bios) {
         this.context = context;
@@ -38,10 +38,6 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         this.bios = bios;
     }
 
-    public void clear() {
-        bios.clear();
-        notifyDataSetChanged();
-    }
 
     // Add a list of items -- change to type used
     public void addAll(List<UserWithTags> list) {
@@ -69,15 +65,14 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView tvBio, tvUsername;
-        ImageView helperPic;
+        private TextView tvBio, tvUsername;
+        private ImageView helperPic;
 
         public ViewHolder(View view) {
             super(view);
             tvUsername =itemView.findViewById(R.id.tvBio_username);
             tvBio = itemView.findViewById(R.id.tvBio_HelperBios);
             helperPic = itemView.findViewById(R.id.ivHelperPic_HelperBios);
-            rvPosts = itemView.findViewById(R.id.rvHelperBios);
             view.setOnClickListener(this);
         }
 
@@ -85,7 +80,7 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         public void onClick(View v) {
             int position = getAdapterPosition();
             if(position!=RecyclerView.NO_POSITION){
-                ParseUser helper = bios.get(position).user;
+                ParseUser helper = bios.get(position).getUser();
                 Intent intent = new Intent(context, HelperDetailsActivity.class);
                 intent.putExtra("clicked_bio", helper);
                 context.startActivity(intent);
@@ -93,10 +88,10 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         }
 
         public void bind(final UserWithTags bio){
-            if(bio.user.getString(HELPER_BIO_KEY)!=null&&bio.user.getBoolean("helper")){
-                tvUsername.setText(bio.user.getString(USERNAME_KEY));
-                tvBio.setText(bio.user.getString(HELPER_BIO_KEY));
-                ParseFile avatarFile = bio.user.getParseFile(Constants.AVATAR_FIELD);
+            if(bio.getUser().getString(HELPER_BIO_KEY)!=null&&bio.getUser().getBoolean("helper")){
+                tvUsername.setText(bio.getUser().getString(USERNAME_KEY));
+                tvBio.setText(bio.getUser().getString(HELPER_BIO_KEY));
+                ParseFile avatarFile = bio.getUser().getParseFile(Constants.AVATAR_FIELD);
                 Bitmap bm = Utils.convertFileToBitmap(avatarFile);
                 helperPic.setImageBitmap(bm);
             }

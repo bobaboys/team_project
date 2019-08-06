@@ -20,12 +20,12 @@ public class HelperSignUpBioActivity extends AppCompatActivity {
     public final String HELPER_BIO_FIELD = "helperBio";
     public final String NAME_FIELD = "name";
 
-    TextView HelperBioPrompt;
-    EditText HelperBioInput;
-    EditText NameInput;
-    TextView NamePrompt;
-    Button Submit;
-    protected MediaPlayer buttonClickSound;
+    private TextView HelperBioPrompt;
+    private EditText HelperBioInput;
+    private EditText NameInput;
+    private TextView NamePrompt;
+    private Button Submit;
+    private  MediaPlayer buttonClickSound;
 
     View.OnClickListener submitBtnListener = new View.OnClickListener() {
         @Override

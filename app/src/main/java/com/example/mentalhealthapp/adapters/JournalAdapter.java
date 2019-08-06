@@ -21,9 +21,11 @@ import Utils.Utils;
 
 public class JournalAdapter  extends RecyclerView.Adapter<JournalAdapter.ViewHolder>  {
 
-    List<Journal> entries;
-    Context context;
-    Fragment fragment;
+    private List<Journal> entries;
+    private Context context;
+    private Fragment fragment;
+
+
     public JournalAdapter(Context context, List<Journal> entries, Fragment f) {
         this.fragment =f;
         this.context = context;
@@ -51,9 +53,9 @@ public class JournalAdapter  extends RecyclerView.Adapter<JournalAdapter.ViewHol
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView date, content;
-        ConstraintLayout itemEntry;
-        Journal entry;
+        private TextView date, content;
+        private ConstraintLayout itemEntry;
+        private Journal entry;
 
         public ViewHolder(View view) {
             super(view);

@@ -26,18 +26,26 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     public final String HELPER_FIELD = "helper";
-    public BottomNavigationView bottomNavigationView;
-    public BottomNavigationView bottomHelperNavView;
+    private  BottomNavigationView bottomNavigationView;
+    private  BottomNavigationView bottomHelperNavView;
     public static boolean HelperYes;
-    public Fragment currentCentralFragment;
-    final ParseUser currentUser = ParseUser.getCurrentUser();
+    private  Fragment currentCentralFragment;
+
+
+    public Fragment getCurrentCentralFragment() {
+        return currentCentralFragment;
+    }
+
+    public void setCurrentCentralFragment(Fragment currentCentralFragment) {
+        this.currentCentralFragment = currentCentralFragment;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        HelperYes = currentUser.getBoolean(HELPER_FIELD);
-        final boolean helper = currentUser.getBoolean(HELPER_FIELD);
+        HelperYes = ParseUser.getCurrentUser().getBoolean(HELPER_FIELD);
+        final boolean helper = ParseUser.getCurrentUser().getBoolean(HELPER_FIELD);
         bottomHelperNavView = findViewById(R.id.nav_helper_view);
         bottomNavigationView = findViewById(R.id.nav_view);
         if(helper){
@@ -48,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
-        chatApp.connectToServer(currentUser.getObjectId(), new ConnectionHandle() {
+        chatApp.connectToServer(ParseUser.getCurrentUser().getObjectId(), new ConnectionHandle() {
             @Override
             public void onSuccess(String TAG, User user) {
                 ChatApp chatApp = ChatApp.getInstance();

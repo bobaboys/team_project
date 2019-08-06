@@ -36,17 +36,17 @@ import Utils.Utils;
 import static android.app.Activity.RESULT_OK;
 
 public class ReceiverEditProfileFragment extends Fragment {
-    protected Button saveChanges;
-    protected Button takePic;
-    protected Button choosePic;
-    protected ImageView avatarPic;
-    public final String TAG = "Receiver Profile Edit:";
+    private  Button saveChanges;
+    private  Button takePic;
+    private  Button choosePic;
+    private  ImageView avatarPic;
+    private  final String TAG = "Receiver Profile Edit:";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public String photoFileName = "photo.jpg";
-    protected String AVATAR_FIELD = "avatar";
-    protected File photoFile;
+    private  String photoFileName = "photo.jpg";
+    private  String AVATAR_FIELD = "avatar";
+    private  File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
-    private MediaPlayer buttonClickSound;
+    private  MediaPlayer buttonClickSound;
 
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {

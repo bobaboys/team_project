@@ -32,12 +32,12 @@ import java.util.List;
 
 public class HelperBiosFragment extends Fragment {
 
-    protected HelperBiosAdapter biosAdapter;
-    protected RecyclerView rvBios;
-    protected List<UserWithTags> mBios;
-    protected TagsParcel tags;
-    protected TextView alternateText, title;
-    protected Button back;
+    private HelperBiosAdapter biosAdapter;
+    private RecyclerView rvBios;
+    private List<UserWithTags> mBios;
+    private TagsParcel tags;
+    private TextView alternateText, title;
+    private Button back;
 
 
     View.OnClickListener backListener = new View.OnClickListener() {
@@ -80,7 +80,7 @@ public class HelperBiosFragment extends Fragment {
         setViewComponents(view);
         mBios = new ArrayList<>();
 
-        ((MainActivity)getContext()).currentCentralFragment = this;
+        ((MainActivity)getContext()).setCurrentCentralFragment(this);
         back.setOnClickListener(backListener);
         setRecyclerView();
         queryHelpersAccordingTags(loadBios);
@@ -133,7 +133,7 @@ public class HelperBiosFragment extends Fragment {
 
             }else{
                 // user was found, add tag to it.
-                helpersWithAllTags.get(j).tags.add(helperTagsList.get(i).getTag());
+                helpersWithAllTags.get(j).getTags().add(helperTagsList.get(i).getTag());
             }
         }
         biosAdapter.addAll(helpersWithAllTags);
@@ -143,15 +143,15 @@ public class HelperBiosFragment extends Fragment {
 
     private UserWithTags createUserWithAllTags(HelperTags helperTag){
         UserWithTags uwt = new UserWithTags();
-        uwt.user = helperTag.getUser();
-        uwt.tags.add(helperTag.getTag());
+        uwt.setUser(helperTag.getUser());
+        uwt.getTags().add(helperTag.getTag());
         return uwt;
     }
 
     public int searchUser(ArrayList<UserWithTags> helpersWithAllTags, ParseUser user){
         if(user==null)return -1;
         for (int i = 0; i < helpersWithAllTags.size(); i++) {
-            if (user.getObjectId().equals(helpersWithAllTags.get(i).user.getObjectId())) return i;
+            if (user.getObjectId().equals(helpersWithAllTags.get(i).getUser().getObjectId())) return i;
         }
         return -1;
     }
