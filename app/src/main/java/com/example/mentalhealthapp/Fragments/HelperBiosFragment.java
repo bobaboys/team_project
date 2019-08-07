@@ -43,7 +43,7 @@ public class HelperBiosFragment extends Fragment {
     View.OnClickListener backListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            getActivity().onBackPressed();
+            ((MainActivity)getActivity()).setCurrentFragment(new RecieverSearchPageFragment());
         }
     };
 

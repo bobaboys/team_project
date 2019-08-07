@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.Journal;
 import com.parse.FindCallback;
@@ -43,7 +44,7 @@ public class CreateEntryJournalFragment extends Fragment {
                 e.printStackTrace();
                 return;
             }
-            (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
+            ((MainActivity)getActivity()).setCurrentFragment(new ReflectFragment());
         }
     };
 

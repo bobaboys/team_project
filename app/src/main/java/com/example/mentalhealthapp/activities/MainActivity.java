@@ -1,5 +1,6 @@
 package com.example.mentalhealthapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -18,10 +20,18 @@ import com.example.mentalhealthapp.Fragments.ReceiverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
 import com.example.mentalhealthapp.Fragments.ReflectFragment;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.models.Chat;
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.sendbird.android.User;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
@@ -199,17 +209,27 @@ public class MainActivity extends AppCompatActivity {
     private void callNextPage(float currentPos){
         int nextPage = lastPage + ( ((currentPos-lastPage)>0) ? 1:-1);
         if(isHelper){
-            bottomHelperNavView.setSelectedItemId((targetPage == -1)?
-                    bottomBarHelper.get(nextPage) :
-                    targetPage);
+            bottomHelperNavView.setSelectedItemId(bottomBarHelper.get(
+                    (targetPage == -1) ? nextPage : targetPage));
         }else{
-            bottomNavigationView.setSelectedItemId((targetPage == -1)?
-                    bottomBarReceiver.get(nextPage) :
-                    targetPage);
+            bottomNavigationView.setSelectedItemId( bottomBarReceiver.get(
+                    (targetPage == -1) ? nextPage : targetPage));
         }
         calledNextPage = true;
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        targetPage = 0;
+        calledNextPage = false;
+        mPager.setCurrentItem(0);
+        if(isHelper){
+            bottomHelperNavView.setSelectedItemId(bottomBarHelper.get(0));
+        }else{
+            bottomNavigationView.setSelectedItemId(bottomBarReceiver.get(0));
+        }
+    }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
