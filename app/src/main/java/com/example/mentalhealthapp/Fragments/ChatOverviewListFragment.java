@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.ChatsListAdapter;
@@ -42,7 +43,7 @@ public class ChatOverviewListFragment  extends Fragment {
     private LinearLayoutManager layoutManager;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
-
+    private TextView altText;
 
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
@@ -61,6 +62,7 @@ public class ChatOverviewListFragment  extends Fragment {
                 e.printStackTrace();
                 return;
             }
+            visibilityLayout(objects.size()==0);
             for (Chat chat : objects) {
                 addNewCompleteChat(chat);
             }
@@ -88,6 +90,14 @@ public class ChatOverviewListFragment  extends Fragment {
     }
 
 
+    private void visibilityLayout(boolean isEmpty){
+         rvChatsList.setVisibility(isEmpty?
+                 ConstraintLayout.GONE : ConstraintLayout.VISIBLE);
+          altText.setVisibility(isEmpty?
+                  ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,6 +109,7 @@ public class ChatOverviewListFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvChatsList = view.findViewById(R.id.rvChatsList);
+        altText = view.findViewById(R.id.tv_alt_no_chats);
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(refreshListener);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,

@@ -87,11 +87,13 @@ public class HelperEditProfileFragment extends Fragment {
             final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
             saveChanges.startAnimation(animation);
             //update parse server user with avatar photo
+
             if(photoFile!=null) {
                 editPhoto(ParseUser.getCurrentUser());
             }
             editBio();
             queryTagsOfUser(updateOnServerTags);
+            ((MainActivity)getActivity()).setCurrentFragment(new HelperEditProfileFragment());
         }
     };
 
@@ -104,7 +106,6 @@ public class HelperEditProfileFragment extends Fragment {
                     object.deleteInBackground();
                 }
                 writeNewTags();
-                ((MainActivity)getActivity()).setCurrentFragment(new HelperEditProfileFragment());
             }else{
                 Log.e("HelperProfileFragment", "failure in clearing tags");
             }
