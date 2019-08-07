@@ -16,6 +16,7 @@ public class AvatarImagesActivity extends AppCompatActivity {
     private RecyclerView rvAvatarImages;
     private List<Integer> avatarPicsList;
     private AvatarImagesAdapter avAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override

@@ -37,8 +37,6 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
     private List<Integer> avatarImages;
     private ViewHolder viewHolder;
 
-
-
     SaveCallback saveCallback =new SaveCallback() {
         @Override
         public void done(ParseException e) {
@@ -69,10 +67,10 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         this.viewHolder = viewHolder;
-        Integer avatar = avatarImages.get(i);
-        viewHolder.rootView.setTag(avatar);
+        Integer currAvatar = avatarImages.get(i);
+        viewHolder.avatarPic.setImageResource(currAvatar);
         viewHolder.avatarPic.setTag(target);
-        Glide.with(mActivity).load(avatar).asBitmap().centerCrop().into(target);
+        Glide.with(mActivity).load(currAvatar).asBitmap().centerCrop().into(target);
     }
 
     @Override
@@ -90,11 +88,9 @@ public class AvatarImagesAdapter extends RecyclerView.Adapter<AvatarImagesAdapte
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView avatarPic;
-        private View rootView;
 
         public ViewHolder(View view) {
             super(view);
-            rootView = view;
             avatarPic = view.findViewById(R.id.ivAvatarPic_itemAvatarPic);
             avatarPic.setOnClickListener(this);
         }

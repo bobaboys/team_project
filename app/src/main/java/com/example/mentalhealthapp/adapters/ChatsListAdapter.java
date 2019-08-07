@@ -47,7 +47,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         this.channels = channels;
     }
 
-
     @NonNull
     @Override
     public ChatsListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -55,20 +54,17 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         return new ChatsListAdapter.ViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull final ChatsListAdapter.ViewHolder viewHolder, final int i) {
         CompleteChat chat = channels.get(i);
         viewHolder.bind(chat);
     }
 
-
     @Override
     public int getItemCount() {
         if (channels == null) return 0;
         return channels.size();
     }
-
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView title, lastMessage, timeStamp;
@@ -106,14 +102,12 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }
         };
 
-
         View.OnClickListener openChatListener =new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openChat();
             }
         };
-
 
         public ViewHolder(View view) {
             super(view);
@@ -123,7 +117,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             itemChat.setOnLongClickListener(eraseChatListener);
         }
 
-
         private void setComponents(View view){
             title = view.findViewById(R.id.tv_chat_title);
             lastMessage = view.findViewById(R.id.tv_chat_lastMessage);
@@ -132,7 +125,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             itemChat = view.findViewById(R.id.item_chat);
             noReadedNotf = view.findViewById(R.id.iv_circle_unreaded_message);
         }
-
 
         private void hideChatForUser(final String whichHelperDeleted) {
             ParseQuery<Chat> query = new ParseQuery<Chat>(Chat.class);
@@ -154,7 +146,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             });
         }
 
-
         //change to private for this class
         //public methods on top
         public void openChat(){
@@ -168,10 +159,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
 
         public void bind(final CompleteChat complete ) {
-
             channel = complete;  //This Chat object is gonna be called in other methods
-
-            // getting the adressee information (in parseServer) to populate the chat overview.
+            // getting the addressee information (in parseServer) to populate the chat overview.
                 addresseeParse = obtainFromParseAddressee();
                 title.setText(addresseeParse.getUsername()); // Username comes from Parse.
 
@@ -181,11 +170,9 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                         "lastCheckedHelper" : "lastChecked" ));
         }
 
-
         public ParseUser obtainFromParseAddressee() {
              return isCurrentHelper? channel.getChat().getParseUser("reciever") : channel.getChat().getParseUser("helper") ;
         }
-
 
         public void getAndBindParseProfilePhoto( ParseUser addresseeParse){
             if(addresseeParse==null)return;
@@ -203,7 +190,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             }
         }
 
-
         public void bindAccordingTypeOfMessage(BaseMessage lastM, ParseUser addresseeParse, long lastChecked){
             if(lastM==null) {
                 lastMessage.setText("");
@@ -220,7 +206,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             if(lastM.getCreatedAt() > lastChecked &&  ! isMyMessage) bindMessageNotRead();
             else bindMessageRead();
         }
-
 
         private boolean setTextUserMessage(BaseMessage lastM){
             UserMessage lastMUser = (UserMessage) lastM;
@@ -254,7 +239,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
             noReadedNotf.setVisibility(ConstraintLayout.VISIBLE);
         }
-
 
         private void bindMessageRead(){
             timeStamp.setTextColor(context.getResources().getColor(android.R.color.secondary_text_light));
