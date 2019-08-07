@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,9 @@ public class CreateEntryJournalFragment extends Fragment {
             final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
             save.startAnimation(animation);
             if(alreadyExists){
-                existingEntry.setJournalEntry(journalEntry.getText().toString());
+                //existingEntry.setJournalEntry(journalEntry.getText().toString());
+                Log.d("save entry", "journal entry exists");
+                existingEntry.put("journalEntry", journalEntry.getText().toString());
                 existingEntry.saveInBackground(onBackPressed);
             }else{
                 //save the new journal entry to the parse server
