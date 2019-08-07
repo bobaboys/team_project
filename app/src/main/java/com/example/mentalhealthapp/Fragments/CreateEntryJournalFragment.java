@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
@@ -26,6 +28,8 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
+import chatApp.ConnectionHandle;
+
 public class CreateEntryJournalFragment extends Fragment {
     private  TextView date;
     private  EditText journalEntry;
@@ -35,6 +39,15 @@ public class CreateEntryJournalFragment extends Fragment {
     private  Journal existingEntry;
     private  MediaPlayer buttonClickSound;
     private  boolean checkedIfExist;
+    private ImageView back;
+
+
+    private View.OnClickListener onBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).setCurrentFragment(new ReflectFragment());
+        }
+    };
 
 
     private SaveCallback onBackPressed = new SaveCallback() {
@@ -94,10 +107,13 @@ public class CreateEntryJournalFragment extends Fragment {
         if(alreadyExists || checkedIfExist) queryEntriesByUserDate(getOldTextEntry);
         date.setText(dateOfEntry);
         save.setOnClickListener(saveNewEntryListener);
+        back.setOnClickListener(onBack);
     }
 
 
     private  void setViewComponents(View view){
+        back = view.findViewById(R.id.iv_back_main_btn);
+        back.setVisibility(ConstraintLayout.VISIBLE);
         date = view.findViewById(R.id.tv_date_createJournal);
         journalEntry = view.findViewById(R.id.et_addEntry_createJournal);
         save = view.findViewById(R.id.btn_saveEntry_createJournal);

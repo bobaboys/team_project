@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -68,6 +69,15 @@ public class HelperEditProfileFragment extends Fragment {
     private  TagsAdapter tagsAdapter;
     private  MediaPlayer buttonClickSound;
     private List<String> lastTagsSelectedString;
+    private ImageView back;
+
+
+    private View.OnClickListener onBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).setCurrentFragment(new HelperProfileFragment());
+        }
+    };
 
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
@@ -219,6 +229,8 @@ public class HelperEditProfileFragment extends Fragment {
         avatarPic = view.findViewById(R.id.ivAvatarPic_helpereditprofile);
         choosePic = view.findViewById(R.id.btnChoosePic_helpereditprofile);
         takePic = view.findViewById(R.id.btnTakePic_helpereditprofile);
+        back = view.findViewById(R.id.iv_back_main_btn);
+        back.setVisibility(ConstraintLayout.VISIBLE);
     }
 
 
@@ -228,6 +240,7 @@ public class HelperEditProfileFragment extends Fragment {
         saveChanges.setOnClickListener(saveChangesListener);
         takePic.setOnClickListener(takePicListener);
         choosePic.setOnClickListener(choosePicListener);
+        back.setOnClickListener(onBack);
     }
 
 

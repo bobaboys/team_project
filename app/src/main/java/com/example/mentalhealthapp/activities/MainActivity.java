@@ -72,9 +72,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageScrolled(int i, float v, int pixels) {
             // Starting pos same as target? We reach the target or there is not target at all.
-            if(targetPage == i && v==0)  targetPage =-1;
+            if(targetPage == i && v==0)  {
+                targetPage =-1;
+            }
             // next page not called and we are swiping? call next page.
-            if(!calledNextPage && v!=0) callNextPage(i+v);
+            if(!calledNextPage && v!=0){ callNextPage(i+v); }
             // set initial reference for later comparisons.
             if(v==0){
                 lastPage = i;
@@ -131,9 +133,12 @@ public class MainActivity extends AppCompatActivity {
     public void setCurrentFragment(Fragment f){
         int page = mPager.getCurrentItem();
         for(int i=0;i<fragments.length;i++) {
+            //fragments[i].onPause();
             fragments[i] = i==page ? f : null;
         }
+        pagerAdapter.notifyDataSetChanged();
         mPager.setCurrentItem(page);
+
     }
 
 
@@ -234,6 +239,11 @@ public class MainActivity extends AppCompatActivity {
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
         }
 
         @Override

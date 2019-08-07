@@ -3,14 +3,17 @@ package com.example.mentalhealthapp.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.JournalAdapter;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.Journal;
@@ -29,6 +32,16 @@ public class JournalFragment extends Fragment {
     private ArrayList<Journal> entries;
     private RecyclerView recyclerView;
     private JournalAdapter journalAdapter;
+    private ImageView back;
+
+
+    View.OnClickListener onBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).setCurrentFragment(new ReflectFragment());
+        }
+    };
+
 
     FindCallback<Journal> populateJournalByTime = new FindCallback<Journal>() {
         @Override
@@ -54,6 +67,9 @@ public class JournalFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.rv_journal);
+        back = view.findViewById(R.id.iv_back_main_btn);
+        back.setVisibility(ConstraintLayout.VISIBLE);
+        back.setOnClickListener(onBack);
         entries = new ArrayList<>();
         setRecyclerView();
         queryJournalEntries(populateJournalByTime);

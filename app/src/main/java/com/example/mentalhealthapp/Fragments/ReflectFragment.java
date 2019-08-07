@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
@@ -41,7 +43,6 @@ public class ReflectFragment extends Fragment {
     public final String EDIT_KEY = "View Entry";
     private  MediaPlayer buttonClickSound;
     private boolean entryExist, checkedIfExist;
-
     public void setEntryExist(boolean entryExist) {
         this.entryExist = entryExist;
     }

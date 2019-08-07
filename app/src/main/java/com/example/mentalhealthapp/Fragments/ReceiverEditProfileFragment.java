@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -48,6 +49,15 @@ public class ReceiverEditProfileFragment extends Fragment {
     private  File photoFile;
     public static final int CHOOSE_AVATAR_REQUEST = 333;
     private  MediaPlayer buttonClickSound;
+    ImageView back;
+
+
+    private View.OnClickListener onBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).setCurrentFragment(new ReceiverProfileFragment());
+        }
+    };
 
 
     protected View.OnClickListener saveChangesListener = new View.OnClickListener() {
@@ -108,6 +118,8 @@ public class ReceiverEditProfileFragment extends Fragment {
         takePic = view.findViewById(R.id.btnTakePic_reciever_edit_profiile);
         avatarPic = view.findViewById(R.id.ivAvatar_reciever_edit_profile);
         choosePic = view.findViewById(R.id.btnChoosePic_reciever_edit_profile);
+        back = view.findViewById(R.id.iv_back_main_btn);
+        back.setVisibility(ConstraintLayout.VISIBLE);
     }
 
 
@@ -115,6 +127,7 @@ public class ReceiverEditProfileFragment extends Fragment {
         saveChanges.setOnClickListener(saveChangesListener);
         takePic.setOnClickListener(takePicListener);
         choosePic.setOnClickListener(choosePicListener);
+        back.setOnClickListener(onBack);
     }
 
 
