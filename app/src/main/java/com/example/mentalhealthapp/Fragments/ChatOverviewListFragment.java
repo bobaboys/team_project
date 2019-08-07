@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.ChatsListAdapter;
@@ -36,6 +37,7 @@ public class ChatOverviewListFragment  extends Fragment {
     public static int LIMIT_QUERY = 25;
     private ArrayList<CompleteChat> completeChats;
     private RecyclerView rvChatsList;
+    private TextView emptyView;
     private ChatsListAdapter chatListAdapter;
     private LinearLayoutManager layoutManager;
     private EndlessRecyclerViewScrollListener scrollListener;
@@ -97,6 +99,8 @@ public class ChatOverviewListFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvChatsList = view.findViewById(R.id.rvChatsList);
+        emptyView = view.findViewById(R.id.empty_view);
+
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(refreshListener);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -106,11 +110,11 @@ public class ChatOverviewListFragment  extends Fragment {
 
 
         completeChats = new ArrayList<>();
+
         setRecyclerView();
 
         scrollListener.resetState();
         // The call to the parse server, list of chats is made at ONRESUME.
-
     }
 
 
@@ -119,6 +123,11 @@ public class ChatOverviewListFragment  extends Fragment {
         rvChatsList.setAdapter(chatListAdapter);
         layoutManager= new LinearLayoutManager(this.getContext());
         rvChatsList.setLayoutManager(layoutManager);
+        //show empty view!
+        if(completeChats.size()==0){
+            rvChatsList.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -145,9 +154,13 @@ public class ChatOverviewListFragment  extends Fragment {
         query.findInBackground(findCallback);
     }
 
-
     private void addByTimestamp(ArrayList<CompleteChat> completeChats, CompleteChat chat){
-        //TODO
+        //not empty view
+        if(completeChats.size()>0){
+            rvChatsList.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
+
         chat.setTimestampLast( getLastTimestampLong(chat.getGroupChannel()));
         int addAt=completeChats.size(); // default case, add to the tail. (or head if empty)
 
@@ -158,8 +171,10 @@ public class ChatOverviewListFragment  extends Fragment {
             }
         }
         completeChats.add(addAt,chat);
+
         chatListAdapter.notifyItemInserted(addAt);
         rvChatsList.scrollToPosition(0);
+
 
     }
 
