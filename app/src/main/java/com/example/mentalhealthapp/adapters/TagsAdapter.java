@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import com.example.mentalhealthapp.Fragments.HelperEditProfileFragment;
 import com.example.mentalhealthapp.Fragments.ReceiverEditProfileFragment;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.HelperSignUpTagsActivity;
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.Fragments.TagDetailsFragment;
 import com.example.mentalhealthapp.models.Tag;
@@ -76,17 +77,10 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Tag> filteredList = new ArrayList<>();
-            if(constraint == null || constraint.length() == 0){
+            if(constraint == null || constraint.length() == 0)
                 filteredList.addAll(tagsFull);
-            }
-            else{
-                String filterPattern = constraint.toString().toLowerCase().trim();
-                for(Tag item: tagsFull){
-                    if(item.getString(TAG_TABLE_FIELD).toLowerCase().contains(filterPattern)){
-                        filteredList.add(item);
-                    }
-                }
-            }
+            else
+                filterTags( constraint, filteredList);
             FilterResults results = new FilterResults();
             results.values = filteredList;
             return results;
@@ -102,6 +96,14 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         }
 
     };
+
+    private void filterTags(CharSequence constraint, List<Tag> filteredList){
+        String filterPattern = constraint.toString().toLowerCase().trim();
+        for(Tag item: tagsFull){
+            if(item.getString(TAG_TABLE_FIELD).toLowerCase().contains(filterPattern))
+                filteredList.add(item);
+        }
+    }
 
 
     public void setLastSelectedTags(List<String> lastSelectedTags) {
@@ -137,7 +139,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("tag", selectedTag);
                 resultFragment.setArguments(bundle);
-                ((MainActivity)view.getContext()).setCurrentFragment(resultFragment);
+                try{
+                    ((MainActivity)view.getContext()).setCurrentFragment(resultFragment);
+                }catch (ClassCastException e){
+                    ((HelperSignUpTagsActivity)view.getContext()).replaceFragment(resultFragment);
+                }
+
             }
         };
 
@@ -162,8 +169,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             description = itemView.findViewById(R.id.ic_tag_description);
 
             tagName.setOnCheckedChangeListener(setStateCheckBoxItem);
-            // Listener of Tag details icon. opens a new fragment,
-            // with the tag name, description and link with more info
             description.setOnClickListener(openDescriptionFragment);
         }
 

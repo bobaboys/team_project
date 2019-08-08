@@ -2,10 +2,8 @@ package com.example.mentalhealthapp.Fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -93,7 +91,7 @@ public class HelperEditProfileFragment extends Fragment {
             }
             editBio();
             queryTagsOfUser(updateOnServerTags);
-            ((MainActivity)getActivity()).setCurrentFragment(new HelperProfileFragment());
+
         }
     };
 
@@ -263,7 +261,7 @@ public class HelperEditProfileFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference to access to future access
         photoFile = getPhotoFileUri(photoFileName);
-        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.example.mentalhealth", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
@@ -287,7 +285,7 @@ public class HelperEditProfileFragment extends Fragment {
         //if code is same as code which we started activity with
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                Bitmap takenImage = Utils.rotateBitmapOrientation(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
                 avatarPic.setImageBitmap(takenImage);
             } else { // Result was a failure
@@ -333,5 +331,6 @@ public class HelperEditProfileFragment extends Fragment {
             helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.getSelectedTags().get(i));
             helperTags.saveInBackground(saveCallback);
         }
+        ((MainActivity)getActivity()).setCurrentFragment(new HelperProfileFragment());
     }
 }

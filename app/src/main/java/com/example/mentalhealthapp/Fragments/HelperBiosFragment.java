@@ -75,7 +75,7 @@ public class HelperBiosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Getting list of tags selected by reciever.
+        //Getting list of tags selected by receiver.
         Bundle bundle = getArguments();
         tags = (TagsParcel) Parcels.unwrap( bundle.getParcelable("selectedTags"));
 
@@ -96,7 +96,6 @@ public class HelperBiosFragment extends Fragment {
         altBack = view.findViewById(R.id.btn_alternate_back);
         back = view.findViewById(R.id.iv_back_main_btn);
         back.setVisibility(ConstraintLayout.VISIBLE);
-
     }
 
 
@@ -132,14 +131,12 @@ public class HelperBiosFragment extends Fragment {
         ArrayList<UserWithTags> helpersWithAllTags= new ArrayList<>();
         for(int i = 0; i < helperTagsList.size(); i++){
             int j=searchUser(helpersWithAllTags,helperTagsList.get(i).getUser());
-            if(j==-1){//User not found on list.
+            if(j==-1)//User not found on list.
                 helpersWithAllTags.add(
                         createUserWithAllTags(helperTagsList.get(i)));
 
-            }else{
-                // user was found, add tag to it.
+            else// user was found, add tag to it.
                 helpersWithAllTags.get(j).getTags().add(helperTagsList.get(i).getTag());
-            }
         }
         biosAdapter.addAll(helpersWithAllTags);
         biosAdapter.notifyDataSetChanged();
@@ -155,9 +152,8 @@ public class HelperBiosFragment extends Fragment {
 
     public int searchUser(ArrayList<UserWithTags> helpersWithAllTags, ParseUser user){
         if(user==null)return -1;
-        for (int i = 0; i < helpersWithAllTags.size(); i++) {
+        for (int i = 0; i < helpersWithAllTags.size(); i++)
             if (user.getObjectId().equals(helpersWithAllTags.get(i).getUser().getObjectId())) return i;
-        }
         return -1;
     }
 }

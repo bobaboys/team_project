@@ -3,6 +3,7 @@ package com.example.mentalhealthapp.adapters;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -95,7 +96,6 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         isMyMessage = isThisMyMessage(sender);
         viewHolder.isMyMessage=isMyMessage;
         if(isMyMessage){
-
             viewHolder.myAudioLayout.setVisibility(LinearLayout.VISIBLE);
             viewHolder.yourAudioLayout.setVisibility(LinearLayout.GONE);
         }else{
@@ -141,16 +141,41 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
             }
         };
 
+        private Handler mSeekbarUpdateHandler = new Handler();
+
+        private Runnable mUpdateSeekbar = new Runnable() {
+            @Override
+            public void run() {
+                if(isMyMessage)
+                    sbMine.setProgress(player.getCurrentPosition());
+                else
+                    sbYour.setProgress(player.getCurrentPosition());
+                mSeekbarUpdateHandler.postDelayed(this, 50);
+            }
+        };
+
+
+        SeekBar.OnSeekBarChangeListener seekBarChangeListener= new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    player.seekTo(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        };
 
         private void playOrDownload() {
 
             try {
-                //GET FILE FROM INTERNET.
                 String audioId = fileMessage.getSender().getUserId().toLowerCase();
                 audioId += fileMessage.getMessageId()+".3gp";
                 String pathDownload = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() ;
                 String absFilePath =pathDownload+audioId;
-                //NO CHECO SI DIRECTORIO EXISTE. ojo
                 File outputFile = new File(absFilePath);
                 player = new MediaPlayer();
 
@@ -158,7 +183,8 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
                         play(absFilePath);
                 }else{
                     new DownloadTaskAndPlay( context,  isMyMessage?playMine:playYou,
-                            fileMessage.getUrl(),pathDownload,  audioId,  player);
+                            isMyMessage?sbMine:sbYour, fileMessage.getUrl(),pathDownload,
+                            audioId,  player);
                 }
 
             } catch (IOException e) {
@@ -171,16 +197,31 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
             @Override
             public void onCompletion(MediaPlayer mp) {
                 Utils.enableDisablePlay(context,isMyMessage?playMine:playYou, true);
+                mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                if(isMyMessage)
+                    sbMine.setProgress(0);
+                else
+                    sbYour.setProgress(0);
             }
         };
 
         public void play(String absFilePath) throws IOException{
             player.setDataSource(absFilePath);
             player.prepare();
+            if(isMyMessage) {
+                sbMine.setMax(player.getDuration());
+                sbMine.setOnSeekBarChangeListener(seekBarChangeListener);
+            }
+            else {
+                sbYour.setMax(player.getDuration());
+                sbYour.setOnSeekBarChangeListener(seekBarChangeListener);
+            }
             player.start();
+            mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
             player.setOnCompletionListener(completionListener);
 
         }
+
 
         public ViewHolder(View view) {
             super(view);
@@ -210,9 +251,9 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
 
 
         private void bindTextMsg(){
-            if(isMyMessage){
+            if(isMyMessage)
                 myBody.setText(userMessage.getMessage());
-            }else{
+            else{
                 body.setText(userMessage.getMessage());
                 if(addressee==null)return;
                 name.setText(addressee.getUsername());

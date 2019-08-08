@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public void done(ParseException e) {
             if(e == null){
-                Log.d("SignUpActivity", "Sign up successful");
+                Log.d(TAG, "Sign up successful");
                 //adding photo to parse user
                 user.put(AVATAR_FIELD, parseFile);
                 user.saveInBackground(saveProfilePicCallback);
@@ -94,7 +94,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 }
                 checkEmailValid(email);
-                Log.e("SignUpActivity", "Sign up failure", e);
+                Log.e(TAG, "Sign up failure", e);
                 e.printStackTrace();
             }
         }
@@ -220,7 +220,8 @@ public class SignUpActivity extends AppCompatActivity {
         //if code is same as code which we started activity with
         if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
                 //load taken image into image view
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                //Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                Bitmap takenImage = Utils.Utils.rotateBitmapOrientation(photoFile.getAbsolutePath());
                 avatarPic.setImageBitmap(takenImage);
 
                 //assign taken photo to parse file

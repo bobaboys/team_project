@@ -82,7 +82,6 @@ public class OpenChatActivity extends AppCompatActivity {
     LinearLayoutManager layout;
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
-    private String[] permissions = {Manifest.permission.RECORD_AUDIO};
     private  MediaPlayer buttonClickSound;
     ParseFile avatarPic;
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
@@ -141,6 +140,7 @@ public class OpenChatActivity extends AppCompatActivity {
                                 intent.putExtra("chatFromReceiver", "true");
                                 startActivity(intent);
                                 finish();
+                                OpenChatActivity.super.onBackPressed();
                             }
                         });
 
@@ -237,6 +237,7 @@ public class OpenChatActivity extends AppCompatActivity {
         groupChannel.sendFileMessage(fmp, new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
+                //You add this new message to the lowest part of the chat
                 messages.add(fileMessage);
                 chatAdapter.notifyItemInserted(messages.size() - 1);
                 rv_chatBubbles.scrollToPosition(messages.size() - 1);
@@ -353,7 +354,7 @@ public class OpenChatActivity extends AppCompatActivity {
         prevMessageListQuery.load(30, true, new PreviousMessageListQuery.MessageListQueryResult() {
             @Override
             public void onResult(List<BaseMessage> ms, SendBirdException e) {
-                if (e != null) {    // Error.
+                if (e != null) {
                     e.printStackTrace();
                     return;
                 }

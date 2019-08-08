@@ -161,19 +161,19 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
 
         public void bind(final CompleteChat complete ) {
-            channel = complete;  //This Chat object is gonna be called in other methods
-            // getting the addressee information (in parseServer) to populate the chat overview.
-                addresseeParse = obtainFromParseAddressee();
-                title.setText(addresseeParse.getUsername()); // Username comes from Parse.
-
-                getAndBindParseProfilePhoto( addresseeParse);
-                BaseMessage  lastM = channel.getGroupChannel().getLastMessage();
-                bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.getChat().getLong(isCurrentHelper?
-                        "lastCheckedHelper" : "lastChecked" ));
+            channel = complete;
+            addresseeParse = obtainFromParseAddressee();
+            title.setText(addresseeParse.getUsername());
+            getAndBindParseProfilePhoto( addresseeParse);
+            BaseMessage  lastM = channel.getGroupChannel().getLastMessage();
+            bindAccordingTypeOfMessage( lastM,  addresseeParse, channel.getChat().getLong(isCurrentHelper?
+                    "lastCheckedHelper" : "lastChecked" ));
         }
 
         public ParseUser obtainFromParseAddressee() {
-             return isCurrentHelper? channel.getChat().getParseUser("reciever") : channel.getChat().getParseUser("helper") ;
+             return isCurrentHelper?
+                     channel.getChat().getParseUser("reciever") :
+                     channel.getChat().getParseUser("helper") ;
         }
 
         public void getAndBindParseProfilePhoto( ParseUser addresseeParse){
@@ -226,7 +226,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             FileMessage lastMFile = (FileMessage) lastM;
             boolean isMyMessage =lastMFile.getSender().getUserId().equals(ParseUser.getCurrentUser().getObjectId());
             String authorAndAttachMessage = isMyMessage
-                    ? "You Sent an attachment" :
+                    ? "You sent an attachment" :
                     addresseeParse.getUsername()+" sent an attachment";
             lastMessage.setText(authorAndAttachMessage);
             return  isMyMessage;

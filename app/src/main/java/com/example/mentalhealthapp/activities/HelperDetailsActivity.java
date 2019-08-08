@@ -44,8 +44,6 @@ import chatApp.CreateChatHandle;
 public class HelperDetailsActivity extends AppCompatActivity {
     private  TextView helperBio;
     private  GridView helperTags;
-    private  TextView textHelperTags;
-    private  TextView textHelperBio;
     private  TextView helperUsername;
     private  Button openChat;
     private  ImageView helperAvatarPic;
@@ -54,6 +52,14 @@ public class HelperDetailsActivity extends AppCompatActivity {
     private  ArrayList<String> allHelperTags = new ArrayList<>();
     private  SelectedTagsAdapter profTagAdapter;
     private  MediaPlayer buttonClickSound;
+    private  ImageView back;
+
+    View.OnClickListener onBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            HelperDetailsActivity.this.onBackPressed();
+        }
+    };
 
 
     public void setGroupChannel(GroupChannel groupChannel) {
@@ -78,20 +84,24 @@ public class HelperDetailsActivity extends AppCompatActivity {
     private FindCallback<HelperTags>getHelperDetailsCallback = new FindCallback<HelperTags>() {
         @Override
         public void done(List<HelperTags> objects, ParseException e) {
-            if(e==null){
-                for(int i = 0; i < objects.size(); i++){
-                    Object strTag;
-                    HelperTags helperTag = objects.get(i);
-                    strTag = ((Tag)helperTag.get("Tag")).get("Tag");
-                    allHelperTags.add(strTag.toString());
-                }
-                profTagAdapter = new SelectedTagsAdapter(HelperDetailsActivity.this, allHelperTags);
-                helperTags.setAdapter(profTagAdapter);
-            }else{
+            if(e!=null) {
                 Log.e("HelperProfileFragment", "failure in populating tags");
+                return;
             }
+            addAllHelperTags( objects);
+            profTagAdapter = new SelectedTagsAdapter(HelperDetailsActivity.this, allHelperTags);
+            helperTags.setAdapter(profTagAdapter);
         }
     };
+
+    private void addAllHelperTags(List<HelperTags> objects){
+        for(int i = 0; i < objects.size(); i++){
+            Object strTag;
+            HelperTags helperTag = objects.get(i);
+            strTag = ((Tag)helperTag.get("Tag")).get("Tag");
+            allHelperTags.add(strTag.toString());
+        }
+    }
 
     private FindCallback<Chat> optionalCreateChatParse= new FindCallback<Chat>() {
         @Override
@@ -177,14 +187,14 @@ public class HelperDetailsActivity extends AppCompatActivity {
     }
 
     private void assignViewsAndListeners() {
+        back = findViewById(R.id.iv_back_main_btn);
         helperUsername = findViewById(R.id.tvHelperUsername_HelperDetails);
         helperBio = findViewById(R.id.tvBio_helperdetails);
         helperTags = findViewById(R.id.gvHelperTags_helperDetails);
-        textHelperBio = findViewById(R.id.tvHelperBioText_HelperDetails);
-        textHelperTags = findViewById(R.id.tvHelpersTagsText_HelperDetails);
         openChat = findViewById(R.id.btnChat_helperdetails);
         openChat.setOnClickListener(openChatBtnListener);
         helperAvatarPic = findViewById(R.id.ivHelperDetails);
+        back.setOnClickListener(onBack);
     }
 
     public void populateDetails(){
