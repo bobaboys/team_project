@@ -57,14 +57,12 @@ public class JournalAdapter  extends RecyclerView.Adapter<JournalAdapter.ViewHol
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         private TextView date, content;
-        private ConstraintLayout itemEntry;
         private Journal entry;
 
         public ViewHolder(View view) {
             super(view);
             date = view.findViewById(R.id.tv_entry_date);
             content = view.findViewById(R.id.tv_entry_content);
-            itemEntry = view.findViewById(R.id.cl_entry);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
         }

@@ -96,7 +96,6 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         isMyMessage = isThisMyMessage(sender);
         viewHolder.isMyMessage=isMyMessage;
         if(isMyMessage){
-
             viewHolder.myAudioLayout.setVisibility(LinearLayout.VISIBLE);
             viewHolder.yourAudioLayout.setVisibility(LinearLayout.GONE);
         }else{
@@ -143,6 +142,7 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         };
 
         private Handler mSeekbarUpdateHandler = new Handler();
+
         private Runnable mUpdateSeekbar = new Runnable() {
             @Override
             public void run() {
@@ -154,6 +154,20 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
             }
         };
 
+
+        SeekBar.OnSeekBarChangeListener seekBarChangeListener= new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    player.seekTo(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        };
 
         private void playOrDownload() {
 
@@ -194,15 +208,20 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         public void play(String absFilePath) throws IOException{
             player.setDataSource(absFilePath);
             player.prepare();
-            if(isMyMessage)
+            if(isMyMessage) {
                 sbMine.setMax(player.getDuration());
-            else
+                sbMine.setOnSeekBarChangeListener(seekBarChangeListener);
+            }
+            else {
                 sbYour.setMax(player.getDuration());
+                sbYour.setOnSeekBarChangeListener(seekBarChangeListener);
+            }
             player.start();
             mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
             player.setOnCompletionListener(completionListener);
 
         }
+
 
         public ViewHolder(View view) {
             super(view);
@@ -232,9 +251,9 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
 
 
         private void bindTextMsg(){
-            if(isMyMessage){
+            if(isMyMessage)
                 myBody.setText(userMessage.getMessage());
-            }else{
+            else{
                 body.setText(userMessage.getMessage());
                 if(addressee==null)return;
                 name.setText(addressee.getUsername());

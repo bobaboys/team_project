@@ -108,18 +108,8 @@ public class DownloadTaskAndPlay {
                             + " " + c.getResponseMessage());
 
                 }
-
-/**************
-                //Get File if SD card is present
-                if (Utils.isSDCardPresent()) {
-
-                    apkStorage = new File(
-                            pathDownload);
-                } else
-                    Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
- *************/
                 apkStorage = new File(
-                        pathDownload);//******************* no estamos usando la SD
+                        pathDownload);
 
                 //If File is not present create directory
                 if (!apkStorage.exists()) {
@@ -144,13 +134,11 @@ public class DownloadTaskAndPlay {
                 while ((len1 = is.read(buffer)) != -1) {
                     fos.write(buffer, 0, len1);//Write new file
                 }
-
                 //Close all connection after doing task
                 fos.close();
                 is.close();
 
             } catch (Exception e) {
-
                 //Read exception if something went wrong
                 e.printStackTrace();
                 outputFile = null;
@@ -167,6 +155,7 @@ public class DownloadTaskAndPlay {
         player.setDataSource( absFilePath);
         player.prepare();
         seekBar.setMax(player.getDuration());
+        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         player.start();
         mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
         player.setOnCompletionListener(completionListener);
@@ -180,4 +169,20 @@ public class DownloadTaskAndPlay {
             seekBar.setProgress(0);
         }
     };
+
+
+    SeekBar.OnSeekBarChangeListener seekBarChangeListener= new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser)
+                player.seekTo(progress);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) { }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) { }
+    };
+
 }

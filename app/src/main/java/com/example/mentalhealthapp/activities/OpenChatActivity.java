@@ -76,9 +76,7 @@ public class OpenChatActivity extends AppCompatActivity {
     private String mFileName;
     private boolean mStartRecording;
     private String audioId;
-    // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
-    private String[] permissions = {Manifest.permission.RECORD_AUDIO};
     private  MediaPlayer buttonClickSound;
 
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
@@ -133,9 +131,6 @@ public class OpenChatActivity extends AppCompatActivity {
                         currChat.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
-                                //Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
-                                //startActivity(intent);
-                                //finish();
                                 OpenChatActivity.super.onBackPressed();
                             }
                         });
@@ -233,7 +228,6 @@ public class OpenChatActivity extends AppCompatActivity {
         groupChannel.sendFileMessage(fmp, new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
-                //TODO
                 //You add this new message to the lowest part of the chat
                 messages.add(fileMessage);
                 chatAdapter.notifyItemInserted(messages.size() - 1);
@@ -353,7 +347,7 @@ public class OpenChatActivity extends AppCompatActivity {
         prevMessageListQuery.load(30, true, new PreviousMessageListQuery.MessageListQueryResult() {
             @Override
             public void onResult(List<BaseMessage> ms, SendBirdException e) {
-                if (e != null) {    // Error.
+                if (e != null) {
                     e.printStackTrace();
                     return;
                 }

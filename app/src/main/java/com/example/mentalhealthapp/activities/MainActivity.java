@@ -1,6 +1,5 @@
 package com.example.mentalhealthapp.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,7 +9,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -20,19 +18,9 @@ import com.example.mentalhealthapp.Fragments.ReceiverProfileFragment;
 import com.example.mentalhealthapp.Fragments.RecieverSearchPageFragment;
 import com.example.mentalhealthapp.Fragments.ReflectFragment;
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.models.Chat;
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 import com.sendbird.android.User;
-
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import chatApp.ChatApp;
 import chatApp.ConnectionHandle;
 
@@ -72,9 +60,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageScrolled(int i, float v, int pixels) {
             // Starting pos same as target? We reach the target or there is not target at all.
-            if(targetPage == i && v==0)  {
-                targetPage =-1;
-            }
+            if(targetPage == i && v==0)  { targetPage =-1; }
             // next page not called and we are swiping? call next page.
             if(!calledNextPage && v!=0){ callNextPage(i+v); }
             // set initial reference for later comparisons.
@@ -104,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onFailure(String TAG, Exception e) {
             e.printStackTrace();
-            //TODO offline view ?
         }
     };
 
@@ -195,11 +180,11 @@ public class MainActivity extends AppCompatActivity {
             setSwipeAdapter();
             bottomNavigationView.setSelectedItemId(R.id.navigation_home);
         }
-        if(isHelper){
+        if(isHelper)
             bottomNavigationView.setVisibility(View.GONE);
-        }else{
+        else
             bottomHelperNavView.setVisibility(View.GONE);
-        }
+
     }
 
 
@@ -229,11 +214,11 @@ public class MainActivity extends AppCompatActivity {
         targetPage = 0;
         calledNextPage = false;
         mPager.setCurrentItem(0);
-        if(isHelper){
+        if(isHelper)
             bottomHelperNavView.setSelectedItemId(bottomBarHelper.get(0));
-        }else{
+        else
             bottomNavigationView.setSelectedItemId(bottomBarReceiver.get(0));
-        }
+
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {

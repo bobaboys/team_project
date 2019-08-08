@@ -24,26 +24,14 @@ public class SelectedTagsAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View gridView;
+        if (convertView != null) return convertView;
 
-        if (convertView == null) {
-
-            gridView = new View(context);
-
-            // get layout from mobile.xml
-            gridView = inflater.inflate(R.layout.item_tag_gridview, null);
-
-            // set value into textview
-            TextView textView = (TextView) gridView
-                    .findViewById(R.id.tvGridViewTag);
-            textView.setText(textViewValues.get(position));
-        } else {
-            gridView = (View) convertView;
-        }
+        View gridView = inflater.inflate(R.layout.item_tag_gridview, null);
+        TextView textView = (TextView) gridView.findViewById(R.id.tvGridViewTag);
+        textView.setText(textViewValues.get(position));
         return gridView;
     }
 

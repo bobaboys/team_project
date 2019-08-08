@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public void done(ParseException e) {
             if(e == null){
-                Log.d("SignUpActivity", "Sign up successful");
+                Log.d(TAG, "Sign up successful");
                 //adding photo to parse user
                 user.put(AVATAR_FIELD, parseFile);
                 user.saveInBackground(saveProfilePicCallback);
@@ -94,7 +94,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 }
                 checkEmailValid(email);
-                Log.e("SignUpActivity", "Sign up failure", e);
+                Log.e(TAG, "Sign up failure", e);
                 e.printStackTrace();
             }
         }

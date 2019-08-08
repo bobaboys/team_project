@@ -1,6 +1,5 @@
 package com.example.mentalhealthapp.Fragments;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,8 +15,6 @@ import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.HelperSignUpTagsActivity;
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Tag;
-
-import org.parceler.Parcels;
 
 
 public class TagDetailsFragment extends Fragment {
@@ -37,8 +34,7 @@ public class TagDetailsFragment extends Fragment {
     };
 
 
-    public TagDetailsFragment() {// Required empty public constructor
-    }
+    public TagDetailsFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

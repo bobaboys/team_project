@@ -1,7 +1,5 @@
 package com.example.mentalhealthapp.Fragments;
 
-import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,23 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.example.mentalhealthapp.R;
-import com.example.mentalhealthapp.activities.HelperSignUpTagsActivity;
-import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.TagsAdapter;
-import com.example.mentalhealthapp.models.HelperTags;
 import com.example.mentalhealthapp.models.Tag;
-import com.example.mentalhealthapp.models.TagsParcel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,10 +60,7 @@ public class SelectTagsSignUpFragment  extends Fragment {
 
     private void getAllTags() {
         ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
-        postsQuery.setLimit(50);
-        /*We decided load all tags (and on code select which ones match with the search FOR LATER)
-         * we are concern that it could be lots of information on the database and we would need to set
-         * a limit of rows. In this case our tags are 50 tops. */
+        postsQuery.setLimit(100);
         postsQuery.findInBackground(new FindCallback<Tag>() {
             @Override
             public void done(List<Tag> objects, ParseException e) {

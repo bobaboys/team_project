@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
     private Button signUpBtn;
     private Button emergencyBtn;
+    private GroupChannel groupChannel;
     protected ParseUser currentUser;
     protected ParseUser onCallNeedHelp;
     private ParseUser onCallHelper;
@@ -52,7 +53,24 @@ public class LoginActivity extends AppCompatActivity {
             loginBtn.startAnimation(animation);
             final String username = usernameInput.getText().toString();
             final String password = passwordInput.getText().toString();
-            login(username, password, currentUser);
+            ParseUser.logInInBackground(username, password, logInCallback);
+        }
+    };
+
+    LogInCallback logInCallback = new LogInCallback() {
+        @Override
+        public void done(ParseUser user, ParseException e) {
+            if(e==null){
+                Log.d("LoginActivity", "Login successful!");
+                final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }else{
+                Log.e("LoginActivity", "Login failure");
+                Toast.makeText(LoginActivity.this,"Invalid username and/or password", Toast.LENGTH_LONG).show();
+                usernameInput.setText("");
+                passwordInput.setText("");
+                e.printStackTrace();
+            }
         }
     };
 
@@ -74,7 +92,29 @@ public class LoginActivity extends AppCompatActivity {
             final Animation animation = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.bounce);
             emergencyBtn.startAnimation(animation);
             //assigns need help, on call, and starts chat
-            assignOnCallNeedHelp();
+            ParseAnonymousUtils.logIn(assignOnCallNeedHelp);
+        }
+    };
+
+    private FindCallback assignOnCallHelper= new FindCallback<ParseUser>() {
+        @Override
+        public void done(List<ParseUser> objects, ParseException e) {
+            for(int i = 0; i < objects.size(); i++){
+                onCallHelper = objects.get(0);
+            }
+        }
+    };
+
+    private SaveCallback openChat =  new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+            if(e==null){
+                Log.d("USERS", onCallHelper.getUsername());
+                openChatFragment(groupChannel);
+            }else{
+                e.printStackTrace();
+                return;
+            }
         }
     };
 
@@ -101,13 +141,14 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String TAG, final GroupChannel groupChannel) {
                         // Check if row already exist
+                        LoginActivity.this.groupChannel = groupChannel;
                         ParseQuery<Chat> query  = new ParseQuery<Chat>(Chat.class);
                         query.whereEqualTo("chatUrl",groupChannel.getUrl());
                         query.findInBackground(new FindCallback<Chat>() {
                             @Override
                             public void done(List<Chat> objects, ParseException e) {
                                 if(objects.size() == 0){// no rows, create new one.
-                                    createChatParse(groupChannel);
+                                    createChatParse(groupChannel, openChat);
                                 }else {// there is a row with the same info. skip create a new one.
                                     openChatFragment(groupChannel);
                                 }
@@ -131,63 +172,34 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void assignOnCallNeedHelp() {
-        //log in anonymously
-        ParseAnonymousUtils.logIn(new LogInCallback() {
+    LogInCallback assignOnCallNeedHelp =new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                if(e==null){
-                    Log.d("LoginActivity", "emergency login successful!");
-                    onCallNeedHelp = user;
-                    user.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            assignOnCallHelper();
-                        }
-                    });
-                }
-                else{
+                if(e!=null){
                     Log.e("LoginActivity", "Login failure");
                     Toast.makeText(LoginActivity.this,"emergency log in failed", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
+                Log.d("LoginActivity", "emergency login successful!");
+                onCallNeedHelp = user;
+                user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            queryParseUserOnCall(assignOnCallHelper);
+                        }
+                    });
             }
-        });
-    }
+        };
 
-    private void assignOnCallHelper() {
+    private void queryParseUserOnCall(FindCallback findCallback) {
         //assign on call helper
         ParseQuery<ParseUser> query2 = ParseQuery.getQuery("_User");
         query2.include(Constants.USERNAME_FIELD);
         query2.whereEqualTo(Constants.USERNAME_FIELD, "ON_CALL");
-        query2.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                for(int i = 0; i < objects.size(); i++){
-                    onCallHelper = objects.get(0);
-                }
-            }
-        });
+        query2.findInBackground(findCallback);
         startAnonymousChat();
     }
-    public void login(final String username, String password, ParseUser user){
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if(e==null){
-                    Log.d("LoginActivity", "Login successful!");
-                    final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }else{
-                    Log.e("LoginActivity", "Login failure");
-                    Toast.makeText(LoginActivity.this,"Invalid username and/or password", Toast.LENGTH_LONG).show();
-                    usernameInput.setText("");
-                    passwordInput.setText("");
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+
 
     private void AssignViewsAndListeners() {
         usernameInput = findViewById(R.id.etUsername_login);
@@ -200,23 +212,13 @@ public class LoginActivity extends AppCompatActivity {
         emergencyBtn.setOnClickListener(emergencyBtnListener);
     }
 
-    public void createChatParse(final GroupChannel groupChannel){
+    public void createChatParse( GroupChannel groupChannel,SaveCallback saveCallback){
         Chat chat =  new Chat();
         chat.put("helper", ParseObject.createWithoutData("_User", onCallHelper.getObjectId()) );
         chat.put("reciever", ParseObject.createWithoutData("_User", ParseUser.getCurrentUser().getObjectId()));
         chat.put("chatUrl", groupChannel.getUrl());
-        chat.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e==null){
-                    Log.d("USERS", onCallHelper.getUsername());
-                    openChatFragment(groupChannel);
-                }else{
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        });
+        chat.saveInBackground(saveCallback);
+
     }
 
     public void openChatFragment(GroupChannel groupChannel){

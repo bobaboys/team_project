@@ -33,7 +33,7 @@ public class AvatarImagesActivity extends AppCompatActivity {
     }
 
     private List<Integer> getAvatarImages() {
-        //add to constants, use hashmap
+        //add to constants, use hash map
         List<Integer> avatarPics = new ArrayList<>();
         avatarPics.add(R.drawable.icons8_female_user_100);
         avatarPics.add(R.drawable.icons8_user_female_skintype1_2_100);

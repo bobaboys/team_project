@@ -42,30 +42,25 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
     private Fragment currentFragment;
     private TextView title;
 
+    SaveCallback genericSaveCallback = new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+            if (e != null) {
+                Log.d(TAG, "Error while saving");
+                e.printStackTrace();
+                return;
+            }
+        }
+    };
+
     View.OnClickListener submitListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(currentFragment.getClass().equals(SelectTagsSignUpFragment.class)) {
-                SelectTagsSignUpFragment selectTagsSignUpFragment = (SelectTagsSignUpFragment) currentFragment;
                 buttonClickSound.start();
                 final Animation animation = AnimationUtils.loadAnimation(HelperSignUpTagsActivity.this, R.anim.bounce);
                 submit.startAnimation(animation);
-                //save all tags on server for parse user
-                for (int i = 0; i < selectTagsSignUpFragment.getTagsAdapter().getSelectedTags().size(); i++) {
-                    HelperTags helperTags = new HelperTags();
-                    helperTags.setHelperTags(ParseUser.getCurrentUser(),  selectTagsSignUpFragment.getTagsAdapter().getSelectedTags().get(i));
-                    helperTags.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null) {
-                                Log.d(TAG, "Error while saving");
-                                e.printStackTrace();
-                                return;
-                            }
-                        }
-                    });
-                }
-
+                saveTagsOnParse();
                 Intent intent = new Intent(HelperSignUpTagsActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -73,7 +68,14 @@ public class HelperSignUpTagsActivity extends AppCompatActivity {
     };
 
 
-
+    private void saveTagsOnParse(){
+        SelectTagsSignUpFragment selectTagsSignUpFragment = (SelectTagsSignUpFragment) currentFragment;
+        for (int i = 0; i < selectTagsSignUpFragment.getTagsAdapter().getSelectedTags().size(); i++) {
+            HelperTags helperTags = new HelperTags();
+            helperTags.setHelperTags(ParseUser.getCurrentUser(),  selectTagsSignUpFragment.getTagsAdapter().getSelectedTags().get(i));
+            helperTags.saveInBackground(genericSaveCallback);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -38,8 +38,6 @@ public class HelperBiosAdapter extends RecyclerView.Adapter<HelperBiosAdapter.Vi
         this.bios = bios;
     }
 
-
-    // Add a list of items -- change to type used
     public void addAll(List<UserWithTags> list) {
         bios.addAll(list);
         notifyDataSetChanged();

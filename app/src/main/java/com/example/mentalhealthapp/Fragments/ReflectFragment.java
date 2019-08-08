@@ -53,7 +53,6 @@ public class ReflectFragment extends Fragment {
             if(e == null){
                 setIfEntryExist(objects);
             }else{
-                //something went wrong
                 Log.e("populating journal", "failure");
             }
         }
