@@ -1,6 +1,7 @@
 package com.example.mentalhealthapp.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -8,6 +9,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -76,11 +79,12 @@ public class OpenChatActivity extends AppCompatActivity {
     private String mFileName;
     private boolean mStartRecording;
     private String audioId;
+    LinearLayoutManager layout;
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
     private String[] permissions = {Manifest.permission.RECORD_AUDIO};
     private  MediaPlayer buttonClickSound;
-
+    ParseFile avatarPic;
     View.OnClickListener sendBtnListener = new View.OnClickListener() {
         //Send text msg btn Listener
         @Override
@@ -133,10 +137,10 @@ public class OpenChatActivity extends AppCompatActivity {
                         currChat.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
-                                //Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
-                                //startActivity(intent);
-                                //finish();
-                                OpenChatActivity.super.onBackPressed();
+                                Intent intent = new Intent(OpenChatActivity.this, MainActivity.class);
+                                intent.putExtra("chatFromReceiver", "true");
+                                startActivity(intent);
+                                finish();
                             }
                         });
 
@@ -233,8 +237,6 @@ public class OpenChatActivity extends AppCompatActivity {
         groupChannel.sendFileMessage(fmp, new BaseChannel.SendFileMessageHandler() {
             @Override
             public void onSent(FileMessage fileMessage, SendBirdException e) {
-                //TODO
-                //You add this new message to the lowest part of the chat
                 messages.add(fileMessage);
                 chatAdapter.notifyItemInserted(messages.size() - 1);
                 rv_chatBubbles.scrollToPosition(messages.size() - 1);
@@ -291,7 +293,6 @@ public class OpenChatActivity extends AppCompatActivity {
             @Override
             public void onFailure(String TAG, Exception e) {
                 e.printStackTrace();
-                //TODO offline view ?
             }
         });
     }
@@ -321,7 +322,7 @@ public class OpenChatActivity extends AppCompatActivity {
         profilePic = findViewById(R.id.iv_profile_pic_mini);
         appLogo = findViewById(R.id.logo_app);
         try {
-            ParseFile avatarPic = chatRecipientUser.getParseFile("avatar");
+            avatarPic = chatRecipientUser.getParseFile("avatar");
             Glide.with(this)
                     .load(avatarPic.getFile())
                     .bitmapTransform(new RoundedCornersTransformation(this, 120, 0))
@@ -331,7 +332,6 @@ public class OpenChatActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-
         back = findViewById(R.id.iv_back_btn);
         back.setOnClickListener(backListener);
 
@@ -344,7 +344,7 @@ public class OpenChatActivity extends AppCompatActivity {
         chatAdapter = new MessagesChatAdapter(this, messages);
         chatAdapter.setAddressee(chatRecipientUser);
         rv_chatBubbles.setAdapter(chatAdapter);
-        LinearLayoutManager layout = new LinearLayoutManager(this);
+        layout = new LinearLayoutManager(this);
         rv_chatBubbles.setLayoutManager(layout);
     }
 
@@ -387,7 +387,6 @@ public class OpenChatActivity extends AppCompatActivity {
             Intent intent = new Intent(OpenChatActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
-            super.onBackPressed();
             return;
         }else{
             ParseQuery<Chat> q = new ParseQuery<Chat>(Chat.class);
@@ -401,15 +400,16 @@ public class OpenChatActivity extends AppCompatActivity {
                     currChat.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-                            OpenChatActivity.super.onBackPressed();
+                            Intent intent = new Intent(OpenChatActivity.this, MainActivity.class);
+                            intent.putExtra("chatFromReceiver", "true");
+                            startActivity(intent);
+                            finish();
                         }
                     });
-
                 }
             });
 
         }
-
     }
 
     private void requestPermission() {

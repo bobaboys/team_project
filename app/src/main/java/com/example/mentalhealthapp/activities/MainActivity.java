@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean calledNextPage;
     private ViewPager mPager;
     private PagerAdapter pagerAdapter;
-
+    private boolean chatReceiver;
     private static int NUM_PAGES;
     private  BottomNavigationView bottomNavigationView;
     private  BottomNavigationView bottomHelperNavView;
@@ -91,14 +91,15 @@ public class MainActivity extends AppCompatActivity {
         public void onPageScrollStateChanged(int state) {}
     };
 
-
     ConnectionHandle connectionHandle = new ConnectionHandle() {
         @Override
         public void onSuccess(String TAG, User user) {
             ChatApp chatApp = ChatApp.getInstance();
             chatApp.setSendBirdUser(user);
             //set default
+
             setDefaultViewElements(isHelper);
+            if(chatReceiver)bottomNavigationView.setSelectedItemId(bottomBarReceiver.get(2));
         }
 
         @Override
@@ -163,10 +164,9 @@ public class MainActivity extends AppCompatActivity {
         bottomHelperNavView = findViewById(R.id.nav_helper_view);
         bottomNavigationView = findViewById(R.id.nav_view);
         isHelper = ParseUser.getCurrentUser().getBoolean(HELPER_FIELD);
-
         initSwipeParams();
         generateNavBarsArrays();
-
+        chatReceiver = getIntent().getStringExtra("chatFromReceiver") != null && !isHelper;
         createChat();
     }
 
@@ -190,16 +190,14 @@ public class MainActivity extends AppCompatActivity {
             bottomHelperNavView.setOnNavigationItemSelectedListener(helperNavListener);
             setSwipeAdapter();
             bottomHelperNavView.setSelectedItemId(R.id.navigation_helper_home);
+            bottomNavigationView.setVisibility(View.GONE);
         }else{
             bottomNavigationView.setOnNavigationItemSelectedListener(receiverNavListener);
             setSwipeAdapter();
             bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-        }
-        if(isHelper){
-            bottomNavigationView.setVisibility(View.GONE);
-        }else{
             bottomHelperNavView.setVisibility(View.GONE);
         }
+
     }
 
 

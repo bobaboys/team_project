@@ -42,7 +42,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/list_helpers_title"
         android:textAlignment="center"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/rvHelperBios"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

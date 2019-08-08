@@ -93,7 +93,7 @@ public class HelperEditProfileFragment extends Fragment {
             }
             editBio();
             queryTagsOfUser(updateOnServerTags);
-            ((MainActivity)getActivity()).setCurrentFragment(new HelperEditProfileFragment());
+            ((MainActivity)getActivity()).setCurrentFragment(new HelperProfileFragment());
         }
     };
 
