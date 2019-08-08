@@ -226,7 +226,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             FileMessage lastMFile = (FileMessage) lastM;
             boolean isMyMessage =lastMFile.getSender().getUserId().equals(ParseUser.getCurrentUser().getObjectId());
             String authorAndAttachMessage = isMyMessage
-                    ? "You Sent an attachment" :
+                    ? "You sent an attachment" :
                     addresseeParse.getUsername()+" sent an attachment";
             lastMessage.setText(authorAndAttachMessage);
             return  isMyMessage;

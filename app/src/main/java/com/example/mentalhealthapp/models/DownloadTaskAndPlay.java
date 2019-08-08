@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 
@@ -30,13 +31,25 @@ public class DownloadTaskAndPlay {
     private String downloadUrl = "", downloadFileName = "";
     private String pathDownload;
     private MediaPlayer player;
+    private SeekBar seekBar;
 
-    public DownloadTaskAndPlay(Context context, ImageView btnPlay, String downloadUrl, String pathDownload, String dFileName, MediaPlayer player) {
+    private Handler mSeekbarUpdateHandler = new Handler();
+    private Runnable mUpdateSeekbar = new Runnable() {
+        @Override
+        public void run() {
+            seekBar.setProgress(player.getCurrentPosition());
+            mSeekbarUpdateHandler.postDelayed(this, 50);
+        }
+    };
+
+
+    public DownloadTaskAndPlay(Context context, ImageView btnPlay, SeekBar seekBar, String downloadUrl, String pathDownload, String dFileName, MediaPlayer player) {
         this.context = context;
         this.pathDownload=pathDownload;
         this.playButton = btnPlay;
         this.downloadUrl = downloadUrl;
         this.player = player;
+        this.seekBar = seekBar;
 
         downloadFileName = dFileName;//Create file name by picking download file name from URL
         Log.e(TAG, downloadFileName);
@@ -44,6 +57,7 @@ public class DownloadTaskAndPlay {
         //Start Downloading Task
         new DownloadingTask().execute();
     }
+
 
     private class DownloadingTask extends AsyncTask<Void, Void, Void> {
 
@@ -146,19 +160,24 @@ public class DownloadTaskAndPlay {
             return null;
         }
     }
-    public void play( String absFilePath) throws IOException {//TODO GET NO SE QUE GET HAHAHA
+
+
+    public void play( String absFilePath) throws IOException {
         player = new MediaPlayer();
         player.setDataSource( absFilePath);
         player.prepare();
+        seekBar.setMax(player.getDuration());
         player.start();
+        mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
         player.setOnCompletionListener(completionListener);
     }
 
     MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
-            //  TODO
             Utils.enableDisablePlay(context,playButton, true);
+            mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+            seekBar.setProgress(0);
         }
     };
 }

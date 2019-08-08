@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.HelperSignUpTagsActivity;
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Tag;
 
@@ -27,7 +28,11 @@ public class TagDetailsFragment extends Fragment {
     public View.OnClickListener onBack = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ((MainActivity)getActivity()).setCurrentFragment( new RecieverSearchPageFragment());
+            try {
+                ((MainActivity) getActivity()).setCurrentFragment(new RecieverSearchPageFragment());
+            }catch (ClassCastException e){
+                ((HelperSignUpTagsActivity)getActivity()).replaceFragment(new SelectTagsSignUpFragment());
+            }
         }
     };
 

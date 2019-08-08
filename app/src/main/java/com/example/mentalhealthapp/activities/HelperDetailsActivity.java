@@ -54,6 +54,14 @@ public class HelperDetailsActivity extends AppCompatActivity {
     private  ArrayList<String> allHelperTags = new ArrayList<>();
     private  SelectedTagsAdapter profTagAdapter;
     private  MediaPlayer buttonClickSound;
+    private  ImageView back;
+
+    View.OnClickListener onBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            HelperDetailsActivity.this.onBackPressed();
+        }
+    };
 
 
     public void setGroupChannel(GroupChannel groupChannel) {
@@ -177,6 +185,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
     }
 
     private void assignViewsAndListeners() {
+        back = findViewById(R.id.iv_back_main_btn);
         helperUsername = findViewById(R.id.tvHelperUsername_HelperDetails);
         helperBio = findViewById(R.id.tvBio_helperdetails);
         helperTags = findViewById(R.id.gvHelperTags_helperDetails);
@@ -185,6 +194,7 @@ public class HelperDetailsActivity extends AppCompatActivity {
         openChat = findViewById(R.id.btnChat_helperdetails);
         openChat.setOnClickListener(openChatBtnListener);
         helperAvatarPic = findViewById(R.id.ivHelperDetails);
+        back.setOnClickListener(onBack);
     }
 
     public void populateDetails(){

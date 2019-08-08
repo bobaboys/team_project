@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import com.example.mentalhealthapp.Fragments.HelperEditProfileFragment;
 import com.example.mentalhealthapp.Fragments.ReceiverEditProfileFragment;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.HelperSignUpTagsActivity;
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.Fragments.TagDetailsFragment;
 import com.example.mentalhealthapp.models.Tag;
@@ -137,7 +138,13 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("tag", selectedTag);
                 resultFragment.setArguments(bundle);
-                ((MainActivity)view.getContext()).setCurrentFragment(resultFragment);
+                //TODO
+                try{
+                    ((MainActivity)view.getContext()).setCurrentFragment(resultFragment);
+                }catch (ClassCastException e){
+                    ((HelperSignUpTagsActivity)view.getContext()).replaceFragment(resultFragment);
+                }
+
             }
         };
 

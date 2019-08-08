@@ -1,8 +1,12 @@
 package com.example.mentalhealthapp.activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +15,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.example.mentalhealthapp.Fragments.SelectTagsSignUpFragment;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.adapters.TagsAdapter;
 import com.example.mentalhealthapp.models.HelperTags;
@@ -28,84 +35,80 @@ import java.util.List;
 public class HelperSignUpTagsActivity extends AppCompatActivity {
 
     protected static final String TAG = "tag: ";
-
-
     private Button submit;
-    private RecyclerView rvTags;
-    private TagsAdapter tagsAdapter;
-    private List<Tag> tags;
-    private List<Tag> tagsFull;
-    private  MediaPlayer buttonClickSound;
+
+    private LinearLayout container;
+    private MediaPlayer buttonClickSound;
+    private Fragment currentFragment;
+    private TextView title;
 
     View.OnClickListener submitListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            buttonClickSound.start();
-            final Animation animation = AnimationUtils.loadAnimation(HelperSignUpTagsActivity.this, R.anim.bounce);
-            submit.startAnimation(animation);
-            //save all tags on server for parse user
-            for(int i = 0; i < tagsAdapter.getSelectedTags().size(); i++){
-                HelperTags helperTags = new HelperTags();
-                helperTags.setHelperTags(ParseUser.getCurrentUser(), tagsAdapter.getSelectedTags().get(i));
-                helperTags.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e!=null){
-                            Log.d(TAG, "Error while saving");
-                            e.printStackTrace();
-                            return;
+            if(currentFragment.getClass().equals(SelectTagsSignUpFragment.class)) {
+                SelectTagsSignUpFragment selectTagsSignUpFragment = (SelectTagsSignUpFragment) currentFragment;
+                buttonClickSound.start();
+                final Animation animation = AnimationUtils.loadAnimation(HelperSignUpTagsActivity.this, R.anim.bounce);
+                submit.startAnimation(animation);
+                //save all tags on server for parse user
+                for (int i = 0; i < selectTagsSignUpFragment.getTagsAdapter().getSelectedTags().size(); i++) {
+                    HelperTags helperTags = new HelperTags();
+                    helperTags.setHelperTags(ParseUser.getCurrentUser(),  selectTagsSignUpFragment.getTagsAdapter().getSelectedTags().get(i));
+                    helperTags.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.d(TAG, "Error while saving");
+                                e.printStackTrace();
+                                return;
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            Intent intent = new Intent(HelperSignUpTagsActivity.this, MainActivity.class);
-            startActivity(intent);
+                Intent intent = new Intent(HelperSignUpTagsActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
         }
     };
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_helper_sign_up_tags);
-        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
+        setViewElements();
+        replaceFragment(new SelectTagsSignUpFragment());
 
+
+    }
+
+    private void setViewElements(){
+        buttonClickSound = MediaPlayer.create(this, R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
+        container = findViewById(R.id.ly_container);
+        title = findViewById(R.id.title_select_tags);
         submit = findViewById(R.id.btnSubmit_Helper);
         submit.setOnClickListener(submitListener);
-
-        setAndPopulateRvTags();
-        getAllTags();
-
     }
 
-    private void setAndPopulateRvTags() {
-        rvTags = findViewById(R.id.rvTags_SignUpTags);
-        tags = new ArrayList<>();
-        tagsAdapter = new TagsAdapter(this, tags);
-        rvTags.setAdapter(tagsAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvTags.setLayoutManager(layoutManager);
+    private void setVisibleElements(Fragment newFragment){
+        boolean isRvVisible = newFragment.getClass().equals(SelectTagsSignUpFragment.class);
+        submit.setVisibility(isRvVisible ? ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
+        title.setVisibility(isRvVisible ? ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
     }
 
-    private void getAllTags() {
-        ParseQuery<Tag> postsQuery = new ParseQuery<Tag>(Tag.class);
-        postsQuery.setLimit(50);
-        /*We decided load all tags (and on code select which ones match with the search FOR LATER)
-         * we are concern that it could be lots of information on the database and we would need to set
-         * a limit of rows. In this case our tags are 50 tops. */
-        postsQuery.findInBackground(new FindCallback<Tag>() {
-            @Override
-            public void done(List<Tag> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error loading tags from parse server");
-                    e.printStackTrace();
-                    return;
-                }
-                tags.addAll(objects);
-                tagsAdapter.notifyDataSetChanged();
-            }
-        });
+    public void replaceFragment(Fragment newFragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        setVisibleElements(newFragment);
+        if(currentFragment==null)
+            transaction.add(R.id.ly_container, newFragment);
+        else
+            transaction.replace(R.id.ly_container, newFragment);
+        currentFragment =newFragment;
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
-
 
 }
