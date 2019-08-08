@@ -2,7 +2,6 @@ package com.example.mentalhealthapp.Fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -177,7 +176,7 @@ public class ReceiverEditProfileFragment extends Fragment {
         //if code is same as code which we started activity with
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                Bitmap takenImage = Utils.rotateBitmapOrientation(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
                 avatarPic.setImageBitmap(takenImage);
             } else { // Result was a failure

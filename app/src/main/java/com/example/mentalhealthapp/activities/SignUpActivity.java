@@ -220,7 +220,8 @@ public class SignUpActivity extends AppCompatActivity {
         //if code is same as code which we started activity with
         if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
                 //load taken image into image view
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                //Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                Bitmap takenImage = Utils.Utils.rotateBitmapOrientation(photoFile.getAbsolutePath());
                 avatarPic.setImageBitmap(takenImage);
 
                 //assign taken photo to parse file
