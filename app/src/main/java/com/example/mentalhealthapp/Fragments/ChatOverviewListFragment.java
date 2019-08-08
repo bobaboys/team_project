@@ -3,6 +3,7 @@ package com.example.mentalhealthapp.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.activities.MainActivity;
@@ -37,12 +39,11 @@ public class ChatOverviewListFragment  extends Fragment {
     public static int LIMIT_QUERY = 25;
     private ArrayList<CompleteChat> completeChats;
     private RecyclerView rvChatsList;
-    private TextView emptyView;
     private ChatsListAdapter chatListAdapter;
     private LinearLayoutManager layoutManager;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
-
+    private TextView altText;
 
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
@@ -61,6 +62,7 @@ public class ChatOverviewListFragment  extends Fragment {
                 e.printStackTrace();
                 return;
             }
+            visibilityLayout(objects.size()==0);
             for (Chat chat : objects) {
                 addNewCompleteChat(chat);
             }
@@ -88,6 +90,14 @@ public class ChatOverviewListFragment  extends Fragment {
     }
 
 
+    private void visibilityLayout(boolean isEmpty){
+         rvChatsList.setVisibility(isEmpty?
+                 ConstraintLayout.GONE : ConstraintLayout.VISIBLE);
+          altText.setVisibility(isEmpty?
+                  ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,8 +109,8 @@ public class ChatOverviewListFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvChatsList = view.findViewById(R.id.rvChatsList);
-        emptyView = view.findViewById(R.id.empty_view);
 
+        altText = view.findViewById(R.id.tv_alt_no_chats);
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(refreshListener);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -126,7 +136,7 @@ public class ChatOverviewListFragment  extends Fragment {
         //show empty view!
         if(completeChats.size()==0){
             rvChatsList.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
+            altText.setVisibility(ConstraintLayout.VISIBLE);
         }
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
@@ -148,8 +158,11 @@ public class ChatOverviewListFragment  extends Fragment {
         query.setSkip(50*(page-1));
         query.include("helper");
         query.include("reciever");
-        query.whereEqualTo(MainActivity.HelperYes ? Constants.CHAT_HELPER_DELETED : Constants.CHAT_RECEIVER_DELETED, false);
-        query.whereEqualTo(MainActivity.HelperYes?"helper":"reciever",ParseUser.getCurrentUser());
+        boolean isHelper =ParseUser.getCurrentUser().getBoolean("helper");
+        query.whereEqualTo(isHelper ?
+                Constants.CHAT_HELPER_DELETED : Constants.CHAT_RECEIVER_DELETED, false);
+        query.whereEqualTo(isHelper ?
+                "helper":"reciever",ParseUser.getCurrentUser());
         scrollListener.resetState();
         query.findInBackground(findCallback);
     }
@@ -158,7 +171,7 @@ public class ChatOverviewListFragment  extends Fragment {
         //not empty view
         if(completeChats.size()>0){
             rvChatsList.setVisibility(View.VISIBLE);
-            emptyView.setVisibility(View.GONE);
+            altText.setVisibility(ConstraintLayout.GONE);
         }
 
         chat.setTimestampLast( getLastTimestampLong(chat.getGroupChannel()));

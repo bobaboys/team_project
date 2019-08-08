@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,9 +18,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.Journal;
 import com.parse.FindCallback;
@@ -32,6 +35,7 @@ import java.io.File;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import chatApp.ConnectionHandle;
 
 public class CreateEntryJournalFragment extends Fragment {
     private  TextView date;
@@ -46,6 +50,15 @@ public class CreateEntryJournalFragment extends Fragment {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
     File photoFile;
+    private ImageView back;
+
+
+    private View.OnClickListener onBack = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).setCurrentFragment(new ReflectFragment());
+        }
+    };
 
 
     private SaveCallback onBackPressed = new SaveCallback() {
@@ -55,7 +68,7 @@ public class CreateEntryJournalFragment extends Fragment {
                 e.printStackTrace();
                 return;
             }
-            (CreateEntryJournalFragment.this.getActivity()).onBackPressed();
+            ((MainActivity)getActivity()).setCurrentFragment(new ReflectFragment());
         }
     };
 
@@ -129,10 +142,13 @@ public class CreateEntryJournalFragment extends Fragment {
         date.setText(dateOfEntry);
         save.setOnClickListener(saveNewEntryListener);
         takeJournalPic.setOnClickListener(takePicListener);
+        back.setOnClickListener(onBack);
     }
 
 
     private  void setViewComponents(View view){
+        back = view.findViewById(R.id.iv_back_main_btn);
+        back.setVisibility(ConstraintLayout.VISIBLE);
         date = view.findViewById(R.id.tv_date_createJournal);
         journalEntry = view.findViewById(R.id.et_addEntry_createJournal);
         save = view.findViewById(R.id.btn_saveEntry_createJournal);

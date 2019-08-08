@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.Fragments.CreateEntryJournalFragment;
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Journal;
 
 import java.util.List;
@@ -107,9 +108,8 @@ public class JournalAdapter  extends RecyclerView.Adapter<JournalAdapter.ViewHol
             bundle.putString("date", entry.getDate());
             bundle.putBoolean("alreadyExists", true);
             fragment.setArguments(bundle);
-            Utils.switchToAnotherFragment(fragment,
-                    JournalAdapter.this.fragment.getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            MainActivity mainActivity = (MainActivity) context;
+            mainActivity.setCurrentFragment(fragment);
         }
 
         public void bind(final Journal entry) {

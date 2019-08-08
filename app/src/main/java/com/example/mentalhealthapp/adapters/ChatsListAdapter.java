@@ -79,6 +79,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         View.OnLongClickListener eraseChatListener = new View.OnLongClickListener(){
             @Override
             public boolean onLongClick(final View v) {
+
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
                 alert.setTitle("Warning!");
                 alert.setMessage("You are about to delete this chat. Do you want to continue?");
@@ -86,7 +87,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        hideChatForUser(MainActivity.HelperYes ?
+                        boolean isHelper = ParseUser.getCurrentUser().getBoolean("helper");
+                        hideChatForUser(isHelper ?
                                     Constants.CHAT_HELPER_DELETED :Constants.CHAT_RECEIVER_DELETED);
                         dialog.dismiss();
                     }

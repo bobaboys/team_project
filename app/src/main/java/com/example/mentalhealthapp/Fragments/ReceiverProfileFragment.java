@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.LoginActivity;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.parse.ParseUser;
 
 import Utils.Utils;
@@ -49,9 +51,7 @@ public class ReceiverProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             buttonClickSound.start();
-            Utils.switchToAnotherFragment(new ReceiverEditProfileFragment(),
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(new ReceiverEditProfileFragment());
         }
     };
 

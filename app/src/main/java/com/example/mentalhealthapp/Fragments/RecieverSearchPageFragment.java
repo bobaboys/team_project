@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,8 +20,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.TagsAdapter;
 import com.example.mentalhealthapp.models.Tag;
 import com.example.mentalhealthapp.models.TagsParcel;
@@ -73,9 +76,7 @@ public class RecieverSearchPageFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable("selectedTags", Parcels.wrap(selectedTagsParcel));
             fragment.setArguments(bundle);
-            Utils.switchToAnotherFragment(fragment,
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(fragment);
         }
     };
 

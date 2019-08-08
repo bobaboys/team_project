@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
@@ -37,13 +38,14 @@ public class HelperBiosFragment extends Fragment {
     private List<UserWithTags> mBios;
     private TagsParcel tags;
     private TextView alternateText, title;
-    private Button back;
+    private Button altBack;
+    private ImageView back;
 
 
-    View.OnClickListener backListener = new View.OnClickListener() {
+    View.OnClickListener onBack = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            getActivity().onBackPressed();
+            ((MainActivity)getActivity()).setCurrentFragment(new RecieverSearchPageFragment());
         }
     };
 
@@ -80,8 +82,8 @@ public class HelperBiosFragment extends Fragment {
         setViewComponents(view);
         mBios = new ArrayList<>();
 
-        ((MainActivity)getContext()).setCurrentCentralFragment(this);
-        back.setOnClickListener(backListener);
+        altBack.setOnClickListener(onBack);
+        back.setOnClickListener(onBack);
         setRecyclerView();
         queryHelpersAccordingTags(loadBios);
     }
@@ -91,7 +93,10 @@ public class HelperBiosFragment extends Fragment {
         rvBios = view.findViewById(R.id.rvHelperBios);
         alternateText = view.findViewById(R.id.tv_alternate_text);
         title = view.findViewById(R.id.tv_title_bios_list);
-        back = view.findViewById(R.id.btn_alternate_back);
+        altBack = view.findViewById(R.id.btn_alternate_back);
+        back = view.findViewById(R.id.iv_back_main_btn);
+        back.setVisibility(ConstraintLayout.VISIBLE);
+
     }
 
 
@@ -114,7 +119,7 @@ public class HelperBiosFragment extends Fragment {
     private void visibilityLayout(boolean isEmpty){
         rvBios.setVisibility(isEmpty?
                 ConstraintLayout.GONE : ConstraintLayout.VISIBLE);
-        back.setVisibility(isEmpty?
+        altBack.setVisibility(isEmpty?
                 ConstraintLayout.VISIBLE : ConstraintLayout.GONE);
         alternateText.setVisibility(isEmpty?
                 ConstraintLayout.VISIBLE : ConstraintLayout.GONE);

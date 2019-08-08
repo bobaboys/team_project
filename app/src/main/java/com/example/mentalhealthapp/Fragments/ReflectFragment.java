@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +14,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.Journal;
 import com.parse.FindCallback;
@@ -40,7 +43,6 @@ public class ReflectFragment extends Fragment {
     public final String EDIT_KEY = "View Entry";
     private  MediaPlayer buttonClickSound;
     private boolean entryExist, checkedIfExist;
-
     public void setEntryExist(boolean entryExist) {
         this.entryExist = entryExist;
     }
@@ -78,9 +80,7 @@ public class ReflectFragment extends Fragment {
             final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
             allEntries.startAnimation(animation);
             Fragment fragment = new JournalFragment();
-            Utils.switchToAnotherFragment(fragment,
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(fragment);
         }
     };
 
@@ -99,9 +99,7 @@ public class ReflectFragment extends Fragment {
             bundle.putBoolean("alreadyExists", entryExist);
 
             fragment.setArguments(bundle);
-            Utils.switchToAnotherFragment(fragment,
-                    getActivity().getSupportFragmentManager(),
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(fragment);
 
         }
     };

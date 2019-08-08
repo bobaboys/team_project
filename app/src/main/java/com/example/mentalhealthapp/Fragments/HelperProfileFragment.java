@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.LoginActivity;
+import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.adapters.SelectedTagsAdapter;
 import com.example.mentalhealthapp.models.Constants;
 import com.example.mentalhealthapp.models.HelperTags;
@@ -46,7 +48,6 @@ public class HelperProfileFragment extends Fragment {
     private ArrayList<String> allHelperTags = new ArrayList<>();;
     private SelectedTagsAdapter profTagsAdapter;
 
-
     protected View.OnClickListener logoutBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -63,9 +64,7 @@ public class HelperProfileFragment extends Fragment {
     protected  View.OnClickListener editListener =new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Utils.switchToAnotherFragment(new HelperEditProfileFragment(),
-                    getActivity().getSupportFragmentManager() ,
-                    R.id.flContainer_main);
+            ((MainActivity)getActivity()).setCurrentFragment(new HelperEditProfileFragment());
         }
     };
 

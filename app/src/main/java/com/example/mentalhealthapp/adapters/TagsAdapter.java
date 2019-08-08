@@ -18,6 +18,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 
+import com.example.mentalhealthapp.Fragments.HelperEditProfileFragment;
+import com.example.mentalhealthapp.Fragments.ReceiverEditProfileFragment;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.MainActivity;
 import com.example.mentalhealthapp.Fragments.TagDetailsFragment;
@@ -130,13 +132,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             public void onClick(View v) {
                 Tag selectedTag = getSelectedTag();
 
-                AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 Fragment resultFragment = new TagDetailsFragment();
                 //passing to result of list of helpers
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("tag", selectedTag);
                 resultFragment.setArguments(bundle);
-                Utils.switchToAnotherFragment(resultFragment, activity.getSupportFragmentManager(), R.id.flContainer_main);
+                ((MainActivity)view.getContext()).setCurrentFragment(resultFragment);
             }
         };
 
