@@ -1,61 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ImageView
         android:id="@+id/iv_back_main_btn"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="371dp"
         android:clickable="true"
         android:focusable="auto"
         android:tint="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_backspace_black_24dp" />
+
     <TextView
         android:id="@+id/tv_date_createJournal"
         android:layout_width="wrap_content"
         android:layout_height="54dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="57dp"
+        android:layout_marginBottom="32dp"
         android:fontFamily="casual"
         android:textColor="@color/seashell4"
         android:textSize="36sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/et_addEntry_createJournal"
+        app:layout_constraintBottom_toTopOf="@+id/btnTakePic_createJournalFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_journalPrompt_createJournalFragment" />
 
     <EditText
         android:id="@+id/et_addEntry_createJournal"
         android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="51dp"
+        android:layout_marginEnd="47dp"
         android:ems="10"
         android:hint="How are you feeling?"
         android:inputType="textPersonName"
         android:textColorHint="@color/lavender"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnTakePic_signUpActivity"
+        app:layout_constraintStart_toEndOf="@+id/btnTakePic_createJournalFragment"
         app:layout_constraintTop_toBottomOf="@+id/tv_date_createJournal" />
 
     <Button
         android:id="@+id/btn_saveEntry_createJournal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="153dp"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="162dp"
         android:background="@color/lavender"
         android:text="Save Entry"
         android:textColor="@color/mediumpurple"
@@ -67,12 +70,29 @@
         android:id="@+id/btnTakePic_createJournalFragment"
         android:layout_width="76dp"
         android:layout_height="64dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="165dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="31dp"
         android:background="@color/lavender"
         app:layout_constraintEnd_toStartOf="@+id/et_addEntry_createJournal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_createJournal"
         app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <TextView
+        android:id="@+id/tv_journalPrompt_createJournalFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_marginStart="94dp"
+        android:layout_marginTop="66dp"
+        android:layout_marginEnd="94dp"
+        android:layout_marginBottom="14dp"
+        android:fontFamily="casual"
+        android:textColor="@color/seashell4"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_date_createJournal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

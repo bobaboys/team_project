@@ -35,10 +35,10 @@ import java.io.File;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import chatApp.ConnectionHandle;
 
 public class CreateEntryJournalFragment extends Fragment {
     private  TextView date;
+    private TextView journalPrompt;
     private  EditText journalEntry;
     private  Button save;
     private  String dateOfEntry;
@@ -143,6 +143,12 @@ public class CreateEntryJournalFragment extends Fragment {
         save.setOnClickListener(saveNewEntryListener);
         takeJournalPic.setOnClickListener(takePicListener);
         back.setOnClickListener(onBack);
+
+        if(alreadyExists){
+            journalPrompt.setText("Edit your journal entry!");
+        }else{
+            journalPrompt.setText("Here, you can jot down some happy thoughts from your day.");
+        }
     }
 
 
@@ -150,6 +156,7 @@ public class CreateEntryJournalFragment extends Fragment {
         back = view.findViewById(R.id.iv_back_main_btn);
         back.setVisibility(ConstraintLayout.VISIBLE);
         date = view.findViewById(R.id.tv_date_createJournal);
+        journalPrompt = view.findViewById(R.id.tv_journalPrompt_createJournalFragment);
         journalEntry = view.findViewById(R.id.et_addEntry_createJournal);
         save = view.findViewById(R.id.btn_saveEntry_createJournal);
         takeJournalPic = view.findViewById(R.id.btnTakePic_createJournalFragment);
