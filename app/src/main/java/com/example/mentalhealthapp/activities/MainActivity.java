@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     public final String HELPER_FIELD = "helper";
+    private static float  percentageOfSwipingThreshold = 0.85f; // range [0, 1)
     private int lastPage;
     private boolean calledNextPage;
     private ViewPager mPager;
@@ -45,13 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private Fragment[] fragments;
 
 
-    public Fragment[] getFragments() {
-        return fragments;
-    }
+    public Fragment[] getFragments() { return fragments; }
 
-    public void setFragments(Fragment[] fragments) {
-        this.fragments = fragments;
-    }
+    public void setFragments(Fragment[] fragments) { this.fragments = fragments; }
 
     public boolean isHelper() { return isHelper; }
 
@@ -62,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             // Starting pos same as target? We reach the target or there is not target at all.
             if(targetPage == i && v==0)  { targetPage =-1; }
             // next page not called and we are swiping? call next page.
-            if(!calledNextPage && v!=0){ callNextPage(i+v); }
+            if(!calledNextPage && Math.abs(i+v-lastPage)> percentageOfSwipingThreshold){ callNextPage(i+v); }
             // set initial reference for later comparisons.
             if(v==0){
                 lastPage = i;
@@ -119,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
     public void setCurrentFragment(Fragment f){
         int page = mPager.getCurrentItem();
         for(int i=0;i<fragments.length;i++) {
-            //fragments[i].onPause();
             fragments[i] = i==page ? f : null;
         }
         pagerAdapter.notifyDataSetChanged();
@@ -152,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
         initSwipeParams();
         generateNavBarsArrays();
         chatReceiver = getIntent().getStringExtra("chatFromReceiver") != null && !isHelper;
-        createChat();
+        startSendBirdSession();
     }
 
-    private void createChat(){
+    private void startSendBirdSession(){
         ChatApp chatApp = ChatApp.getInstance();
         chatApp.startChatApp(this);
         chatApp.connectToServer(ParseUser.getCurrentUser().getObjectId(), connectionHandle);
