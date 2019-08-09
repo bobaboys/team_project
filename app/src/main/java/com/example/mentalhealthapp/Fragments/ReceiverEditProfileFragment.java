@@ -30,7 +30,9 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 
 import Utils.Utils;
 
@@ -45,7 +47,7 @@ public class ReceiverEditProfileFragment extends Fragment {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     private  String photoFileName = "photo.jpg";
     private  String AVATAR_FIELD = "avatar";
-    private  File photoFile;
+    private  File photoFile; //TODO THIS IS FILE WHICH GOES TO SERVER.
     public static final int CHOOSE_AVATAR_REQUEST = 333;
     private  MediaPlayer buttonClickSound;
     ImageView back;
@@ -179,6 +181,17 @@ public class ReceiverEditProfileFragment extends Fragment {
                 Bitmap takenImage = Utils.rotateBitmapOrientation(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
                 avatarPic.setImageBitmap(takenImage);
+                try {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    takenImage.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                    byte[] bitmapdata = bos.toByteArray();
+                    FileOutputStream fos = new FileOutputStream(photoFile);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }

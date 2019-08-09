@@ -40,7 +40,9 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -288,6 +290,17 @@ public class HelperEditProfileFragment extends Fragment {
                 Bitmap takenImage = Utils.rotateBitmapOrientation(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
                 avatarPic.setImageBitmap(takenImage);
+                try {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    takenImage.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                    byte[] bitmapdata = bos.toByteArray();
+                    FileOutputStream fos = new FileOutputStream(photoFile);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
