@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.activities.AvatarImagesActivity;
 import com.example.mentalhealthapp.activities.MainActivity;
@@ -35,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import Utils.Utils;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -110,7 +112,7 @@ public class ReceiverEditProfileFragment extends Fragment {
                 R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         setViewComponents(view);
         setListeners();
-        Utils.setProfileImage(avatarPic);
+        Utils.setProfileImage(avatarPic, this.getContext());
     }
 
 
@@ -180,7 +182,7 @@ public class ReceiverEditProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 Bitmap takenImage = Utils.rotateBitmapOrientation(photoFile.getAbsolutePath());
                 // Load the taken image into a preview
-                avatarPic.setImageBitmap(takenImage);
+
                 try {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     takenImage.compress(Bitmap.CompressFormat.PNG, 0, bos);
@@ -189,6 +191,10 @@ public class ReceiverEditProfileFragment extends Fragment {
                     fos.write(bitmapdata);
                     fos.flush();
                     fos.close();
+                    Glide.with(this.getContext())
+                            .load(photoFile)
+                            .bitmapTransform(new RoundedCornersTransformation(this.getContext(), 600, 10))
+                            .into(avatarPic);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

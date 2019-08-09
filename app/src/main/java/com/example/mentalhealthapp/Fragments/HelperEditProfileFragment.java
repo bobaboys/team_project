@@ -218,7 +218,7 @@ public class HelperEditProfileFragment extends Fragment {
         setViewComponents(view);
         setListeners();
         editHelperBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
-        Utils.setProfileImage(avatarPic);
+        Utils.setProfileImage(avatarPic, this.getContext());
     }
 
 

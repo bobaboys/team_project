@@ -105,7 +105,7 @@ public class HelperProfileFragment extends Fragment {
         buttonClickSound = MediaPlayer.create(getContext(),
                 R.raw.zapsplat_multimedia_game_designed_bubble_pop_034_26300);
         assignViews( view);
-        Utils.setProfileImage(helperProfileAvatar);
+        Utils.setProfileImage(helperProfileAvatar, this.getContext());
         setListeners();
         setContentOnViews();
         allHelperTags.clear();

@@ -8,15 +8,19 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.mentalhealthapp.R;
 import com.example.mentalhealthapp.models.Constants;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class Utils {
     public static String getTimeStamp(long milis){
@@ -99,10 +103,19 @@ public class Utils {
         }
     }
 
-    public static void setProfileImage(ImageView imageView){
-        ParseFile avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD);
-        Bitmap bm = Utils.convertFileToBitmap(avatarFile);
-        imageView.setImageBitmap(bm);
+    public static void setProfileImage(ImageView imageView,Context context){
+        try {
+            File avatarFile = ParseUser.getCurrentUser().getParseFile(Constants.AVATAR_FIELD).getFile();
+            //Bitmap bm = Utils.convertFileToBitmap(avatarFile);
+            int radius = 30; // corner radius, higher value = more rounded
+            int margin = 10; // crop margin, set to 0 for corners with no crop
+            Glide.with(context)
+                    .load(avatarFile)
+                    .bitmapTransform(new RoundedCornersTransformation(context, 600, 10))
+                    .into(imageView);
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
     }
 }
 
