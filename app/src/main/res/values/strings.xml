@@ -10,7 +10,7 @@
     <string name="chat">CHAT</string>
     <string name="profile">Profile</string>
     <string name="login">Log in</string>
-    <string name="logout">Log out</string>
+    <string name="logout">Logout</string>
     <string name="sign_up">Sign Up</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -45,5 +45,8 @@
     <string name="select_a_date">SELECT A DATE!</string>
     <string name="my_journal">My Journal</string>
     <string name="no_chat">You do not have any chats yet!</string>
+    <string name="about_me">About me:</string>
+    <string name="bio_hint">You don\'t have a bio yet!</string>
+    <string name="talk">Talk to me about:</string>
 </resources>
 

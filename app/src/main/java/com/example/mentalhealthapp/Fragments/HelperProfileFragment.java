@@ -131,7 +131,10 @@ public class HelperProfileFragment extends Fragment {
 
 
     private void setContentOnViews(){
-        helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
+        if(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD) != null)
+            helperName.setText(ParseUser.getCurrentUser().getString(Constants.NAME_FIELD));
+        else
+            helperName.setText(ParseUser.getCurrentUser().getString(Constants.USERNAME_FIELD));
         helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
         helperProfileBio.setText(ParseUser.getCurrentUser().getString(Constants.HELPER_BIO_FIELD));
     }

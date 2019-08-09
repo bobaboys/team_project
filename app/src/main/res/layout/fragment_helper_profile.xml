@@ -7,58 +7,59 @@
 
     <TextView
         android:id="@+id/tvMyBio_helper_profile"
-        android:layout_width="226dp"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="121dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="28dp"
-        android:hint="You don't have a bio yet!"
-        app:layout_constraintBottom_toTopOf="@+id/tv_tagLabel_helperProfileFragment"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/bio_hint"
+        app:layout_constraintBottom_toTopOf="@+id/gv_tags_helper_prof"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.321"
         app:layout_constraintStart_toEndOf="@+id/ivAvatar_helper_profile"
         app:layout_constraintTop_toBottomOf="@+id/tv_bioLabel_helperProfileFragment" />
 
     <TextView
         android:id="@+id/tv_bioLabel_helperProfileFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="21dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="57dp"
-        android:layout_marginEnd="176dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:fontFamily="casual"
-        android:text="About me:"
+        android:text="@string/about_me"
         android:textColor="@color/seashell4"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tvMyBio_helper_profile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/ivAvatar_helper_profile"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLogout_ProfileHelper" />
 
     <Button
         android:id="@+id/btnLogout_ProfileHelper"
-        android:layout_width="74dp"
-        android:layout_height="37dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@color/lavender"
         android:onClick="Logout"
-        android:text="Logout"
+        android:text="@string/logout"
         android:textColor="@color/mediumpurple"
+        app:layout_constraintBottom_toTopOf="@+id/tv_bioLabel_helperProfileFragment"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_username_helperProfile"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ivAvatar_helper_profile"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="128dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:background="#00D63B3B"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tagLabel_helperProfileFragment"
         app:layout_constraintEnd_toStartOf="@+id/tv_bioLabel_helperProfileFragment"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_username_helperProfile"
         tools:srcCompat="@tools:sample/avatars" />
@@ -67,27 +68,29 @@
         android:id="@+id/fab_Edit_HelperProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="80dp"
         android:clickable="true"
         android:focusable="true"
         app:backgroundTint="#ECE2AD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <TextView
         android:id="@+id/tv_username_helperProfile"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Helper Name"
+        android:layout_marginEnd="16dp"
+        android:text="@string/lorem_short"
+        android:textAlignment="viewStart"
         android:textStyle="bold"
-        android:textAlignment="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/ivAvatar_helper_profile"
+        app:layout_constraintEnd_toStartOf="@+id/btnLogout_ProfileHelper"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -95,27 +98,22 @@
         android:id="@+id/tv_tagLabel_helperProfileFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="138dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
         android:fontFamily="casual"
-        android:text="Talk to me about:"
+        android:text="@string/talk"
         android:textColor="@color/seashell4"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/gv_tags_helper_prof"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/ivAvatar_helper_profile"
-        app:layout_constraintTop_toBottomOf="@+id/tvMyBio_helper_profile"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivAvatar_helper_profile" />
 
     <GridView
         android:id="@+id/gv_tags_helper_prof"
-        android:layout_width="368dp"
-        android:layout_height="414dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="50dp"
+        android:layout_width="351dp"
+        android:layout_height="238dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="70dp"
         android:columnWidth="150dp"
         android:gravity="center"
         android:horizontalSpacing="5dp"
@@ -125,18 +123,10 @@
         android:verticalSpacing="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.651"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_tagLabel_helperProfileFragment">
 
     </GridView>
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.36" />
 
 
 </android.support.constraint.ConstraintLayout>
