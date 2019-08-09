@@ -37,11 +37,11 @@
 
     <TextView
         android:id="@+id/tvBio_helperdetails"
-        android:layout_width="354dp"
+        android:layout_width="0dp"
         android:layout_height="83dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="72dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="32dp"
         android:text="Bio:"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.609"
@@ -63,8 +63,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginBottom="8dp"
         android:text="Helper's Bio:"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tvBio_helperdetails"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -72,8 +73,9 @@
         android:id="@+id/tvHelpersTagsText_HelperDetails"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="32dp"
         android:text="Helper's Tags:"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/gvHelperTags_helperDetails"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -95,8 +97,8 @@
     <GridView
         android:id="@+id/gvHelperTags_helperDetails"
         android:layout_width="354dp"
-        android:layout_height="206dp"
-        android:layout_marginTop="72dp"
+        android:layout_height="225dp"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnChat_helperdetails"
         app:layout_constraintEnd_toEndOf="parent"

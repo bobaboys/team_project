@@ -82,7 +82,12 @@ public class MainActivity extends AppCompatActivity {
             //set default
 
             setDefaultViewElements(isHelper);
-            if(chatReceiver)bottomNavigationView.setSelectedItemId(bottomBarReceiver.get(2));
+            if(chatReceiver) {
+                targetPage = 2;
+                calledNextPage = false;
+                bottomNavigationView.setSelectedItemId(bottomBarReceiver.get(targetPage));
+            }
+
         }
 
         @Override
