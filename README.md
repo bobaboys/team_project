@@ -1,7 +1,7 @@
 Group Project - README Template
 ===
 
-# APP_NAME_HERE
+# Lavender
 
 ## Table of Contents
 1. [Overview](#Overview)
@@ -11,7 +11,7 @@ Group Project - README Template
 
 ## Overview
 ### Description
-[Description of your app]
+Lavender is a mental health app that connects people going through a hard time with their peers who have gone through similar issues before and are willing to provide help. We will refer to the people who are willing to give help as "helpers" and people who are receivng help as "receivers". Receivers may search for the issue(s) they are going through, which generates a list of helpers who are willing to talk about the issue(s). Receivers and helpers can then communicate through a chat feature, where both messages and audio files can be sent. Both helpers and receivers have a profile page, where they can update their profile photo with either a photo they've taken or any of the images provided in the app. They can also record their everyday feelings using a journal feature.
 
 ### App Evaluation
 [Evaluation of your app across the following attributes]
